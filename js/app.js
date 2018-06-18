@@ -31,6 +31,12 @@ let batchSlot = 0;
 let roundCount = 0;
 let asterLim = .012 ;
 
+let ship_ast = new Image();
+ship_ast.src = "sprite sheets/ship_ast sprites.gif";
+
+let eSprite = new Image();
+eSprite.src = "sprite sheets/enemysprites.png";
+//******sprites taken from pics-about-space and are free to use
 
 //missileProcessor takes in missile object:
 // let missile = {
@@ -66,13 +72,12 @@ var ship = {
   color: "green",
   sX: gameWidth/2,
   sY: 625,
-  sWidth: 32,
-  sHeight: 32,
+  sWidth: 46,
+  sHeight: 40,
   health: 3,
   speed: 9,
   draw: function() {
-    gameCtx.fillStyle = this.color;
-    gameCtx.fillRect(this.sX, this.sY, this.sWidth, this.sHeight);
+    gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.sX, this.sY, 50, 43);
   },
   fire: function(xSpd) {
     let missile = {
@@ -101,8 +106,13 @@ const Enemy = (enemy) => {
 
   enemy.draw = function() {
 
-    gameCtx.fillStyle = this.color;
-    gameCtx.fillRect(this.x, this.y, this.width, this.height);
+    if (this.type == 'a') {
+      gameCtx.drawImage(ship_ast, 0, this.dStart, this.width, this.height, this.x, this.y, this.width, this.height);
+    }
+    else {
+      gameCtx.drawImage(eSprite, this.xStart, this.dStart, this.width, this.height, this.x, this.y, this.width, this.height);
+    }
+
   };
 
   enemy.update = function() {
@@ -206,14 +216,8 @@ const keyRelease = (event) => {
   }
 }
 
-var textX = 50;
-var textY = 50;
+const moveUpdate = () => {
 
-const update = () => {
-  frameCount += 1;
-  rpmCount += 1;
-  clip += 1;
-  spawnClip += 1;
   if (lKey == true && ship.sX > 0) {
     ship.sX -= ship.speed;
   }
@@ -226,61 +230,47 @@ const update = () => {
   if (dKey == true && ship.sY < 740) {
     ship.sY += ship.speed;
     }
-  if (clip > 8 && mag <= 4) {
-    if (sKey == true && rpmCount >= fireRate) {
-      if (lKey == true) {
-        let curve = -ship.speed/15;
-        ship.fire(curve);
-        rpmCount = 0;
-        mag += 1;
-      }
-      else if (rKey == true) {
-        let curve = ship.speed/15;
-        ship.fire(curve);
-        rpmCount = 0;
-        mag += 1;
-      }
-      else {
-        let curve = 0;
-        ship.fire(curve);
-        rpmCount = 0;
-        mag += 1;
-      }
+}
+
+const missileChamber = () => {
+
+  if (sKey == true && rpmCount >= fireRate) {
+    if (lKey == true) {
+      let curve = -ship.speed/15;
+      ship.fire(curve);
+      rpmCount = 0;
+      mag += 1;
     }
-  };
+    else if (rKey == true) {
+      let curve = ship.speed/15;
+      ship.fire(curve);
+      rpmCount = 0;
+      mag += 1;
+    }
+    else {
+      let curve = 0;
+      ship.fire(curve);
+      rpmCount = 0;
+      mag += 1;
+    }
+  }
   if (mag > 3) {
     clip = 0;
     mag = 0;
   };
-  //update ship missiles
-  for (let i = 0; i < sMissiles.length; i++) {
-    sMissiles[i].update();
-  };
-  sMissiles = sMissiles.filter(function(missile) {
-    return missile.inPlay;
-  });
+}
 
-
-//experiment
-enemies.forEach(function(enemy) {
-  enemy.update();
-});
-
-enemies = enemies.filter(function(enemy) {
-  return enemy.inPlay;
-});
-
-//when game frames hit current spawnRange levels begin spawn process
-if (frameCount >= spawnRange && spawnReady == true) {
-  console.log('this is going');
+const enemySpawn = () => {
+  //when game frames hit current spawnRange levels begin spawn process
+  if (frameCount >= spawnRange && spawnReady == true) {
   //how many types to possibly spawn at once are randomly chosen by current level
   let possibleBatchNum = level + 1;
   //randomly spawn 1 to number-limit of enemyTypes
-  let thisBatch = Math.floor(Math.random() * possibleBatchNum) + 1;
+  let thisBatch = Math.floor(Math.random() * 3) + 1;
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
      //find enemy type and put them in spawnBatch array for this enemy spawn
-      enemyBatch.push(enemyTypes[Math.floor(Math.random() * 5)]);
+      enemyBatch.push(enemyTypes[Math.floor(Math.random() * 6)]);
 
    }
    spawnReady = false;
@@ -300,9 +290,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 1.7,
           xSpd: 0,
           arcTime: 5,
-          color: '#9933cc',
-          height: 30,
-          width: 30,
+          dStart:295,
+          xStart:170,
+          height: 39,
+          width: 37,
           inPlay: true
         }
       enemies.push(Enemy(enemy));
@@ -315,9 +306,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 1.7,
           xSpd: 0,
           arcTime: 5,
-          color: '#9933cc',
-          height: 30,
-          width: 30,
+          dStart:295,
+          xStart:170,
+          height: 39,
+          width: 37,
           inPlay: true
         }
       enemies.push(Enemy(enemy));
@@ -330,9 +322,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 7,
           xSpd: 0,
           arcTime: 5,
-          color: '#c00000',
-          height: 30,
-          width: 30,
+          dStart:548,
+          xStart:530,
+          height: 60,
+          width: 55,
           inPlay: true
         }
       enemies.push(Enemy(enemy));
@@ -345,9 +338,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 7,
           xSpd: 0,
           arcTime: 5,
-          color: '#c00000',
-          height: 30,
-          width: 30,
+          dStart:548,
+          xStart:530,
+          height: 60,
+          width: 55,
           inPlay: true
         }
     enemies.push(Enemy(enemy));
@@ -360,9 +354,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 3,
           xSpd: 0,
           arcTime: 5,
-          color: '#ffcc00',
-          height: 30,
-          width: 30,
+          dStart:270,
+          xStart:107,
+          height: 34,
+          width: 36,
           inPlay: true,
           travel: 1
         }
@@ -376,9 +371,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 3,
           xSpd: 0,
           arcTime: 5,
-          color: '#ffcc00',
-          height: 30,
-          width: 30,
+          dStart:270,
+          xStart:107,
+          height: 34,
+          width: 36,
           inPlay: true,
           travel: 1
         }
@@ -403,24 +399,63 @@ if (roundCount >= 5 && spawnReady == false) {
   frameCount = 0;
   roundCount = 0;
 }
+}//end of enemySpawn function
 
-if(Math.random() < asterLim) {
-      let dinger = Math.floor(Math.random() * 6);
-      let x = typeAPlacements[dinger];
-      let enemy = {
-        type: 'a',
-        x: x,
-        y: 0,
-        ySpd: 1.5,
-        xSpd: 0,
-        arcTime: 5,
-        color: '#c0c0c0',
-        height: 30,
-        width: 30,
-        inPlay: true
-      }
-    enemies.push(Enemy(enemy));
-}
+const asteroidSpawn = () => {
+
+  if(Math.random() < asterLim) {
+        let dinger = Math.floor(Math.random() * 6);
+        let x = typeAPlacements[dinger];
+        let asteroid = {
+          type: 'a',
+          x: x,
+          y: 0,
+          ySpd: 1.5,
+          xSpd: 0,
+          arcTime: 5,
+          color: '#c0c0c0',
+          dStart: 240,
+          width: 53,
+          height: 55,
+          inPlay: true
+        }
+      enemies.push(Enemy(asteroid));
+  }
+
+}//end of asteroidSpawn function
+
+const update = () => {
+  frameCount += 1;
+  rpmCount += 1;
+  clip += 1;
+  spawnClip += 1;
+
+  moveUpdate();
+
+  if (clip > 8 && mag <= 4) {
+    missileChamber();
+  };
+
+  //update ship missiles
+  for (let i = 0; i < sMissiles.length; i++) {
+    sMissiles[i].update();
+  };
+  sMissiles = sMissiles.filter(function(missile) {
+    return missile.inPlay;
+  });
+
+  //update enemy positions and actions
+  enemies.forEach(function(enemy) {
+  enemy.update();
+  });
+
+  enemies = enemies.filter(function(enemy) {
+    return enemy.inPlay;
+  });
+
+  enemySpawn();
+
+  asteroidSpawn();
 
 };//update end
 
