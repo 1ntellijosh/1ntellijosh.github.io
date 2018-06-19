@@ -76,15 +76,65 @@ const missileProcessor = (missile) => {
 }
 
 var ship = {
-  color: "green",
   x: gameWidth/2,
   y: 625,
   width: 46,
   height: 40,
   health: 3,
   speed: 9,
+  inPlay: true,
+  respawnTime: 100,
+  movable: true,
   draw: function() {
     gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
+  },
+  respawn: function() {
+    if (this.respawnTime == 0) {
+      this.movable = false;
+      this.x = gameWidth/2;
+      this.y = 730;
+      this.health = this.health - 1;
+      gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
+    }
+    else if (this.respawnTime <= 80) {
+      this.y -= 1;
+      if (this.respawnTime > 7 && this.respawnTime < 12 ||
+         this.respawnTime > 19 && this.respawnTime < 24 ||
+         this.respawnTime > 31 && this.respawnTime < 36 ||
+         this.respawnTime > 43 && this.respawnTime < 48 ||
+         this.respawnTime > 56 && this.respawnTime < 61 ||
+         this.respawnTime > 68 && this.respawnTime < 73) {
+           // gameCtx.drawImage(ship_ast, 35, 40, 0, 0, this.x, this.y, 0, 0);
+           console.log('blink');
+         }
+      else {
+        gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
+      }
+    }
+    else if (ship.respawnTime < 150) {
+      this.movable = true;
+      if (this.respawnTime > 80 && this.respawnTime < 85 ||
+         this.respawnTime > 92 && this.respawnTime < 97 ||
+         this.respawnTime > 103 && this.respawnTime < 107 ||
+         this.respawnTime > 112 && this.respawnTime < 115 ||
+         this.respawnTime > 119 && this.respawnTime < 123 ||
+         this.respawnTime > 126 && this.respawnTime < 129 ||
+         this.respawnTime > 131 && this.respawnTime < 133 ||
+         this.respawnTime > 135 && this.respawnTime < 137 ||
+         this.respawnTime > 139 && this.respawnTime < 141 ||
+         this.respawnTime > 143 && this.respawnTime < 145 ||
+         this.respawnTime > 147 && this.respawnTime < 149) {
+           
+      }
+      else {
+        gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
+      }
+    }
+    if (this.respawnTime == 150) {
+      this.inPlay = true;
+    }
+
+    this.respawnTime += 1;
   },
   fire: function(xSpd) {
     let missile = {
@@ -225,7 +275,7 @@ const Enemy = (enemy) => {
       }
     }
     else if(this.age % 15 == 0) {
-      console.log('maybe...');
+      // console.log('maybe...');
       if(Math.random() < .11) {
         this.fire(0, 5, '#ff6600', 6, 4);
       }
@@ -240,7 +290,7 @@ const Enemy = (enemy) => {
       }
     }
     else if(this.age % 15 == 0) {
-      console.log('maybe...');
+      // console.log('maybe...');
       if(Math.random() < .11) {
         this.fire(0, 5, '#ff6600', 6, 4);
       }
@@ -310,16 +360,16 @@ const keyRelease = (event) => {
 
 const moveUpdate = () => {
 
-  if (lKey == true && ship.x > 0) {
+  if (lKey == true && ship.x > 0 && ship.movable == true) {
     ship.x -= ship.speed;
   }
-  if (rKey == true && ship.x < 630) {
+  if (rKey == true && ship.x < 630 && ship.movable == true) {
     ship.x += ship.speed;
     }
-  if (uKey == true&& ship.y > 30) {
+  if (uKey == true&& ship.y > 30 && ship.movable == true) {
     ship.y -= ship.speed;
     }
-  if (dKey == true && ship.y < 740) {
+  if (dKey == true && ship.y < 740 && ship.movable == true) {
     ship.y += ship.speed;
     }
 }
@@ -531,7 +581,7 @@ const explode = (object) => {
     travel: 1,
     arcTime: 5
   }
-  object.inPlay = false;
+  // object.inPlay = false;
   enemies.push(Enemy(explosion));
 }//end of explode function
 
@@ -576,6 +626,7 @@ const scoreDetector = () => {
           sMissiles[i].inPlay = false;
           if (enemies[x].type != 'a') {
             explode(enemies[x]);
+            enemies[x].inPlay = false;
           }
         }
       }
@@ -585,7 +636,12 @@ const scoreDetector = () => {
 
   enemies.forEach(function(enemy) {
     if (hits(enemy, ship)) {
-      console.log('you were hit!');
+      explode(enemy);
+      enemy.inPlay = false;
+      // enemy.inPlay = false;
+      explode(ship);
+      ship.respawnTime = 0;
+      ship.inPlay = false;
     }
   });
 }
@@ -621,7 +677,12 @@ const draw = () => {
   //clear the screen for next frame
   gameCtx.clearRect(0, 0, gameWidth, gameHeight);
   //draw ship position
-  ship.draw();
+  if(ship.inPlay) {
+    ship.draw();
+  }
+  else {
+    ship.respawn();
+  }
   //draw each ship missile
   for (let i = 0; i < sMissiles.length; i++) {
     sMissiles[i].draw();
