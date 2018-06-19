@@ -29,7 +29,7 @@ let spawnClip = 0;
 let spawnTypeCount = 0;
 let batchSlot = 0;
 let roundCount = 0;
-let asterLim = .012 ;
+let asterLim = .014;
 
 let health;
 
@@ -116,6 +116,30 @@ const Enemy = (enemy) => {
     if (this.type == 'a') {
       gameCtx.drawImage(ship_ast, 0, this.dStart, this.width, this.height, this.x, this.y, this.width, this.height);
     }
+    else if (this.type == 'x') {
+      this.travel += 1;
+       if (this.travel >= 16) {
+        this.inPlay = false;
+      }
+      else if (this.travel >= 14) {
+        gameCtx.drawImage(ship_ast, 51, 191, 55, 50, this.x + -1, this.y + 5, 55, 50);
+      }
+      else if (this.travel >= 12) {
+        gameCtx.drawImage(ship_ast, 0, 192, 45, 44, this.x + 2, this.y + 8, 45, 44)
+      }
+      else if (this.travel >= 10) {
+        gameCtx.drawImage(ship_ast, 74, 151, 39, 35, this.x + 5, this.y + 11, 39, 35)
+      }
+      else if (this.travel >= 7) {
+        gameCtx.drawImage(ship_ast, 45, 158, 23, 23, this.x + 13, this.y + 16, 23, 23)
+      }
+      else if (this.travel >= 4) {
+        gameCtx.drawImage(ship_ast, 20, 161, 18, 18, this.x + 14, this.y + 18, 18, 18)
+      }
+      else {
+        gameCtx.drawImage(ship_ast, 5, 163, 8, 8, this.x + 20, this.y + 20, 8, 8);
+      }
+    }
     else {
       gameCtx.drawImage(eSprite, this.xStart, this.dStart, this.width, this.height, this.x, this.y, this.width, this.height);
     }
@@ -179,6 +203,23 @@ const Enemy = (enemy) => {
 
   return enemy;
 };
+
+const explode = (object) => {
+  let explosion = {
+    type: 'x',
+    x: object.x,
+    y: object.y,
+    xSpd: 0,
+    ySpd: 0,
+    height: 34,
+    width: 36,
+    inPlay: true,
+    travel: 1,
+    arcTime: 5
+  }
+  object.inPlay = false;
+  enemies.push(Enemy(explosion));
+}
 
 
 const drawBoard = () => {
@@ -468,22 +509,24 @@ const scoreDetector = () => {
 
   for (let i = 0; i < sMissiles.length; i++) {
     for (let x = 0; x < enemies.length; x++) {
-      if (hits(sMissiles[i], enemies[x])) {
-        // console.log('hit!!');
-        sMissiles[i].inPlay = false;
-
+      if(enemies[x].type != 'x') {
+        if (hits(sMissiles[i], enemies[x])) {
+          // console.log('hit!!');
+          sMissiles[i].inPlay = false;
+          if (enemies[x].type != 'a') {
+            explode(enemies[x]);
+          }
+        }
+      }
     }
   }
-  }
-  console.log(ship);
+
   enemies.forEach(function(enemy) {
     if (hits(enemy, ship)) {
       console.log('you were hit!');
     }
   });
 }
-
-
 
 const update = () => {
   frameCount += 1;
