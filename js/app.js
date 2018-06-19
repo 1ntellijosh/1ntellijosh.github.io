@@ -33,10 +33,13 @@ let asterLim = .012 ;
 
 let ship_ast = new Image();
 ship_ast.src = "sprite sheets/ship_ast sprites.gif";
+/********   sprites taken from arboris at deviantArt - permission to use explicitely allowed: https://arboris.deviantart.com/art/Spaceship-sprites-43030167   ****/
 
 let eSprite = new Image();
 eSprite.src = "sprite sheets/enemysprites.png";
-//******sprites taken from pics-about-space and are free to use
+/******sprites taken from pics-about-space.com and are free to use   ****/
+
+//     https://opengameart.org/content/space-ship-building-bits-volume-1
 
 //missileProcessor takes in missile object:
 // let missile = {
@@ -424,6 +427,46 @@ const asteroidSpawn = () => {
 
 }//end of asteroidSpawn function
 
+const updateMissiles = () => {
+  for (let i = 0; i < sMissiles.length; i++) {
+    sMissiles[i].update();
+  };
+  sMissiles = sMissiles.filter(function(missile) {
+    return missile.inPlay;
+  });
+}//end of updateMissiles funtion
+
+const enemyUpdater = () => {
+
+  for (let i = 0; i < enemies.length; i++) {
+      enemies[i].update();
+  }
+
+  enemies = enemies.filter(function(enemy) {
+    return enemy.inPlay;
+  });
+
+}//end of enemyUpdater function
+
+const hits = (ob1, ob2) => {
+
+  return ob1.x < ob2.x + ob2.width && ob1.x + ob1.width > ob2.x && ob1.y < ob2.y + ob2.height && ob1.y + ob1.height > ob2.y;
+
+}//end of hits function
+
+const scoreDetector = () => {
+
+  for (let = i = 0; i < sMissiles.length; i++) {
+    for (let x = 0; i < enemies.length; x++) {
+      if (hits(sMissiles[i], enemies[i])) {
+        console.log('hit!!!!');
+        sMissiles[i].inPlay = false;
+      }
+    }
+  }
+
+}
+
 const update = () => {
   frameCount += 1;
   rpmCount += 1;
@@ -437,25 +480,16 @@ const update = () => {
   };
 
   //update ship missiles
-  for (let i = 0; i < sMissiles.length; i++) {
-    sMissiles[i].update();
-  };
-  sMissiles = sMissiles.filter(function(missile) {
-    return missile.inPlay;
-  });
+  updateMissiles();
 
   //update enemy positions and actions
-  enemies.forEach(function(enemy) {
-  enemy.update();
-  });
-
-  enemies = enemies.filter(function(enemy) {
-    return enemy.inPlay;
-  });
+  enemyUpdater();
 
   enemySpawn();
 
   asteroidSpawn();
+
+  scoreDetector();
 
 };//update end
 
@@ -473,18 +507,18 @@ const draw = () => {
   for (let i = 0; i < enemies.length; i++) {
     enemies[i].draw();
   };
-}
+}//end of draw function
 
 const flash = () => {
   update();
   draw();
-}
+}//end of flash function
 
 //game frame refresh rate settings
 let fps = 25;
 setInterval(flash, 1000/fps);
 
-
+//on ready, draws a new gameboard
 $(() => {
 
   drawBoard();
