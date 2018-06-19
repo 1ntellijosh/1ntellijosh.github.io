@@ -1,32 +1,49 @@
-
+html, body{
+  padding: 0;
+  margin: 0;
+}
+html{
+  height: 100%;
+}
 body {
+  margin: 0 auto;
+  background-image: url('../images/free_space_galaxy_texture_by_lyshastra-d77godp.jpg');
+  background-size: cover;
+  background-repeat:   repeat;
+  min-height: 100%;
+}
 
-    background-size:     cover;
-    background-repeat:   repeat;
+#main {
+    width: 80%;
+    background: rgb(80, 80, 80);
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-content: center;
 }
 
 @keyframes backgroundScroll {
-    from {background-position: 0 0;}
-    to {background-position: 0px 180px;}
+  from {background-position: 0 0;}
+  to {background-position: 0px 180px;}
 }
 
 @-webkit-keyframes backgroundScroll {
-    from {background-position: 0 0;}
-    to {background-position: 0px 180px;}
+  from {background-position: 0 0;}
+  to {background-position: 0px 180px;}
 }
 
-canvas {
-    border: 1px solid black;
-    background-color: black;
-    background-image:url('../images/spacegalaxy.jpg');
-    //https://lyshastra.deviantart.com/art/Free-Space-Galaxy-Texture-435798637
-    background-repeat: repeat;
-    background-attachment: fixed;
-    background-size:100%;
-    font-size: 12px;
-    font-family: 'Dancing Script', cursive;
-    -webkit-animation: backgroundScroll 30s linear 1;
-    -webkit-animation-fill-mode: forwards;
-    animation: backgroundScroll 30s linear 1;
-    animation-fill-mode: forwards;
+#canvas {
+  border: 1px solid black;
+  background-color: black;
+  background-image:url('../images/spacegalaxy.jpg');
+  //https://lyshastra.deviantart.com/art/Free-Space-Galaxy-Texture-435798637
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-size:100%;
+  font-size: 12px;
+  font-family: 'Dancing Script', cursive;
+  -webkit-animation: backgroundScroll 30s linear 1;
+  -webkit-animation-fill-mode: forwards;
+  animation: backgroundScroll 30s linear 1;
+  animation-fill-mode: forwards;
 }

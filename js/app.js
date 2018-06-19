@@ -105,7 +105,7 @@ var ship = {
          this.respawnTime > 56 && this.respawnTime < 61 ||
          this.respawnTime > 68 && this.respawnTime < 73) {
            // gameCtx.drawImage(ship_ast, 35, 40, 0, 0, this.x, this.y, 0, 0);
-           console.log('blink');
+
          }
       else {
         gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
@@ -316,7 +316,7 @@ const Enemy = (enemy) => {
 const drawBoard = () => {
 gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></canvas>").attr('id', 'canvas');
 gameCtx = gameCanvas.get(0).getContext('2d');
-gameCanvas.appendTo('body');
+gameCanvas.appendTo('#main');
 
 $(document).on('keydown', keyReader);
 $(document).on('keyup', keyRelease);
@@ -635,7 +635,7 @@ const scoreDetector = () => {
   }
 
   enemies.forEach(function(enemy) {
-    if (hits(enemy, ship)) {
+    if (hits(enemy, ship) && ship.inPlay == true) {
       if (enemy.type != 'a') {
         explode(enemy);
         enemy.inPlay = false;
