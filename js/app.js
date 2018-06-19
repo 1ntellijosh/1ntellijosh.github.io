@@ -18,7 +18,7 @@ let mag = 0;
 let sMissiles = [];
 let enemies = [];
 let enemyTypes = ['b', 'c', 'd', 'e', 'f', 'g'];//could create new arrays of enemy combination types for levels later
-let typeAPlacements = [75, 150, 225, 295, 360, 437, 517, 575];
+let typeAPlacements = [75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 575];
 
 let frameCount = 0;
 let level = 1;
@@ -29,7 +29,7 @@ let spawnClip = 0;
 let spawnTypeCount = 0;
 let batchSlot = 0;
 let roundCount = 0;
-let asterLim = .0135;
+let asterLim = .014;
 
 let health;
 
@@ -223,7 +223,7 @@ const Enemy = (enemy) => {
       this.xSpd = 0;
       this.ySpd = 3.8;
       this.y += this.ySpd;
-      if(Math.random() < .01) {
+      if(Math.random() < .018) {
         this.fire(3, 2, '#99ff33', 6, 4);
       }
     }
@@ -231,8 +231,18 @@ const Enemy = (enemy) => {
       this.xSpd = -8;
       this.x += this.xSpd;
       this.ySpd = 1.2;
-      if(Math.random() < .013) {
-        this.fire(-.5, 2.5, '#99ff33', 6, 4);
+      if(Math.random() < .021) {
+        this.fire(-.5, 3.1, '#99ff33', 6, 4);
+      }
+    }
+    if (this.travel == 15) {
+      if(Math.random() < .5) {
+        this.fire(-.35, 3.1, '#99ff33', 6, 4);
+      }
+    }
+    if (this.travel == 120) {
+      if(Math.random() < .5) {
+        this.fire(0, 3.1, '#99ff33', 6, 4);
       }
     }
     // if(Math.random() < .184) {
@@ -247,16 +257,26 @@ const Enemy = (enemy) => {
       this.xSpd = 0;
       this.ySpd = 3.8;
       this.y += this.ySpd;
-      if(Math.random() < .01) {
-        this.fire(-3, 2, '#99ff33', 6, 4);
+      if(Math.random() < .018) {
+        this.fire(-3, 2, '#99f f33', 6, 4);
       }
     }
     else if(this.travel > 35) {
       this.xSpd = 8;
       this.x += this.xSpd;
       this.ySpd = 1.2;
-      if(Math.random() < .013) {
-        this.fire(.5, 2.5, '#99ff33', 6, 4);
+      if(Math.random() < .021) {
+        this.fire(.5, 3.1, '#99ff33', 6, 4);
+      }
+    }
+    if (this.travel == 15) {
+      if(Math.random() < .5) {
+        this.fire(.35, 3.1, '#99ff33', 6, 4);
+      }
+    }
+    if (this.travel == 120) {
+      if(Math.random() < .5) {
+        this.fire(0, 3.1, '#99ff33', 6, 4);
       }
     }
   }
@@ -269,13 +289,13 @@ const Enemy = (enemy) => {
   else if(this.type == 'c') {
     this.xSpd = -7 * Math.cos(this.arcTime * Math.PI / 200) + 9;
     if (this.age > 75 && this.age % 20 == 0) {
-      if(Math.random() < .16) {
+      if(Math.random() < .20) {
         this.fire(0, 5, '#ff6600', 6, 4);
       }
     }
     else if(this.age % 15 == 0) {
       // console.log('maybe...');
-      if(Math.random() < .11) {
+      if(Math.random() < .15) {
         this.fire(0, 5, '#ff6600', 6, 4);
       }
     }
@@ -284,13 +304,13 @@ const Enemy = (enemy) => {
   else if(this.type == 'b') {
     this.xSpd = 7 * Math.cos(this.arcTime * Math.PI / 200) - 9;
     if (this.age > 75 && this.age % 20 == 0) {
-      if(Math.random() < .16) {
+      if(Math.random() < .20) {
         this.fire(0, 5, '#ff6600', 6, 4);
       }
     }
     else if(this.age % 15 == 0) {
       // console.log('maybe...');
-      if(Math.random() < .11) {
+      if(Math.random() < .15) {
         this.fire(0, 5, '#ff6600', 6, 4);
       }
     }
@@ -411,7 +431,7 @@ const enemySpawn = () => {
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
      //find enemy type and put them in spawnBatch array for this enemy spawn
-      enemyBatch.push('c');
+      enemyBatch.push(enemyTypes[Math.floor(Math.random() * 6)]);
 
    }
    spawnReady = false;
@@ -431,10 +451,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 1.7,
           xSpd: 0,
           arcTime: 5,
-          dStart:295,
-          xStart:170,
-          height: 39,
-          width: 37,
+          dStart:97,
+          xStart:367,
+          height: 41,
+          width: 58,
           inPlay: true,
           age: 0
         }
@@ -547,7 +567,7 @@ if (roundCount >= 5 && spawnReady == false) {
 const asteroidSpawn = () => {
 
   if(Math.random() < asterLim) {
-        let dinger = Math.floor(Math.random() * 9);
+        let dinger = Math.floor(Math.random() * 13);
         let x = typeAPlacements[dinger];
         let asteroid = {
           type: 'a',
