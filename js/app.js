@@ -29,7 +29,7 @@ let spawnClip = 0;
 let spawnTypeCount = 0;
 let batchSlot = 0;
 let roundCount = 0;
-let asterLim = .0125;
+let asterLim = .0135;
 
 let health;
 
@@ -220,14 +220,14 @@ const Enemy = (enemy) => {
   else if(this.type == 'c') {
     this.xSpd = -7 * Math.cos(this.arcTime * Math.PI / 200) + 9;
     if (this.age > 75 && this.age % 20 == 0) {
-      if(Math.random() < .184) {
-        this.fire(0, '#ff6600', 6, 4);
+      if(Math.random() < .16) {
+        this.fire(0, 5, '#ff6600', 6, 4);
       }
     }
     else if(this.age % 15 == 0) {
       console.log('maybe...');
-      if(Math.random() < .115) {
-        this.fire(0, '#ff6600', 6, 4);
+      if(Math.random() < .11) {
+        this.fire(0, 5, '#ff6600', 6, 4);
       }
     }
     this.age +=1;
@@ -235,13 +235,13 @@ const Enemy = (enemy) => {
   else if(this.type == 'b') {
     this.xSpd = 7 * Math.cos(this.arcTime * Math.PI / 200) - 9;
     if (this.age > 75 && this.age % 20 == 0) {
-      if(Math.random() < .21) {
+      if(Math.random() < .16) {
         this.fire(0, 5, '#ff6600', 6, 4);
       }
     }
     else if(this.age % 15 == 0) {
       console.log('maybe...');
-      if(Math.random() < .14) {
+      if(Math.random() < .11) {
         this.fire(0, 5, '#ff6600', 6, 4);
       }
     }
@@ -261,23 +261,6 @@ const Enemy = (enemy) => {
 
   return enemy;
 };
-
-const explode = (object) => {
-  let explosion = {
-    type: 'x',
-    x: object.x,
-    y: object.y,
-    xSpd: 0,
-    ySpd: 0,
-    height: 34,
-    width: 36,
-    inPlay: true,
-    travel: 1,
-    arcTime: 5
-  }
-  object.inPlay = false;
-  enemies.push(Enemy(explosion));
-}
 
 
 const drawBoard = () => {
@@ -379,7 +362,7 @@ const enemySpawn = () => {
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
      //find enemy type and put them in spawnBatch array for this enemy spawn
-      enemyBatch.push('f');
+      enemyBatch.push(enemyTypes[Math.floor(Math.random() * 6)]);
 
    }
    spawnReady = false;
@@ -534,6 +517,23 @@ const asteroidSpawn = () => {
   }
 
 }//end of asteroidSpawn function
+
+const explode = (object) => {
+  let explosion = {
+    type: 'x',
+    x: object.x,
+    y: object.y,
+    xSpd: 0,
+    ySpd: 0,
+    height: 34,
+    width: 36,
+    inPlay: true,
+    travel: 1,
+    arcTime: 5
+  }
+  object.inPlay = false;
+  enemies.push(Enemy(explosion));
+}//end of explode function
 
 const updateMissiles = () => {
   for (let i = 0; i < sMissiles.length; i++) {
