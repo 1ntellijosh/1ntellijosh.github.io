@@ -124,7 +124,7 @@ var ship = {
          this.respawnTime > 139 && this.respawnTime < 141 ||
          this.respawnTime > 143 && this.respawnTime < 145 ||
          this.respawnTime > 147 && this.respawnTime < 149) {
-           
+
       }
       else {
         gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
@@ -376,7 +376,7 @@ const moveUpdate = () => {
 
 const missileChamber = () => {
 
-  if (sKey == true && rpmCount >= fireRate) {
+  if (sKey == true && rpmCount >= fireRate && ship.movable == true) {
     if (lKey == true) {
       let curve = -ship.speed/15;
       ship.fire(curve);
@@ -636,9 +636,11 @@ const scoreDetector = () => {
 
   enemies.forEach(function(enemy) {
     if (hits(enemy, ship)) {
-      explode(enemy);
-      enemy.inPlay = false;
-      // enemy.inPlay = false;
+      if (enemy.type != 'a') {
+        explode(enemy);
+        enemy.inPlay = false;
+        // enemy.inPlay = false;
+      }
       explode(ship);
       ship.respawnTime = 0;
       ship.inPlay = false;
