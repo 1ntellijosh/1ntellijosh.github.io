@@ -38,10 +38,9 @@ ship_ast.src = "sprite sheets/ship_ast sprites.gif";
 /********   sprites taken from arboris at deviantArt - permission to use explicitely allowed: https://arboris.deviantart.com/art/Spaceship-sprites-43030167   ****/
 
 let eSprite = new Image();
-// eSprite.src = "sprite sheets/enemysprites.png";
-/******sprites taken from pics-about-space.com and are free to use   ****/
 eSprite.src = "sprite sheets/shipsheetpartsdown.png";
-//     https://opengameart.org/content/space-ship-building-bits-volume-1
+/******sprites taken from opengameart.org and are free to use   ****/
+//https://opengameart.org/content/space-ship-building-bits-volume-1
 
 //missileProcessor takes in missile object:
 // let missile = {
@@ -181,7 +180,7 @@ const Enemy = (enemy) => {
   enemy.draw = function() {
 
     if (this.type == 'a') {
-      gameCtx.drawImage(ship_ast, 0, this.dStart, this.width, this.height, this.x, this.y, this.width + 16, this.height + 16);
+      gameCtx.drawImage(ship_ast, 0, this.dStart, this.width, this.height, this.x, this.y, this.width + 20, this.height + 20);
     }
     else if (this.type == 'x') {
       this.travel += 1;
@@ -619,18 +618,27 @@ const scoreDetector = () => {
 
   for (let i = 0; i < sMissiles.length; i++) {
     if(sMissiles[i].type != 'e') {
-    for (let x = 0; x < enemies.length; x++) {
-      if(enemies[x].type != 'x') {
-        if (hits(sMissiles[i], enemies[x])) {
-          // console.log('hit!!');
-          sMissiles[i].inPlay = false;
-          if (enemies[x].type != 'a') {
-            explode(enemies[x]);
-            enemies[x].inPlay = false;
+      for (let x = 0; x < enemies.length; x++) {
+        if(enemies[x].type != 'x') {
+          if (hits(sMissiles[i], enemies[x])) {
+            // console.log('hit!!');
+            sMissiles[i].inPlay = false;
+            if (enemies[x].type != 'a') {
+              explode(enemies[x]);
+              enemies[x].inPlay = false;
+            }
           }
         }
       }
     }
+    else if(sMissiles[i].type == 'e') {
+          if (hits(sMissiles[i], ship) && ship.inPlay == true) {
+            // console.log('hit!!');
+            sMissiles[i].inPlay = false;
+            explode(ship);
+            ship.respawnTime = 0;
+            ship.inPlay = false;
+          }
     }
   }
 
