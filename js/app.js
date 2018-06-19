@@ -29,7 +29,7 @@ let spawnClip = 0;
 let spawnTypeCount = 0;
 let batchSlot = 0;
 let roundCount = 0;
-let asterLim = .014;
+let asterLim = .0125;
 
 let health;
 
@@ -95,7 +95,8 @@ var ship = {
       color: '#6495ED',
       height: 7,
       width: 3,
-      inPlay: true
+      inPlay: true,
+      type: 's'
     }
     sMissiles.push(missileProcessor(missile));
   }
@@ -110,6 +111,22 @@ const Enemy = (enemy) => {
     return enemy.x >= 0 && enemy.x <= gameWidth &&
       enemy.y >= 0 && enemy.y <= gameHeight;
   };
+
+  enemy.fire = function(x, y, c, h, w) {
+
+    let laser = {
+      x: this.x + this.width/2,
+      y: this.y + this.height,
+      ySpd: y,
+      xSpd: x,
+      color: c,
+      height: h,
+      width: w,
+      inPlay: true,
+      type: 'e'
+    }
+    sMissiles.push(missileProcessor(laser));
+  }
 
   enemy.draw = function() {
 
@@ -157,12 +174,23 @@ const Enemy = (enemy) => {
       this.xSpd = 0;
       this.ySpd = 3.8;
       this.y += this.ySpd;
+      if(Math.random() < .01) {
+        this.fire(3, 2, '#99ff33', 6, 4);
+      }
     }
-    else if(this.travel > 35) {
+    else if (this.travel > 35) {
       this.xSpd = -8;
       this.x += this.xSpd;
       this.ySpd = 1.2;
+      if(Math.random() < .013) {
+        this.fire(-.5, 2.5, '#99ff33', 6, 4);
+      }
     }
+    // if(Math.random() < .184) {
+    //   this.fire();
+    // }
+
+    this.age +=1;
   }
   if(this.type == 'f') {
     this.travel = this.travel + 1;
@@ -170,11 +198,17 @@ const Enemy = (enemy) => {
       this.xSpd = 0;
       this.ySpd = 3.8;
       this.y += this.ySpd;
+      if(Math.random() < .01) {
+        this.fire(-3, 2, '#99ff33', 6, 4);
+      }
     }
     else if(this.travel > 35) {
       this.xSpd = 8;
       this.x += this.xSpd;
       this.ySpd = 1.2;
+      if(Math.random() < .013) {
+        this.fire(.5, 2.5, '#99ff33', 6, 4);
+      }
     }
   }
   if(this.type == 'e') {
@@ -185,9 +219,33 @@ const Enemy = (enemy) => {
   }
   else if(this.type == 'c') {
     this.xSpd = -7 * Math.cos(this.arcTime * Math.PI / 200) + 9;
+    if (this.age > 75 && this.age % 20 == 0) {
+      if(Math.random() < .184) {
+        this.fire(0, '#ff6600', 6, 4);
+      }
+    }
+    else if(this.age % 15 == 0) {
+      console.log('maybe...');
+      if(Math.random() < .115) {
+        this.fire(0, '#ff6600', 6, 4);
+      }
+    }
+    this.age +=1;
   }
   else if(this.type == 'b') {
     this.xSpd = 7 * Math.cos(this.arcTime * Math.PI / 200) - 9;
+    if (this.age > 75 && this.age % 20 == 0) {
+      if(Math.random() < .21) {
+        this.fire(0, 5, '#ff6600', 6, 4);
+      }
+    }
+    else if(this.age % 15 == 0) {
+      console.log('maybe...');
+      if(Math.random() < .14) {
+        this.fire(0, 5, '#ff6600', 6, 4);
+      }
+    }
+    this.age +=1;
   }
   else {
     this.xSpd = 0;
@@ -321,7 +379,7 @@ const enemySpawn = () => {
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
      //find enemy type and put them in spawnBatch array for this enemy spawn
-      enemyBatch.push(enemyTypes[Math.floor(Math.random() * 6)]);
+      enemyBatch.push('f');
 
    }
    spawnReady = false;
@@ -345,7 +403,8 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           xStart:170,
           height: 39,
           width: 37,
-          inPlay: true
+          inPlay: true,
+          age: 0
         }
       enemies.push(Enemy(enemy));
     }
@@ -361,7 +420,8 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           xStart:170,
           height: 39,
           width: 37,
-          inPlay: true
+          inPlay: true,
+          age: 0
         }
       enemies.push(Enemy(enemy));
     }
@@ -508,6 +568,7 @@ const hits = (ob1, ob2) => {
 const scoreDetector = () => {
 
   for (let i = 0; i < sMissiles.length; i++) {
+    if(sMissiles[i].type != 'e') {
     for (let x = 0; x < enemies.length; x++) {
       if(enemies[x].type != 'x') {
         if (hits(sMissiles[i], enemies[x])) {
@@ -519,6 +580,7 @@ const scoreDetector = () => {
         }
       }
     }
+    }
   }
 
   enemies.forEach(function(enemy) {
@@ -527,6 +589,7 @@ const scoreDetector = () => {
     }
   });
 }
+
 
 const update = () => {
   frameCount += 1;
