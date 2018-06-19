@@ -18,7 +18,7 @@ let mag = 0;
 let sMissiles = [];
 let enemies = [];
 let enemyTypes = ['b', 'c', 'd', 'e', 'f', 'g'];//could create new arrays of enemy combination types for levels later
-let typeAPlacements = [75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 575];
+let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 575, 575];
 
 let frameCount = 0;
 let level = 1;
@@ -29,7 +29,8 @@ let spawnClip = 0;
 let spawnTypeCount = 0;
 let batchSlot = 0;
 let roundCount = 0;
-let asterLim = .014;
+let spawnLimit = 4;
+let asterLim = .009;
 
 let health;
 
@@ -139,7 +140,7 @@ var ship = {
     let missile = {
       x: this.x + this.width/2,
       y: this.y,
-      ySpd: -20,
+      ySpd: -22.5,
       xSpd: xSpd,
       color: '#6495ED',
       height: 7,
@@ -180,7 +181,7 @@ const Enemy = (enemy) => {
   enemy.draw = function() {
 
     if (this.type == 'a') {
-      gameCtx.drawImage(ship_ast, 0, this.dStart, this.width, this.height, this.x, this.y, this.width + 20, this.height + 20);
+      gameCtx.drawImage(ship_ast, 0, this.dStart, this.width, this.height, this.x, this.y, this.width + 17, this.height + 17);
     }
     else if (this.type == 'x') {
       this.travel += 1;
@@ -427,12 +428,11 @@ const enemySpawn = () => {
   //how many types to possibly spawn at once are randomly chosen by current level
   let possibleBatchNum = level + 1;
   //randomly spawn 1 to number-limit of enemyTypes
-  let thisBatch = Math.floor(Math.random() * 3) + 1;
+  let thisBatch = Math.floor(Math.random() * possibleBatchNum) + 1;
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
      //find enemy type and put them in spawnBatch array for this enemy spawn
       enemyBatch.push(enemyTypes[Math.floor(Math.random() * 6)]);
-
    }
    spawnReady = false;
    spawnTypeCount = enemyBatch.length;
@@ -554,7 +554,7 @@ if (batchSlot >= spawnTypeCount && spawnReady == false) {
   roundCount += 1;
 }
 
-if (roundCount >= 5 && spawnReady == false) {
+if (roundCount >= spawnLimit && spawnReady == false) {
   // console.log('round count and spawn is done and resetting and sits at ' + roundCount);
   // console.log('emptied');
   enemyBatch = [];
@@ -567,7 +567,7 @@ if (roundCount >= 5 && spawnReady == false) {
 const asteroidSpawn = () => {
 
   if(Math.random() < asterLim) {
-        let dinger = Math.floor(Math.random() * 13);
+        let dinger = Math.floor(Math.random() * 15);
         let x = typeAPlacements[dinger];
         let asteroid = {
           type: 'a',
