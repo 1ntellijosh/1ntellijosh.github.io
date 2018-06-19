@@ -8,6 +8,7 @@ html{
 body {
   margin: 0 auto;
   background-image: url('../images/free_space_galaxy_texture_by_lyshastra-d77godp.jpg');
+  /*image aquired on https://pixabay.com/en/milky-way-starry-sky-night-sky-star-2695569/ free for commercial user per creator felixMittermeier */
   background-size: cover;
   background-repeat:   repeat;
   min-height: 100%;

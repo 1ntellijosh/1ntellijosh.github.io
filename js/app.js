@@ -18,7 +18,7 @@ let mag = 0;
 let sMissiles = [];
 let enemies = [];
 let enemyTypes = ['b', 'c', 'd', 'e', 'f', 'g'];//could create new arrays of enemy combination types for levels later
-typeAPlacements = [100, 200, 300, 400, 500];
+let typeAPlacements = [75, 150, 225, 295, 360, 437, 517, 575];
 
 let frameCount = 0;
 let level = 1;
@@ -38,9 +38,9 @@ ship_ast.src = "sprite sheets/ship_ast sprites.gif";
 /********   sprites taken from arboris at deviantArt - permission to use explicitely allowed: https://arboris.deviantart.com/art/Spaceship-sprites-43030167   ****/
 
 let eSprite = new Image();
-eSprite.src = "sprite sheets/enemysprites.png";
+// eSprite.src = "sprite sheets/enemysprites.png";
 /******sprites taken from pics-about-space.com and are free to use   ****/
-
+eSprite.src = "sprite sheets/shipsheetpartsdown.png";
 //     https://opengameart.org/content/space-ship-building-bits-volume-1
 
 //missileProcessor takes in missile object:
@@ -181,7 +181,7 @@ const Enemy = (enemy) => {
   enemy.draw = function() {
 
     if (this.type == 'a') {
-      gameCtx.drawImage(ship_ast, 0, this.dStart, this.width, this.height, this.x, this.y, this.width, this.height);
+      gameCtx.drawImage(ship_ast, 0, this.dStart, this.width, this.height, this.x, this.y, this.width + 16, this.height + 16);
     }
     else if (this.type == 'x') {
       this.travel += 1;
@@ -412,7 +412,7 @@ const enemySpawn = () => {
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
      //find enemy type and put them in spawnBatch array for this enemy spawn
-      enemyBatch.push(enemyTypes[Math.floor(Math.random() * 6)]);
+      enemyBatch.push('c');
 
    }
    spawnReady = false;
@@ -449,10 +449,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 1.7,
           xSpd: 0,
           arcTime: 5,
-          dStart:295,
-          xStart:170,
-          height: 39,
-          width: 37,
+          dStart:97,
+          xStart:367,
+          height: 41,
+          width: 58,
           inPlay: true,
           age: 0
         }
@@ -466,10 +466,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 7,
           xSpd: 0,
           arcTime: 5,
-          dStart:548,
-          xStart:530,
-          height: 60,
-          width: 55,
+          dStart:96,
+          xStart:113,
+          height: 44,
+          width: 44,
           inPlay: true
         }
       enemies.push(Enemy(enemy));
@@ -482,10 +482,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 7,
           xSpd: 0,
           arcTime: 5,
-          dStart:548,
-          xStart:530,
-          height: 60,
-          width: 55,
+          dStart:96,
+          xStart:113,
+          height: 44,
+          width: 44,
           inPlay: true
         }
     enemies.push(Enemy(enemy));
@@ -498,10 +498,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 3,
           xSpd: 0,
           arcTime: 5,
-          dStart:270,
-          xStart:107,
-          height: 34,
-          width: 36,
+          dStart:100,
+          xStart:20,
+          height: 31,
+          width: 42,
           inPlay: true,
           travel: 1
         }
@@ -515,10 +515,10 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           ySpd: 3,
           xSpd: 0,
           arcTime: 5,
-          dStart:270,
-          xStart:107,
-          height: 34,
-          width: 36,
+          dStart:100,
+          xStart:20,
+          height: 31,
+          width: 42,
           inPlay: true,
           travel: 1
         }
@@ -548,7 +548,7 @@ if (roundCount >= 5 && spawnReady == false) {
 const asteroidSpawn = () => {
 
   if(Math.random() < asterLim) {
-        let dinger = Math.floor(Math.random() * 6);
+        let dinger = Math.floor(Math.random() * 9);
         let x = typeAPlacements[dinger];
         let asteroid = {
           type: 'a',
@@ -559,7 +559,7 @@ const asteroidSpawn = () => {
           arcTime: 5,
           color: '#c0c0c0',
           dStart: 240,
-          width: 53,
+          width: 57,
           height: 55,
           inPlay: true
         }
