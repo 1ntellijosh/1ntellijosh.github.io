@@ -31,6 +31,8 @@ let batchSlot = 0;
 let roundCount = 0;
 let asterLim = .012 ;
 
+let health;
+
 let ship_ast = new Image();
 ship_ast.src = "sprite sheets/ship_ast sprites.gif";
 /********   sprites taken from arboris at deviantArt - permission to use explicitely allowed: https://arboris.deviantart.com/art/Spaceship-sprites-43030167   ****/
@@ -66,26 +68,28 @@ const missileProcessor = (missile) => {
   missile.update = function() {
     missile.y += missile.ySpd;
     missile.x += missile.xSpd;
-    missile.inPlay = missile.inBounds();
+    if (missile.inPlay) {
+      missile.inPlay = missile.inBounds();
+    }
   }
   return missile;
 }
 
 var ship = {
   color: "green",
-  sX: gameWidth/2,
-  sY: 625,
-  sWidth: 46,
-  sHeight: 40,
+  x: gameWidth/2,
+  y: 625,
+  width: 46,
+  height: 40,
   health: 3,
   speed: 9,
   draw: function() {
-    gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.sX, this.sY, 50, 43);
+    gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
   },
   fire: function(xSpd) {
     let missile = {
-      x: this.sX + this.sWidth/2,
-      y: this.sY,
+      x: this.x + this.width/2,
+      y: this.y,
       ySpd: -20,
       xSpd: xSpd,
       color: '#6495ED',
@@ -167,7 +171,10 @@ const Enemy = (enemy) => {
 
   this.arcTime++;
 
-  this.inPlay = this.inBounds();
+  if (this.inPlay) {
+    this.inPlay = this.inBounds();
+  }
+
   };
 
   return enemy;
@@ -187,7 +194,7 @@ const keyReader = (event) => {
   if (event.keyCode == 37) {
     lKey = true;
   }
-  if (event.keyCode == 39 && ship.sX < 630) {
+  if (event.keyCode == 39 && ship.x < 630) {
     rKey = true;
   }
   if (event.keyCode == 32) {
@@ -221,17 +228,17 @@ const keyRelease = (event) => {
 
 const moveUpdate = () => {
 
-  if (lKey == true && ship.sX > 0) {
-    ship.sX -= ship.speed;
+  if (lKey == true && ship.x > 0) {
+    ship.x -= ship.speed;
   }
-  if (rKey == true && ship.sX < 630) {
-    ship.sX += ship.speed;
+  if (rKey == true && ship.x < 630) {
+    ship.x += ship.speed;
     }
-  if (uKey == true&& ship.sY > 30) {
-    ship.sY -= ship.speed;
+  if (uKey == true&& ship.y > 30) {
+    ship.y -= ship.speed;
     }
-  if (dKey == true && ship.sY < 740) {
-    ship.sY += ship.speed;
+  if (dKey == true && ship.y < 740) {
+    ship.y += ship.speed;
     }
 }
 
@@ -279,12 +286,12 @@ const enemySpawn = () => {
    spawnReady = false;
    spawnTypeCount = enemyBatch.length;
    batchSlot = 0;
-   console.log('the '+ 'enemyBatch array is: ' + enemyBatch[0]);
-   console.log('there is ' + spawnTypeCount + 'type in enemyBatch');
+   // console.log('the '+ 'enemyBatch array is: ' + enemyBatch[0]);
+   // console.log('there is ' + spawnTypeCount + 'type in enemyBatch');
 }
 
 if (spawnClip >= 15 && enemyBatch.length > 0) {
-    console.log('spawning at batchSlot ' + batchSlot);
+    // console.log('spawning at batchSlot ' + batchSlot);
     if(enemyBatch[batchSlot] == 'b') {
         let enemy = {
           type: 'b',
@@ -383,7 +390,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
         }
     enemies.push(Enemy(enemy));
     }
-    console.log(enemies.length);
+    // console.log(enemies.length);
     batchSlot += 1;
     spawnClip = 0;
 }
@@ -395,8 +402,8 @@ if (batchSlot >= spawnTypeCount && spawnReady == false) {
 }
 
 if (roundCount >= 5 && spawnReady == false) {
-  console.log('round count and spawn is done and resetting and sits at ' + roundCount);
-  console.log('emptied');
+  // console.log('round count and spawn is done and resetting and sits at ' + roundCount);
+  // console.log('emptied');
   enemyBatch = [];
   spawnReady = true;
   frameCount = 0;
@@ -450,22 +457,33 @@ const enemyUpdater = () => {
 
 const hits = (ob1, ob2) => {
 
-  return ob1.x < ob2.x + ob2.width && ob1.x + ob1.width > ob2.x && ob1.y < ob2.y + ob2.height && ob1.y + ob1.height > ob2.y;
+  return ob1.x < ob2.x + ob2.width &&
+          ob1.x + ob1.width > ob2.x &&
+          ob1.y < ob2.y + ob2.height &&
+          ob1.y + ob1.height > ob2.y;
 
 }//end of hits function
 
 const scoreDetector = () => {
 
-  for (let = i = 0; i < sMissiles.length; i++) {
-    for (let x = 0; i < enemies.length; x++) {
-      if (hits(sMissiles[i], enemies[i])) {
-        console.log('hit!!!!');
+  for (let i = 0; i < sMissiles.length; i++) {
+    for (let x = 0; x < enemies.length; x++) {
+      if (hits(sMissiles[i], enemies[x])) {
+        // console.log('hit!!');
         sMissiles[i].inPlay = false;
-      }
+
     }
   }
-
+  }
+  console.log(ship);
+  enemies.forEach(function(enemy) {
+    if (hits(enemy, ship)) {
+      console.log('you were hit!');
+    }
+  });
 }
+
+
 
 const update = () => {
   frameCount += 1;
