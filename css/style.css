@@ -11,7 +11,6 @@ html{
 body {
   margin: 0 auto;
   background:black;
-  /*image aquired on https://pixabay.com/en/milky-way-starry-sky-night-sky-star-2695569/ free for commercial user per creator felixMittermeier */
   background-size: cover;
   background-repeat:   repeat;
   min-height: 100%;
@@ -46,6 +45,7 @@ button {
   min-height: 200px;
   background-color: black;
   display:none;
+  flex-direction: column;
 }
 #right {
   border: .5px solid #009999;
@@ -127,7 +127,6 @@ h5 {
   border-radius: 20px;
   background-color: black;
   background-image:url('../images/spacegalaxy.jpg');
-  //https://lyshastra.deviantart.com/art/Free-Space-Galaxy-Texture-435798637
   background-repeat: repeat;
   background-attachment: fixed;
   background-size:100%;
@@ -137,4 +136,8 @@ h5 {
   -webkit-animation-fill-mode: forwards;
   animation: backgroundScroll 30s linear 1;
   animation-fill-mode: forwards;
+}
+
+#goDiv {
+  position:relative;
 }

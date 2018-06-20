@@ -14,6 +14,7 @@ let rez = new mp3(' sounds/multimedia_retro_game_ping.mp3');
 let fgFire = new mp3('sounds/little_robot_sound_factory_Hit_00.mp3');
 let bcFire = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
 let shoot = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
+// let exLife = new mp3('zapsplat_multimedia_game_one_up_extra_life_005.mp3')
 // “Sound effects obtained from https://www.zapsplat.com“
 // https://www.zapsplat.com/license-type/standard-license/
 // zapsplat_multimedia_game_lose_negative_004.mp3
@@ -62,6 +63,7 @@ let asterLim = .010;
 
 let health;
 let score = 0;
+let gameOver = true;
 
 let ship_ast = new Image();
 ship_ast.src = "sprite sheets/ship_ast sprites.gif";
@@ -384,13 +386,14 @@ $('h2').remove();
 $('#left').css('display', 'flex');
 $('#right').css('display', 'flex');
 
-//game frame refresh rate settings
-let fps = 25;
-setInterval(flash, 1000/fps);
-
 gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></canvas>").attr('id', 'canvas');
 gameCtx = gameCanvas.get(0).getContext('2d');
 gameCanvas.appendTo('#gameDiv');
+
+
+//game frame refresh rate settings
+let fps = 25;
+setInterval(flash, 1000/fps);
 
 rez.play();
 theme.play();
@@ -799,57 +802,76 @@ const updateBoards = function() {
 
 }
 
-const update = () => {
-  frameCount += 1;
-  rpmCount += 1;
-  clip += 1;
-  spawnClip += 1;
+const update = function() {
 
-  moveUpdate();
+    frameCount += 1;
+    rpmCount += 1;
+    clip += 1;
+    spawnClip += 1;
 
-  if (clip > 6 && mag <= 4) {
-    missileChamber();
-  };
+    moveUpdate();
 
-  //update ship missiles
-  updateMissiles();
+    if (clip > 6 && mag <= 4) {
+      missileChamber();
+    };
 
-  //update enemy positions and actions
-  enemyUpdater();
+    //update ship missiles
+    updateMissiles();
 
-  enemySpawn();
+    //update enemy positions and actions
+    enemyUpdater();
 
-  asteroidSpawn();
+    enemySpawn();
 
-  scoreDetector();
+    asteroidSpawn();
+
+    scoreDetector();
 
 };//update end
 
 const draw = () => {
   //clear the screen for next frame
   gameCtx.clearRect(0, 0, gameWidth, gameHeight);
-  //draw ship position
-  if(ship.inPlay) {
-    ship.draw();
-  }
-  else {
-    ship.respawn();
-  }
-  //draw each ship missile
-  for (let i = 0; i < sMissiles.length; i++) {
-    sMissiles[i].draw();
-  };
 
-  //experimental
-  for (let i = 0; i < enemies.length; i++) {
-    enemies[i].draw();
-  };
+    //draw ship position
+    if(ship.inPlay) {
+      ship.draw();
+    }
+    else {
+      ship.respawn();
+    }
+    //draw each ship missile
+    for (let i = 0; i < sMissiles.length; i++) {
+      sMissiles[i].draw();
+    };
+
+    //experimental
+    for (let i = 0; i < enemies.length; i++) {
+      enemies[i].draw();
+    };
+
 }//end of draw function
 
 const flash = () => {
-  update();
-  draw();
-  updateBoards();
+
+  if (gameOver == false) {
+    update();
+    draw();
+    updateBoards();
+  }
+  else {
+    gameCtx.clearRect(0, 0, gameWidth, gameHeight);
+    theme.pause();
+    theme.currentTime = 0;
+    gameCtx.font = '50px \'Sarpanch\'';
+    gameCtx.fillStyle = '#009999'
+    gameCtx.textAlign = 'center';
+    gameCtx.fillText('Game Over', gameWidth/2, gameHeight/2 - 30);
+    gameCtx.fillText('Score: '+ score, gameWidth/2, gameHeight/2 + 20);
+    gameCtx.font = '25px \'Sarpanch\'';
+    gameCtx.fillText('Hit spacebar to play again', gameWidth/2, gameHeight/2 + 80);
+  }
+
 }//end of flash function
 
 //on ready, draws a new gameboard
