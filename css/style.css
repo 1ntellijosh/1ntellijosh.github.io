@@ -37,7 +37,7 @@ button {
   background-color: rgb(80, 80, 80);
 }
 .buttonWrap {
-  margin-top: 25%;
+  margin-top: 0px;
 }
 #left {
   /* border: .5px solid #009999; */
@@ -45,7 +45,7 @@ button {
   height: 60%;
   min-height: 200px;
   background-color: black;
-  /* display:none; */
+  display:none;
 }
 #right {
   border: .5px solid #009999;
@@ -53,7 +53,7 @@ button {
   height: 60%;
   min-height: 450px;
   background-color: black;
-  /* display:none; */
+  display:none;
 }
 #health {
   min-height: 450px;

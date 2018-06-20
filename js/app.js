@@ -381,6 +381,9 @@ $('#start').remove();
 $('.buttonWrap').remove();
 $('h2').remove();
 
+$('#left').css('display', 'flex');
+$('#right').css('display', 'flex');
+
 //game frame refresh rate settings
 let fps = 25;
 setInterval(flash, 1000/fps);
@@ -783,7 +786,10 @@ const scoreDetector = () => {
 const updateBoards = function() {
 
   levelBoard.text(level);
-  scoreBoard.text(score);
+
+  scoreBoard.empty();
+  let newScore = $('<p>').text(score);
+  scoreBoard.append(newScore);
 
   healthBoard.empty();
   for (let i = 0; i < ship.health; i++) {
