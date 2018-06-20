@@ -26,8 +26,10 @@ let shoot = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
 // Please make sure you attribute Morten's sounds if you use them in the following manner:
 // "Morten Barfod Søegaard, Little Robot Sound Factory"
 // Please provide this link where possible: www.littlerobotsoundfactory.com
-
-
+// little_robot_sound_factory_Explosion_03.mp3
+// little_robot_sound_factory_Hit_00.mp3
+// little_robot_sound_factory_Hit_01 (1).mp3
+// little_robot_sound_factory_Shoot_01.mp3
 
 // let keys = [];
 let lKey;
@@ -48,7 +50,7 @@ let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 
 
 let frameCount = 0;
 let level = 1;
-let spawnRange = 125;
+let spawnRange = 115;
 let enemyBatch = [];
 let spawnReady = true;
 let spawnClip = 0;
@@ -105,7 +107,7 @@ const missileProcessor = (missile) => {
 var ship = {
   x: gameWidth/2,
   y: 625,
-  width: 46,
+  width: 48,
   height: 40,
   health: 3,
   speed: 9,
@@ -153,7 +155,6 @@ var ship = {
          this.respawnTime > 139 && this.respawnTime < 141 ||
          this.respawnTime > 143 && this.respawnTime < 145 ||
          this.respawnTime > 147 && this.respawnTime < 149) {
-
       }
       else {
         gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
@@ -727,10 +728,20 @@ const scoreDetector = () => {
                 blowUp.play();
                 explode(enemies[x]);
                 enemies[x].inPlay = false;
+                if (enemies[x].type == 'b' || enemies[x].type == 'c') {
+                  score += 30
+                }
+                else if (enemies[x].type == 'd' || enemies[x].type == 'e') {
+                  score += 23
+                }
+                else if (enemies[x].type == 'f' || enemies[x].type == 'g') {
+                  score += 18
+                }
               }
               else {
                 tap.play();
                 enemies[x].health -= 1;
+                score += 3;
               }
             }
           }
@@ -767,6 +778,11 @@ const scoreDetector = () => {
   });
 }
 
+const updateScoreBoard = () => {
+
+  scoreBoard.text(score);
+
+}
 
 const update = () => {
   frameCount += 1;
@@ -818,9 +834,8 @@ const draw = () => {
 const flash = () => {
   update();
   draw();
+  updateScoreBoard();
 }//end of flash function
-
-
 
 //on ready, draws a new gameboard
 $(() => {
