@@ -50,15 +50,15 @@ let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 
 
 let frameCount = 0;
 let level = 1;
-let spawnRange = 115;
+let spawnRange = 120;
 let enemyBatch = [];
 let spawnReady = true;
 let spawnClip = 0;
 let spawnTypeCount = 0;
 let batchSlot = 0;
 let roundCount = 0;
-let spawnLimit = 7;
-let asterLim = .014;
+let spawnLimit = 5;
+let asterLim = .010;
 
 let health;
 let score = 0;
@@ -392,7 +392,8 @@ gameCanvas.appendTo('#main');
 rez.play();
 theme.play();
 
-scoreBoard= $("#scoreB");
+scoreBoard = $("#scoreB");
+levelBoard = $('#levelB');
 
 $(document).on('keydown', keyReader);
 $(document).on('keyup', keyRelease);
@@ -498,9 +499,9 @@ const enemySpawn = () => {
   //when game frames hit current spawnRange levels begin spawn process
   if (frameCount >= spawnRange && spawnReady == true) {
   //how many types to possibly spawn at once are randomly chosen by current level
-  let possibleBatchNum = level + 1;
+  let possibleBatchNum = level + 2;
   //randomly spawn 1 to number-limit of enemyTypes
-  let thisBatch = Math.floor(Math.random() * 4) + 1;
+  let thisBatch = Math.floor(Math.random() * possibleBatchNum) + 1;
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
      //find enemy type and put them in spawnBatch array for this enemy spawn
@@ -599,7 +600,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           width: 42,
           inPlay: true,
           travel: 1,
-          health: 1
+          health: 2
         }
     enemies.push(Enemy(enemy));
     }
@@ -617,7 +618,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           width: 42,
           inPlay: true,
           travel: 1,
-          health: 1
+          health: 2
         }
     enemies.push(Enemy(enemy));
     }
@@ -732,10 +733,10 @@ const scoreDetector = () => {
                   score += 30
                 }
                 else if (enemies[x].type == 'd' || enemies[x].type == 'e') {
-                  score += 23
+                  score += 20
                 }
                 else if (enemies[x].type == 'f' || enemies[x].type == 'g') {
-                  score += 18
+                  score += 25
                 }
               }
               else {
@@ -778,9 +779,9 @@ const scoreDetector = () => {
   });
 }
 
-const updateScoreBoard = () => {
+const updateBoards = () => {
 
-
+  levelBoard.text(level);
   scoreBoard.text(score);
 
 }
@@ -835,7 +836,7 @@ const draw = () => {
 const flash = () => {
   update();
   draw();
-  updateScoreBoard();
+  updateBoards();
 }//end of flash function
 
 //on ready, draws a new gameboard
