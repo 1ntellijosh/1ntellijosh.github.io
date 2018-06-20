@@ -4,6 +4,9 @@ let gameCanvas;
 let gameCtx;
 
 //load sounds
+let theme = new Audio('sounds/Superboy.mp3');
+//royalty free music purchased and licensed to joshua payne 11:10pm 6/19/18
+
 let death = new mp3('sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
 let tap = new mp3('sounds/little_robot_sound_factory_Hit_01 (1).mp3');
 let blowUp = new mp3('sounds/little_robot_sound_factory_Explosion_03.mp3');
@@ -24,7 +27,7 @@ let shoot = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
 // "Morten Barfod Søegaard, Little Robot Sound Factory"
 // Please provide this link where possible: www.littlerobotsoundfactory.com
 
-let theme = new mp3('sounds/Superboy.mp3');
+
 
 // let keys = [];
 let lKey;
@@ -372,8 +375,14 @@ const Enemy = (enemy) => {
 };
 
 
-const drawBoard = () => {
+const drawBoard = function() {
 $('#start').remove();
+$('.buttonWrap').remove();
+$('h2').remove();
+
+//game frame refresh rate settings
+let fps = 25;
+setInterval(flash, 1000/fps);
 
 gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></canvas>").attr('id', 'canvas');
 gameCtx = gameCanvas.get(0).getContext('2d');
@@ -421,7 +430,6 @@ function mp3(file) {
         this.mp3.pause();
     }
 }
-
 
 const keyRelease = (event) => {
   if (event.keyCode == 37) {
@@ -812,13 +820,15 @@ const flash = () => {
   draw();
 }//end of flash function
 
-//game frame refresh rate settings
-let fps = 25;
-setInterval(flash, 1000/fps);
+
 
 //on ready, draws a new gameboard
 $(() => {
 
   $('#start').on('click', drawBoard);
+  theme.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+  }, false);
 
 })
