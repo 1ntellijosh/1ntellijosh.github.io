@@ -52,8 +52,8 @@ let spawnClip = 0;
 let spawnTypeCount = 0;
 let batchSlot = 0;
 let roundCount = 0;
-let spawnLimit = 4;
-let asterLim = .009;
+let spawnLimit = 7;
+let asterLim = .014;
 
 let health;
 let score = 0;
@@ -63,7 +63,7 @@ ship_ast.src = "sprite sheets/ship_ast sprites.gif";
 /********   sprites taken from arboris at deviantArt - permission to use explicitely allowed: https://arboris.deviantart.com/art/Spaceship-sprites-43030167   ****/
 
 let eSprite = new Image();
-eSprite.src = "sprite sheets/shipsheetpartsdown.png";
+eSprite.src = "sprite sheets/shipsheetparts2-highercontrast.PNG";
 /******sprites taken from opengameart.org and are free to use   ****/
 //https://opengameart.org/content/space-ship-building-bits-volume-1
 
@@ -491,7 +491,7 @@ const enemySpawn = () => {
   //how many types to possibly spawn at once are randomly chosen by current level
   let possibleBatchNum = level + 1;
   //randomly spawn 1 to number-limit of enemyTypes
-  let thisBatch = Math.floor(Math.random() * possibleBatchNum) + 1;
+  let thisBatch = Math.floor(Math.random() * 4) + 1;
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
      //find enemy type and put them in spawnBatch array for this enemy spawn
