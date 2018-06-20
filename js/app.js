@@ -3,6 +3,27 @@ const gameHeight = 770;
 let gameCanvas;
 let gameCtx;
 
+//load sounds
+let death = new mp3('sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
+let tap = new mp3('sounds/little_robot_sound_factory_Hit_01 (1).mp3');
+let blowUp = new mp3('sounds/little_robot_sound_factory_Explosion_03.mp3');
+let rez = new mp3(' sounds/multimedia_retro_game_ping.mp3');
+let fgFire = new mp3('sounds/little_robot_sound_factory_Hit_00.mp3');
+let bcFire = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
+let shoot = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
+// “Sound effects obtained from https://www.zapsplat.com“
+// https://www.zapsplat.com/license-type/standard-license/
+// zapsplat_multimedia_game_lose_negative_004.mp3
+// multimedia_retro_game_ping.mp3
+// leisure_video_game_retro_laser_gun_fire_003.mp3
+
+// international license — Attribution — "You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.""
+// https://www.zapsplat.com/license-type/cc-attribution-4-0-international/
+// little robot sound factory:
+// Please make sure you attribute Morten's sounds if you use them in the following manner:
+// "Morten Barfod Søegaard, Little Robot Sound Factory"
+// Please provide this link where possible: www.littlerobotsoundfactory.com
+
 // let keys = [];
 let lKey;
 let rKey;
@@ -101,13 +122,15 @@ var ship = {
       this.y -= 1;
       if (this.respawnTime > 7 && this.respawnTime < 12 ||
          this.respawnTime > 19 && this.respawnTime < 24 ||
-         this.respawnTime > 31 && this.respawnTime < 36 ||
-         this.respawnTime > 43 && this.respawnTime < 48 ||
-         this.respawnTime > 56 && this.respawnTime < 61 ||
-         this.respawnTime > 68 && this.respawnTime < 73) {
+         this.respawnTime > 31 && this.respawnTime < 36) {
            // gameCtx.drawImage(ship_ast, 35, 40, 0, 0, this.x, this.y, 0, 0);
-
+           rez.play();
          }
+      else if (this.respawnTime > 43 && this.respawnTime < 48 ||
+      this.respawnTime > 56 && this.respawnTime < 61 ||
+      this.respawnTime > 68 && this.respawnTime < 73) {
+
+      }
       else {
         gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
       }
@@ -149,6 +172,7 @@ var ship = {
       inPlay: true,
       type: 's'
     }
+    shoot.play();
     sMissiles.push(missileProcessor(missile));
   }
 };
@@ -227,6 +251,7 @@ const Enemy = (enemy) => {
       this.y += this.ySpd;
       if(Math.random() < .018) {
         this.fire(3, 2, '#99ff33', 6, 4);
+        fgFire.play();
       }
     }
     else if (this.travel > 35) {
@@ -235,16 +260,19 @@ const Enemy = (enemy) => {
       this.ySpd = 1.2;
       if(Math.random() < .021) {
         this.fire(-.5, 3.1, '#99ff33', 6, 4);
+        fgFire.play();
       }
     }
     if (this.travel == 15) {
       if(Math.random() < .5) {
         this.fire(-.35, 3.1, '#99ff33', 6, 4);
+        fgFire.play();
       }
     }
     if (this.travel == 120) {
       if(Math.random() < .5) {
         this.fire(0, 3.1, '#99ff33', 6, 4);
+        fgFire.play();
       }
     }
     // if(Math.random() < .184) {
@@ -261,6 +289,7 @@ const Enemy = (enemy) => {
       this.y += this.ySpd;
       if(Math.random() < .018) {
         this.fire(-3, 2, '#99f f33', 6, 4);
+        fgFire.play();
       }
     }
     else if(this.travel > 35) {
@@ -269,16 +298,19 @@ const Enemy = (enemy) => {
       this.ySpd = 1.2;
       if(Math.random() < .021) {
         this.fire(.5, 3.1, '#99ff33', 6, 4);
+        fgFire.play();
       }
     }
     if (this.travel == 15) {
       if(Math.random() < .5) {
         this.fire(.35, 3.1, '#99ff33', 6, 4);
+        fgFire.play();
       }
     }
     if (this.travel == 120) {
       if(Math.random() < .5) {
         this.fire(0, 3.1, '#99ff33', 6, 4);
+        fgFire.play();
       }
     }
   }
@@ -293,12 +325,14 @@ const Enemy = (enemy) => {
     if (this.age > 75 && this.age % 20 == 0) {
       if(Math.random() < .20) {
         this.fire(0, 5, '#ff6600', 6, 4);
+        bcFire.play();
       }
     }
     else if(this.age % 15 == 0) {
       // console.log('maybe...');
       if(Math.random() < .15) {
         this.fire(0, 5, '#ff6600', 6, 4);
+        bcFire.play();
       }
     }
     this.age +=1;
@@ -308,12 +342,14 @@ const Enemy = (enemy) => {
     if (this.age > 75 && this.age % 20 == 0) {
       if(Math.random() < .20) {
         this.fire(0, 5, '#ff6600', 6, 4);
+        bcFire.play();
       }
     }
     else if(this.age % 15 == 0) {
       // console.log('maybe...');
       if(Math.random() < .15) {
         this.fire(0, 5, '#ff6600', 6, 4);
+        bcFire.play();
       }
     }
     this.age +=1;
@@ -335,13 +371,15 @@ const Enemy = (enemy) => {
 
 
 const drawBoard = () => {
+$('#start').remove();
+
 gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></canvas>").attr('id', 'canvas');
 gameCtx = gameCanvas.get(0).getContext('2d');
 gameCanvas.appendTo('#main');
 
-scoreBoard= $("#score").attr('id', 'score');
+rez.play();
 
-
+scoreBoard= $("#score");
 
 $(document).on('keydown', keyReader);
 $(document).on('keyup', keyRelease);
@@ -364,6 +402,23 @@ const keyReader = (event) => {
     uKey = true;
   }
 }
+
+
+function mp3(file) {
+    this.mp3 = document.createElement("audio");
+    this.mp3.src = file;
+    this.mp3.setAttribute("preload", "auto");
+    this.mp3.setAttribute("controls", "none");
+    this.mp3.style.display = "none";
+    document.body.appendChild(this.mp3);
+    this.play = function(){
+        this.mp3.play();
+    }
+    this.stop = function(){
+        this.mp3.pause();
+    }
+}
+
 
 const keyRelease = (event) => {
   if (event.keyCode == 37) {
@@ -653,14 +708,17 @@ const scoreDetector = () => {
         if(enemies[x].type != 'x') {
           if (hits(sMissiles[i], enemies[x])) {
             // console.log('hit!!');
+            tap.play();
             sMissiles[i].inPlay = false;
             if (enemies[x].type != 'a') {
 
               if (enemies[x].health == 1) {
+                blowUp.play();
                 explode(enemies[x]);
                 enemies[x].inPlay = false;
               }
               else {
+                tap.play();
                 enemies[x].health -= 1;
               }
             }
@@ -672,6 +730,8 @@ const scoreDetector = () => {
           if (hits(sMissiles[i], ship) && ship.inPlay == true) {
             // console.log('hit!!');
             sMissiles[i].inPlay = false;
+            blowUp.play();
+            death.play();
             explode(ship);
             ship.respawnTime = 0;
             ship.inPlay = false;
@@ -682,10 +742,13 @@ const scoreDetector = () => {
   enemies.forEach(function(enemy) {
     if (hits(enemy, ship) && ship.inPlay == true) {
       if (enemy.type != 'a') {
+        blowUp.play();
         explode(enemy);
         enemy.inPlay = false;
         // enemy.inPlay = false;
       }
+      blowUp.play();
+      death.play();
       explode(ship);
       ship.respawnTime = 0;
       ship.inPlay = false;
@@ -753,6 +816,6 @@ setInterval(flash, 1000/fps);
 //on ready, draws a new gameboard
 $(() => {
 
-  drawBoard();
+  $('#start').on('click', drawBoard);
 
 })

@@ -15,7 +15,7 @@ body {
 }
 
 #main {
-    width: 70%;
+    width:70%;
     background: rgb(80, 80, 80);
     background-image: url("../images/164792151-stargate-wallpapers.png");
     /***  http://www.4usky.com/download/164792151.html -allowed for non commercial use by trenton hall ***/
@@ -38,6 +38,7 @@ body {
 
 #canvas {
   border: 2px solid #009999;
+  border-radius: 20px;
   background-color: black;
   background-image:url('../images/spacegalaxy.jpg');
   //https://lyshastra.deviantart.com/art/Free-Space-Galaxy-Texture-435798637
