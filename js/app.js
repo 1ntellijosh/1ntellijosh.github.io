@@ -24,6 +24,8 @@ let shoot = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
 // "Morten Barfod Søegaard, Little Robot Sound Factory"
 // Please provide this link where possible: www.littlerobotsoundfactory.com
 
+let theme = new mp3('sounds/Superboy.mp3');
+
 // let keys = [];
 let lKey;
 let rKey;
@@ -378,6 +380,7 @@ gameCtx = gameCanvas.get(0).getContext('2d');
 gameCanvas.appendTo('#main');
 
 rez.play();
+theme.play();
 
 scoreBoard= $("#score");
 
