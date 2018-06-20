@@ -7,7 +7,7 @@ html{
 }
 body {
   margin: 0 auto;
-  background-image: url('../images/free_space_galaxy_texture_by_lyshastra-d77godp.jpg');
+  background:black;
   /*image aquired on https://pixabay.com/en/milky-way-starry-sky-night-sky-star-2695569/ free for commercial user per creator felixMittermeier */
   background-size: cover;
   background-repeat:   repeat;
@@ -15,8 +15,11 @@ body {
 }
 
 #main {
-    width: 80%;
+    width: 70%;
     background: rgb(80, 80, 80);
+    background-image: url("../images/164792151-stargate-wallpapers.png");
+    /***  http://www.4usky.com/download/164792151.html -allowed for non commercial use by trenton hall ***/
+    background-size: cover;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -34,7 +37,7 @@ body {
 }
 
 #canvas {
-  border: 1px solid black;
+  border: 2px solid #009999;
   background-color: black;
   background-image:url('../images/spacegalaxy.jpg');
   //https://lyshastra.deviantart.com/art/Free-Space-Galaxy-Texture-435798637

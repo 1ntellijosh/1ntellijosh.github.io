@@ -33,6 +33,7 @@ let spawnLimit = 4;
 let asterLim = .009;
 
 let health;
+let score = 0;
 
 let ship_ast = new Image();
 ship_ast.src = "sprite sheets/ship_ast sprites.gif";
@@ -338,6 +339,10 @@ gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></
 gameCtx = gameCanvas.get(0).getContext('2d');
 gameCanvas.appendTo('#main');
 
+scoreBoard= $("#score").attr('id', 'score');
+
+
+
 $(document).on('keydown', keyReader);
 $(document).on('keyup', keyRelease);
 }
@@ -456,7 +461,8 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           height: 41,
           width: 58,
           inPlay: true,
-          age: 0
+          age: 0,
+          health: 3
         }
       enemies.push(Enemy(enemy));
     }
@@ -473,7 +479,8 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           height: 41,
           width: 58,
           inPlay: true,
-          age: 0
+          age: 0,
+          health: 3
         }
       enemies.push(Enemy(enemy));
     }
@@ -489,7 +496,8 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           xStart:113,
           height: 44,
           width: 44,
-          inPlay: true
+          inPlay: true,
+          health: 2
         }
       enemies.push(Enemy(enemy));
     }
@@ -505,7 +513,8 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           xStart:113,
           height: 44,
           width: 44,
-          inPlay: true
+          inPlay: true,
+          health: 2
         }
     enemies.push(Enemy(enemy));
     }
@@ -522,7 +531,8 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           height: 31,
           width: 42,
           inPlay: true,
-          travel: 1
+          travel: 1,
+          health: 1
         }
     enemies.push(Enemy(enemy));
     }
@@ -539,7 +549,8 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           height: 31,
           width: 42,
           inPlay: true,
-          travel: 1
+          travel: 1,
+          health: 1
         }
     enemies.push(Enemy(enemy));
     }
@@ -644,8 +655,14 @@ const scoreDetector = () => {
             // console.log('hit!!');
             sMissiles[i].inPlay = false;
             if (enemies[x].type != 'a') {
-              explode(enemies[x]);
-              enemies[x].inPlay = false;
+
+              if (enemies[x].health == 1) {
+                explode(enemies[x]);
+                enemies[x].inPlay = false;
+              }
+              else {
+                enemies[x].health -= 1;
+              }
             }
           }
         }
@@ -685,7 +702,7 @@ const update = () => {
 
   moveUpdate();
 
-  if (clip > 8 && mag <= 4) {
+  if (clip > 6 && mag <= 4) {
     missileChamber();
   };
 
