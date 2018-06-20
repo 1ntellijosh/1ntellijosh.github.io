@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Bungee|Jockey+One|Megrim|Orbitron|Play|Press+Start+2P|Rajdhani|Six+Caps|Syncopate');
+@import url('https://fonts.googleapis.com/css?family=Play|Syncopate|Electrolize|Gugi|Iceberg|Orbitron|Sarpanch');
 /* obtained from google fonts */
 
 html, body{
@@ -38,6 +38,36 @@ button {
 }
 .buttonWrap {
   margin-top: 25%;
+}
+#left {
+  /* border: .5px solid #009999; */
+  min-width: 100px;
+  height: 60%;
+  min-height: 200px;
+  background-color: black;
+  /* display:none; */
+}
+#score, #level {
+  border: .5px solid #009999;
+  position: relative;
+  height: 105px;
+}
+#score, #level, #right {
+  font-family: 'Sarpanch', sans-serif;
+  color: #009999;
+  font-size: 20px;
+}
+#scoreT, #levelT, #healthT {
+  border-bottom: 1px solid #009999;
+    font-size: 30px;
+}
+#scoreB, #levelB {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+h5 {
+  margin: 0px;
 }
 #main {
     width:70%;

@@ -392,7 +392,7 @@ gameCanvas.appendTo('#main');
 rez.play();
 theme.play();
 
-scoreBoard= $("#score");
+scoreBoard= $("#scoreB");
 
 $(document).on('keydown', keyReader);
 $(document).on('keyup', keyRelease);
@@ -779,6 +779,7 @@ const scoreDetector = () => {
 }
 
 const updateScoreBoard = () => {
+
 
   scoreBoard.text(score);
 
