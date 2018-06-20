@@ -48,7 +48,7 @@ button {
   /* display:none; */
 }
 #right {
-  /* border: .5px solid #009999; */
+  border: .5px solid #009999;
   min-width: 100px;
   height: 60%;
   min-height: 450px;
@@ -56,16 +56,28 @@ button {
   /* display:none; */
 }
 #health {
+  min-height: 450px;
+  min-width:100px;
+  display: flex;
+  flex-direction: column-reverse;
+  /* justify-content: center; */
+  align-items: flex-end;
+}
+#healthBar {
+  border: .5px solid #009999;
   background-color: #990066;
-  height: 148px;
-  width: 98%;
+  min-height: 150px;
+  max-width: 90px;
+  min-width: 90px;
+  width: 98;
+  margin: 0 auto;
 }
 #score, #level {
   border: .5px solid #009999;
   position: relative;
   height: 105px;
 }
-#score, #level, #right {
+#score, #level, #healthT {
   font-family: 'Sarpanch', sans-serif;
   color: #009999;
   font-size: 20px;

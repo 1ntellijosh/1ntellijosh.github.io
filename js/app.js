@@ -387,13 +387,14 @@ setInterval(flash, 1000/fps);
 
 gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></canvas>").attr('id', 'canvas');
 gameCtx = gameCanvas.get(0).getContext('2d');
-gameCanvas.appendTo('#main');
+gameCanvas.appendTo('#gameDiv');
 
 rez.play();
 theme.play();
 
 scoreBoard = $("#scoreB");
 levelBoard = $('#levelB');
+healthBoard = $('#health');
 
 $(document).on('keydown', keyReader);
 $(document).on('keyup', keyRelease);
@@ -779,10 +780,16 @@ const scoreDetector = () => {
   });
 }
 
-const updateBoards = () => {
+const updateBoards = function() {
 
   levelBoard.text(level);
   scoreBoard.text(score);
+
+  healthBoard.empty();
+  for (let i = 0; i < ship.health; i++) {
+    let healthDiv = $('<div>').attr('id', 'healthBar');
+    healthDiv.appendTo('#health')
+  }
 
 }
 
