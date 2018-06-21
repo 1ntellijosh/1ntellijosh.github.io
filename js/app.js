@@ -3,35 +3,6 @@ const gameHeight = 770;
 let gameCanvas;
 let gameCtx;
 
-//load sounds
-let theme = new Audio('sounds/Superboy.mp3');
-//royalty free music purchased and licensed to joshua payne 11:10pm 6/19/18
-
-let death = new mp3('sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
-let tap = new mp3('sounds/little_robot_sound_factory_Hit_01 (1).mp3');
-let blowUp = new mp3('sounds/little_robot_sound_factory_Explosion_03.mp3');
-let rez = new mp3(' sounds/multimedia_retro_game_ping.mp3');
-let fgFire = new mp3('sounds/little_robot_sound_factory_Hit_00.mp3');
-let bcFire = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
-let shoot = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
-// let exLife = new mp3('zapsplat_multimedia_game_one_up_extra_life_005.mp3')
-// “Sound effects obtained from https://www.zapsplat.com“
-// https://www.zapsplat.com/license-type/standard-license/
-// zapsplat_multimedia_game_lose_negative_004.mp3
-// multimedia_retro_game_ping.mp3
-// leisure_video_game_retro_laser_gun_fire_003.mp3
-
-// international license — Attribution — "You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.""
-// https://www.zapsplat.com/license-type/cc-attribution-4-0-international/
-// little robot sound factory:
-// Please make sure you attribute Morten's sounds if you use them in the following manner:
-// "Morten Barfod Søegaard, Little Robot Sound Factory"
-// Please provide this link where possible: www.littlerobotsoundfactory.com
-// little_robot_sound_factory_Explosion_03.mp3
-// little_robot_sound_factory_Hit_00.mp3
-// little_robot_sound_factory_Hit_01 (1).mp3
-// little_robot_sound_factory_Shoot_01.mp3
-
 // let keys = [];
 let lKey;
 let rKey;
@@ -52,8 +23,9 @@ let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 
 
 let frameCount = 0;
 let level = 1;
-let levelLength = 1200;
+let levelLength = 1500;
 let levelStep = 0;
+let levelMessage = 75;
 let spawnRange = 120;
 let enemyBatch = [];
 let spawnReady = true;
@@ -66,6 +38,37 @@ let asterLim = .010;
 
 let score = 0;
 let gameOver = false;
+
+//load sounds
+let theme = new Audio('sounds/Superboy.mp3');
+//royalty free music purchased and licensed from dl-sounds.com to joshua payne 11:10pm 6/19/18
+
+let death = new mp3('sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
+let tap = new mp3('sounds/little_robot_sound_factory_Hit_01 (1).mp3');
+let blowUp = new mp3('sounds/little_robot_sound_factory_Explosion_03.mp3');
+let rez = new mp3(' sounds/multimedia_retro_game_ping.mp3');
+let fgFire = new mp3('sounds/little_robot_sound_factory_Hit_00.mp3');
+let bcFire = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
+let shoot = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
+let nova = new mp3('sounds/zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3');
+// let exLife = new mp3('zapsplat_multimedia_game_one_up_extra_life_005.mp3')
+// “Sound effects obtained from https://www.zapsplat.com“
+// https://www.zapsplat.com/license-type/standard-license/
+// zapsplat_multimedia_game_lose_negative_004.mp3
+// multimedia_retro_game_ping.mp3
+// leisure_video_game_retro_laser_gun_fire_003.mp3
+// zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3
+
+// international license — Attribution — "You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.""
+// https://www.zapsplat.com/license-type/cc-attribution-4-0-international/
+// little robot sound factory:
+// Please make sure you attribute Morten's sounds if you use them in the following manner:
+// "Morten Barfod Søegaard, Little Robot Sound Factory"
+// Please provide this link where possible: www.littlerobotsoundfactory.com
+// little_robot_sound_factory_Explosion_03.mp3
+// little_robot_sound_factory_Hit_00.mp3
+// little_robot_sound_factory_Hit_01 (1).mp3
+// little_robot_sound_factory_Shoot_01.mp3
 
 let ship_ast = new Image();
 ship_ast.src = "sprite sheets/ship_ast sprites.gif";
@@ -140,6 +143,7 @@ const reset = () => {
   frameCount = 0;
   level = 1;
   levelStep = 0;
+  levelMessage = 75;
   spawnRange = 120;
   enemyBatch = [];
   spawnReady = true;
@@ -378,7 +382,7 @@ const Enemy = (enemy) => {
       this.ySpd = 3.8;
       this.y += this.ySpd;
       if(Math.random() < .018) {
-        this.fire(3, 2, '#99ff33', 6, 4);
+        this.fire(3, 3.1, '#99ff33', 6, 4);
         fgFire.play();
       }
     }
@@ -387,13 +391,13 @@ const Enemy = (enemy) => {
       this.x += this.xSpd;
       this.ySpd = 1.2;
       if(Math.random() < .021) {
-        this.fire(-.5, 3.1, '#99ff33', 6, 4);
+        this.fire(-.5, 3.6, '#99ff33', 6, 4);
         fgFire.play();
       }
     }
     if (this.travel == 15) {
       if(Math.random() < .5) {
-        this.fire(-.35, 3.1, '#99ff33', 6, 4);
+        this.fire(-.35, 3.6, '#99ff33', 6, 4);
         fgFire.play();
       }
     }
@@ -416,7 +420,7 @@ const Enemy = (enemy) => {
       this.ySpd = 3.8;
       this.y += this.ySpd;
       if(Math.random() < .018) {
-        this.fire(-3, 2, '#99f f33', 6, 4);
+        this.fire(-3, 3.1, '#99f f33', 6, 4);
         fgFire.play();
       }
     }
@@ -425,13 +429,13 @@ const Enemy = (enemy) => {
       this.x += this.xSpd;
       this.ySpd = 1.2;
       if(Math.random() < .021) {
-        this.fire(.5, 3.1, '#99ff33', 6, 4);
+        this.fire(.5, 3.6, '#99ff33', 6, 4);
         fgFire.play();
       }
     }
     if (this.travel == 15) {
       if(Math.random() < .5) {
-        this.fire(.35, 3.1, '#99ff33', 6, 4);
+        this.fire(.35, 3.6, '#99ff33', 6, 4);
         fgFire.play();
       }
     }
@@ -452,14 +456,14 @@ const Enemy = (enemy) => {
     this.xSpd = -7 * Math.cos(this.arcTime * Math.PI / 200) + 9;
     if (this.age > 75 && this.age % 20 == 0) {
       if(Math.random() < .20) {
-        this.fire(0, 5, '#ff6600', 6, 4);
+        this.fire(0, 6, '#ff6600', 6, 4);
         bcFire.play();
       }
     }
     else if(this.age % 15 == 0) {
       // console.log('maybe...');
       if(Math.random() < .15) {
-        this.fire(0, 5, '#ff6600', 6, 4);
+        this.fire(0, 6, '#ff6600', 6, 4);
         bcFire.play();
       }
     }
@@ -469,14 +473,14 @@ const Enemy = (enemy) => {
     this.xSpd = 7 * Math.cos(this.arcTime * Math.PI / 200) - 9;
     if (this.age > 75 && this.age % 20 == 0) {
       if(Math.random() < .20) {
-        this.fire(0, 5, '#ff6600', 6, 4);
+        this.fire(0, 6, '#ff6600', 6, 4);
         bcFire.play();
       }
     }
     else if(this.age % 15 == 0) {
       // console.log('maybe...');
       if(Math.random() < .15) {
-        this.fire(0, 5, '#ff6600', 6, 4);
+        this.fire(0, 6, '#ff6600', 6, 4);
         bcFire.play();
       }
     }
@@ -501,13 +505,13 @@ const missileChamber = () => {
 
   if (sKey == true && rpmCount >= fireRate && ship.movable == true) {
     if (lKey == true) {
-      let curve = -ship.speed/15;
+      let curve = -ship.speed/5;
       ship.fire(curve);
       rpmCount = 0;
       mag += 1;
     }
     else if (rKey == true) {
-      let curve = ship.speed/15;
+      let curve = ship.speed/5;
       ship.fire(curve);
       rpmCount = 0;
       mag += 1;
@@ -867,6 +871,9 @@ const update = function() {
     rpmCount += 1;
     clip += 1;
     spawnClip += 1;
+    levelStep += 1;
+
+
 
     moveUpdate();
 
@@ -886,7 +893,42 @@ const update = function() {
 
     scoreDetector();
 
+    if(levelStep >= levelLength) {
+        levelUp();
+    }
+
 };//update end
+
+const levelUp = () => {
+  //blow up all enemy ships and clear bullets
+  for (let i =0; i < enemies.length) {
+    explode(enemies[i]);
+  }
+  sMissiles = [];
+
+  //respawn ship and regain one health
+  ship.respawnTime = 0;
+  ship.inPlay = false;
+  ship.respawn();
+  //mark variable to draw level on the sreen
+  levelMessage = 0;
+  //reset relevant variables
+  frameCount = 0;
+  level += 1;
+  levelStep = 0;
+  spawnRange = 120;
+  enemyBatch = [];
+  spawnReady = true;
+  spawnClip = 0;
+  spawnTypeCount = 0;
+  batchSlot = 0;
+  roundCount = 0;
+  spawnLimit = 5;
+  asterLim = .010;
+
+  //play sound of enemies and asteroids clearing
+  nova.play();
+}
 
 const draw = () => {
   //clear the screen for next frame
