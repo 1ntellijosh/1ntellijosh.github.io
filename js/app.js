@@ -23,10 +23,11 @@ let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 
 
 let frameCount = 0;
 let level = 1;
-let levelLength = 1500;
-let levelStep = 0;
+let levelLength = 1200;
+let levelStep = 1350;
 let levelMessage = 75;
-let spawnRange = 120;
+let spawnRange = 130;
+let possibleBatchNum = 3;
 let enemyBatch = [];
 let spawnReady = true;
 let spawnClip = 0;
@@ -144,8 +145,9 @@ const reset = () => {
   level = 1;
   levelStep = 0;
   levelMessage = 75;
-  spawnRange = 120;
+  spawnRange = 130;
   enemyBatch = [];
+  possibleBatchNum = 3;
   spawnReady = true;
   spawnClip = 0;
   spawnTypeCount = 0;
@@ -249,7 +251,6 @@ var ship = {
       this.movable = false;
       this.x = gameWidth/2;
       this.y = 730;
-      this.health -= 1;
       gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
     }
     else if (this.respawnTime <= 80) {
@@ -505,13 +506,13 @@ const missileChamber = () => {
 
   if (sKey == true && rpmCount >= fireRate && ship.movable == true) {
     if (lKey == true) {
-      let curve = -ship.speed/5;
+      let curve = -ship.speed/15;
       ship.fire(curve);
       rpmCount = 0;
       mag += 1;
     }
     else if (rKey == true) {
-      let curve = ship.speed/5;
+      let curve = ship.speed/15;
       ship.fire(curve);
       rpmCount = 0;
       mag += 1;
@@ -564,9 +565,7 @@ const missileProcessor = (missile) => {
 const enemySpawn = () => {
   //when game frames hit current spawnRange levels begin spawn process
   if (frameCount >= spawnRange && spawnReady == true) {
-  //how many types to possibly spawn at once are randomly chosen by current level
-  let possibleBatchNum = level + 2;
-  //randomly spawn 1 to number-limit of enemyTypes
+  //randomly spawn 1 to number-limit of enemyTypes (possibleBatchNum)
   let thisBatch = Math.floor(Math.random() * possibleBatchNum) + 1;
   //find which enemy type and make an array of types
     for (let i = 0; i < thisBatch; i++) {
@@ -821,6 +820,7 @@ const scoreDetector = () => {
             sMissiles[i].inPlay = false;
             blowUp.play();
             death.play();
+            ship.health -= 1;
             explode(ship);
             ship.respawnTime = 0;
             ship.inPlay = false;
@@ -838,6 +838,7 @@ const scoreDetector = () => {
       }
       blowUp.play();
       death.play();
+      ship.health -= 1;
       explode(ship);
       ship.respawnTime = 0;
       ship.inPlay = false;
@@ -900,13 +901,29 @@ const update = function() {
 };//update end
 
 const levelUp = () => {
+  console.log('leveling');
+  //increment level variable
+  level += 1;
+  levelStep = 1000;
   //blow up all enemy ships and clear bullets
-  for (let i =0; i < enemies.length) {
-    explode(enemies[i]);
+  for (let i = 0; i < enemies.length; i++) {
+    if (enemies[i].type == 'b' ||
+     enemies[i].type == 'c' ||
+     enemies[i].type == 'a' ||
+     enemies[i].type == 'd' ||
+     enemies[i].type == 'e' ||
+     enemies[i].type == 'f' ||
+     enemies[i].type == 'g') {
+        enemies[i].inPlay = false;
+        explode(enemies[i]);
+    }
   }
   sMissiles = [];
 
   //respawn ship and regain one health
+  if(ship.health < 3) {
+    ship.health += 1;
+  }
   ship.respawnTime = 0;
   ship.inPlay = false;
   ship.respawn();
@@ -914,9 +931,7 @@ const levelUp = () => {
   levelMessage = 0;
   //reset relevant variables
   frameCount = 0;
-  level += 1;
   levelStep = 0;
-  spawnRange = 120;
   enemyBatch = [];
   spawnReady = true;
   spawnClip = 0;
@@ -924,7 +939,17 @@ const levelUp = () => {
   batchSlot = 0;
   roundCount = 0;
   spawnLimit = 5;
-  asterLim = .010;
+
+  //elevate difficulties
+  if(spawnRange > 60) {
+      spawnRange -= 10;
+  }
+
+  possibleBatchNum +=1;
+
+  if(asterLim < .022) {
+    asterLim += .002;
+  }
 
   //play sound of enemies and asteroids clearing
   nova.play();
@@ -950,6 +975,18 @@ const draw = () => {
     for (let i = 0; i < enemies.length; i++) {
       enemies[i].draw();
     };
+
+  if (levelMessage < 75) {
+    gameCtx.font = '50px \'Sarpanch\'';
+    gameCtx.fillStyle = '#009999'
+    gameCtx.textAlign = 'center';
+    gameCtx.fillText('Game Over', gameWidth/2, gameHeight/2 - 30);
+    gameCtx.fillText('Score: '+ score, gameWidth/2, gameHeight/2 + 20);
+    gameCtx.font = '25px \'Sarpanch\'';
+    gameCtx.fillText('Hit enter to play again', gameWidth/2, gameHeight/2 + 80);
+
+    levelMessage += 1;
+  }
 
 }//end of draw function
 
