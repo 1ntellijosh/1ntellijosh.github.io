@@ -49,17 +49,17 @@ let gameOver = false;
 //load sounds
 
 //main theme
-let theme = new Audio('sounds/Superboy.mp3');
+let theme = new Audio('music and sounds/Superboy.mp3');
 //royalty free music purchased and licensed from dl-sounds.com to joshua payne 11:10pm 6/19/18
 
-let death = new mp3('sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
-let tap = new mp3('sounds/little_robot_sound_factory_Hit_01 (1).mp3');
-let blowUp = new mp3('sounds/little_robot_sound_factory_Explosion_03.mp3');
-let rez = new mp3(' sounds/multimedia_retro_game_ping.mp3');
-let fgFire = new mp3('sounds/little_robot_sound_factory_Hit_00.mp3');
-let bcFire = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
-let shoot = new mp3('sounds/little_robot_sound_factory_Shoot_01.mp3');
-let nova = new mp3('sounds/zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3');
+let death = new mp3('music and sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
+let tap = new mp3('music and sounds/little_robot_sound_factory_Hit_01 (1).mp3');
+let blowUp = new mp3('music and sounds/little_robot_sound_factory_Explosion_03.mp3');
+let rez = new mp3(' music and sounds/multimedia_retro_game_ping.mp3');
+let fgFire = new mp3('music and sounds/little_robot_sound_factory_Hit_00.mp3');
+let bcFire = new mp3('music and sounds/little_robot_sound_factory_Shoot_01.mp3');
+let shoot = new mp3('music and sounds/little_robot_sound_factory_Shoot_01.mp3');
+let nova = new mp3('music and sounds/zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3');
 // let exLife = new mp3('zapsplat_multimedia_game_one_up_extra_life_005.mp3')
 // “Sound effects obtained from https://www.zapsplat.com“
 // https://www.zapsplat.com/license-type/standard-license/
