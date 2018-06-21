@@ -141,3 +141,11 @@ h5 {
 #goDiv {
   position:relative;
 }
+
+#sig {
+  position: fixed;
+  bottom:5px;
+  font-size: 1em;
+  color: border: 2px solid #009999;
+  font-family: 'Play';
+}

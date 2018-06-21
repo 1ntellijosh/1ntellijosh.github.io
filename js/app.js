@@ -1,9 +1,10 @@
+//Main game variables
 const gameWidth = 650;
 const gameHeight = 770;
 let gameCanvas;
 let gameCtx;
 
-// let keys = [];
+//keyboard keys to add listeners to
 let lKey;
 let rKey;
 let uKey;
@@ -11,19 +12,22 @@ let dKey;
 let sKey;
 let enKey;
 
+//gun fire rate modifiers
 let rpmCount = 0;
 let fireRate = 3;
 let clip = 0;
 let mag = 0;
 
+//arrays for handling every enemy and bullet on screen, as well as enemy spawn types and asteroid placements
 let sMissiles = [];
 let enemies = [];
 let enemyTypes = ['b', 'c', 'd', 'e', 'f', 'g'];//could create new arrays of enemy combination types for levels later
 let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 575, 575];
 
+//level modifiers changes as levels progress
 let frameCount = 0;
 let level = 1;
-let levelLength = 1400;
+let levelLength = 1200;
 let levelStep = 0;
 let levelMessage = 75;
 let spawnRange = 130;
@@ -38,10 +42,13 @@ let roundCount = 0;
 let spawnLimit = 5;
 let asterLim = .010;
 
+//main score and game status
 let score = 0;
 let gameOver = false;
 
 //load sounds
+
+//main theme
 let theme = new Audio('sounds/Superboy.mp3');
 //royalty free music purchased and licensed from dl-sounds.com to joshua payne 11:10pm 6/19/18
 
@@ -72,6 +79,7 @@ let nova = new mp3('sounds/zapsplat_multimedia_retro_game_explode_disintergrate_
 // little_robot_sound_factory_Hit_01 (1).mp3
 // little_robot_sound_factory_Shoot_01.mp3
 
+//images used for game sprite graphics
 let ship_ast = new Image();
 ship_ast.src = "sprite sheets/ship_ast sprites.gif";
 /********   sprites taken from arboris at deviantArt - permission to use explicitely allowed: https://arboris.deviantart.com/art/Spaceship-sprites-43030167   ****/
@@ -81,6 +89,7 @@ eSprite.src = "sprite sheets/shipsheetparts2-highercontrast.PNG";
 /******sprites taken from opengameart.org and are free to use   ****/
 //https://opengameart.org/content/space-ship-building-bits-volume-1
 
+//used to load sound files into js script
 function mp3(file) {
     this.mp3 = document.createElement("audio");
     this.mp3.src = file;
@@ -96,52 +105,65 @@ function mp3(file) {
     }
 }
 
+//used to generate and apply the game screen to the #main div
 const pinGame = () => {
   gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></canvas>").attr('id', 'canvas');
   gameCtx = gameCanvas.get(0).getContext('2d');
   gameCanvas.appendTo('#gameDiv');
-}
+}//end of pinGame function
 
+//draws the board set up and sets up game.
 const drawBoard = function() {
+
+//remove nongame divs from start screen
 $('#start').remove();
 $('.buttonWrap').remove();
 $('h2').remove();
 
+//displays game divs for health, level and score
 $('#left').css('display', 'flex');
 $('#right').css('display', 'flex');
 
+//attach game screen to "main" div
 pinGame();
 
-//game frame refresh rate settings
+//game frame refresh rate settings. also calls the game to run flash method, which handles all functions updating and drawin each screen
 let fps = 25;
 setInterval(flash, 1000/fps);
 
+//play main theme on start
 theme.play();
 
+//grabs score level and helth elements to populate them
 scoreBoard = $("#scoreB");
 levelBoard = $('#levelB');
 healthBoard = $('#health');
 
+//listerners for keyboard strokes
 $(document).on('keydown', keyReader);
 $(document).on('keyup', keyRelease);
-}
 
+}//end of drawBoard function
+
+//when game is in game over screen and not in regular play, resetCall will reach into script to manually call reset function
 const resetCall = () => {
   if (event.keyCode == 13) {
     reset();
   }
-}
+}//end of resetCall function
 
+//resets all game
 const reset = () => {
-  //reset all variables
+  //reset gun variables -- might be irrelevant if ship fire powerup is not yet implemented
   rpmCount = 0;
   fireRate = 3;
   clip = 0;
   mag = 0;
-
+  //reset onscreen enemies and missiles/lasers
   sMissiles = [];
   enemies = [];
 
+  //reset game variables
   frameCount = 0;
   level = 1;
   levelStep = 0;
@@ -158,6 +180,7 @@ const reset = () => {
   spawnLimit = 5;
   asterLim = .010;
 
+  //reset ship health and send into respawn animation
   ship.health = 3;
   score = 0;
   gameOver = false;
@@ -165,14 +188,18 @@ const reset = () => {
   rez.play();
   theme.play();
 
+  //clear canvas for a new canvas to be drawn and pinned
   gameCanvas.remove();
 
+  //pin new canvas
   pinGame();
 
+  //reset default ship placement
   ship.x = gameWidth/2;
   ship.y = 625;
 }
 
+//handler for key strokes set the pressed down keys to true
 const keyReader = (event) => {
   console.log(event.keyCode);
   if (event.keyCode == 37) {
@@ -194,6 +221,7 @@ const keyReader = (event) => {
     enKey = true;
   }
 }
+//handles the key strokes for released keys to false
 const keyRelease = (event) => {
   if (event.keyCode == 37) {
     lKey = false;
@@ -214,7 +242,7 @@ const keyRelease = (event) => {
     enKey = false;
   }
 }
-
+//update, the game responds with the actions the players put the key board. moevment, shooting, or reset key
 const moveUpdate = () => {
 
   if (lKey == true && ship.x > 0 && ship.movable == true) {
@@ -234,7 +262,7 @@ const moveUpdate = () => {
   }
 }
 
-
+//main ship object
 var ship = {
   x: gameWidth/2,
   y: 625,
@@ -245,9 +273,11 @@ var ship = {
   inPlay: true,
   respawnTime: 100,
   movable: true,
+  //ship draw function
   draw: function() {
     gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
   },
+  //handles respawn animation and temporary invincibility
   respawn: function() {
     if (this.respawnTime == 0) {
       this.movable = false;
@@ -296,6 +326,7 @@ var ship = {
 
     this.respawnTime += 1;
   },
+  //handles ship fire. ship sends 's' type missiles so hit handlers can differenciate which missiles to process hitting what (enemy or friendly)
   fire: function(xSpd) {
     let missile = {
       x: this.x + this.width/2,
@@ -311,17 +342,32 @@ var ship = {
     shoot.play();
     sMissiles.push(missileProcessor(missile));
   }
-};
+};//end of main ship object
 
-//enemieProcessor adds curve, appearance, fire rate according to type given
+//enemieProcessor adds curve path, appearance, fire rate according to type given
+//takes in enemy object and applies functions:
+// let enemy = {
+//   type: 'f',
+//   x: 100,
+//   y: 0,
+//   ySpd: 3,
+//   xSpd: 0,
+//   arcTime: 5,
+//   dStart:100,
+//   xStart:20,
+//   height: 31,
+//   width: 45,
+//   inPlay: true,
+//   travel: 1,
+//   health: 2
+// }
 const Enemy = (enemy) => {
-  // enemy = enemy || {};
-
+  //tester to see if enemies still inbounds. if not, delete from array
   enemy.inBounds = function() {
     return enemy.x >= 0 && enemy.x <= gameWidth &&
       enemy.y >= 0 && enemy.y <= gameHeight;
   };
-
+  //each type has a different fire capability size and speed for lasers/missiles
   enemy.fire = function(x, y, c, h, w) {
 
     let laser = {
@@ -337,7 +383,7 @@ const Enemy = (enemy) => {
     }
     sMissiles.push(missileProcessor(laser));
   }
-
+  //each enemy is drawn in different sprites asteroids are type a explosions type x
   enemy.draw = function() {
 
     if (this.type == 'a') {
@@ -372,7 +418,7 @@ const Enemy = (enemy) => {
     }
 
   };
-
+  //enemy movement patterns and shots settings. enemies send 'e' type missiles
   enemy.update = function() {
 
     this.x += this.xSpd;
@@ -502,8 +548,9 @@ const Enemy = (enemy) => {
   };
 
   return enemy;
-};
+};//end of Enemy function/processor
 
+//handler for fire rate between missiles and clip on the ship. called every update/flash
 const missileChamber = () => {
 
   if (sKey == true && rpmCount >= fireRate && ship.movable == true) {
@@ -530,7 +577,7 @@ const missileChamber = () => {
     clip = 0;
     mag = 0;
   };
-}
+}//end of missileChamber function
 
 //missileProcessor takes in missile object:
 // let missile = {
@@ -562,8 +609,9 @@ const missileProcessor = (missile) => {
     }
   }
   return missile;
-}
+}//end of missileProcessor function
 
+//at spanrage between frames, baddies are spawned
 const enemySpawn = () => {
   //when game frames hit current spawnRange levels begin spawn process
   if (frameCount >= spawnRange && spawnReady == true) {
@@ -580,7 +628,7 @@ const enemySpawn = () => {
    // console.log('the '+ 'enemyBatch array is: ' + enemyBatch[0]);
    // console.log('there is ' + spawnTypeCount + 'type in enemyBatch');
 }
-
+//when each spawn is activated between the spawnClipLimit (adjusted per level) a new baddy through the spawn array is called. depending on type, that type is send to the Enemy Array to be processed and drawn, and added to the onscreen enemies array
 if (spawnClip >= spawnClipLim && enemyBatch.length > 0) {
     // console.log('spawning at batchSlot ' + batchSlot);
     if(enemyBatch[batchSlot] == 'b') {
@@ -693,13 +741,13 @@ if (spawnClip >= spawnClipLim && enemyBatch.length > 0) {
     batchSlot += 1;
     spawnClip = 0;
 }
-
+//reset the round through the batch array - to be done the spawnLimit of times, increaed per level
 if (batchSlot >= spawnTypeCount && spawnReady == false) {
 
   batchSlot = 0;
   roundCount += 1;
 }
-
+//handles and reset the spawnlimit variables and spawn window
 if (roundCount >= spawnLimit && spawnReady == false) {
   // console.log('round count and spawn is done and resetting and sits at ' + roundCount);
   // console.log('emptied');
@@ -710,6 +758,7 @@ if (roundCount >= spawnLimit && spawnReady == false) {
 }
 }//end of enemySpawn function
 
+//handler for random asteroid drops. asterLim variable increases as levels increase, and therefore astroid spawn liklihood increases
 const asteroidSpawn = () => {
 
   if(Math.random() < asterLim) {
@@ -733,6 +782,7 @@ const asteroidSpawn = () => {
 
 }//end of asteroidSpawn function
 
+//object sent to explode, function takes relevant variables and converts them to the Enemy function under type 'x' for explosion animation
 const explode = (object) => {
   let explosion = {
     type: 'x',
@@ -750,6 +800,7 @@ const explode = (object) => {
   enemies.push(Enemy(explosion));
 }//end of explode function
 
+//handler for missile placements and movements, enemy and friendly. called every flash/frame
 const updateMissiles = () => {
   for (let i = 0; i < sMissiles.length; i++) {
     sMissiles[i].update();
@@ -759,6 +810,7 @@ const updateMissiles = () => {
   });
 }//end of updateMissiles funtion
 
+//handler for enemy movment and inbounds checker. called ever flash/frame
 const enemyUpdater = () => {
 
   for (let i = 0; i < enemies.length; i++) {
@@ -771,6 +823,7 @@ const enemyUpdater = () => {
 
 }//end of enemyUpdater function
 
+//determines missile hits for both friend and enemy type missiles. called by scoreDetector
 const hits = (ob1, ob2) => {
 
   return ob1.x < ob2.x + ob2.width &&
@@ -780,8 +833,9 @@ const hits = (ob1, ob2) => {
 
 }//end of hits function
 
+//handles all missiles hits and impacts
 const scoreDetector = () => {
-
+//checker for ship missiles and scores
   for (let i = 0; i < sMissiles.length; i++) {
     if(sMissiles[i].type != 'e') {
       for (let x = 0; x < enemies.length; x++) {
@@ -791,7 +845,7 @@ const scoreDetector = () => {
             tap.play();
             sMissiles[i].inPlay = false;
             if (enemies[x].type != 'a') {
-
+              //if ship missiles hit
               if (enemies[x].health == 1) {
                 blowUp.play();
                 explode(enemies[x]);
@@ -806,6 +860,7 @@ const scoreDetector = () => {
                   score += 25
                 }
               }
+              //docs enemy health if it is not at 1 and tap sound
               else {
                 tap.play();
                 enemies[x].health -= 1;
@@ -816,6 +871,7 @@ const scoreDetector = () => {
         }
       }
     }
+    //checks all enemy missiles placements and hits
     else if(sMissiles[i].type == 'e') {
           if (hits(sMissiles[i], ship) && ship.inPlay == true) {
             // console.log('hit!!');
@@ -829,7 +885,7 @@ const scoreDetector = () => {
           }
     }
   }
-
+  //checks all enemy/ship collisions
   enemies.forEach(function(enemy) {
     if (hits(enemy, ship) && ship.inPlay == true) {
       if (enemy.type != 'a') {
@@ -846,8 +902,9 @@ const scoreDetector = () => {
       ship.inPlay = false;
     }
   });
-}
+}//end of scoreDetector function
 
+//updates level score and health boards. called every flash/frame from update function
 const updateBoards = function() {
 
   levelBoard.text(level);
@@ -863,23 +920,23 @@ const updateBoards = function() {
   }
 
 }
-
+//called ever flash. calls all handlers each frame called from flash method
 const update = function() {
-
+    //handles game over status variable
     if(ship.health == 0) {
       gameOver = true;
     }
-
+    //increments all relevant frame to frame variables
     frameCount += 1;
     rpmCount += 1;
     clip += 1;
     spawnClip += 1;
     levelStep += 1;
 
-
-
+    //calls for ship movement per keystrokes
     moveUpdate();
 
+    //counter between ship fires
     if (clip > 6 && mag <= 4) {
       missileChamber();
     };
@@ -890,18 +947,23 @@ const update = function() {
     //update enemy positions and actions
     enemyUpdater();
 
+    //checks enemy spawn status and spawns enemys when ready
     enemySpawn();
 
+    //calls asteroid spawn status and deploys randomly
     asteroidSpawn();
 
+    //calls for all impacts and missile/laser hits
     scoreDetector();
 
+    //counter for level progression count. when levelStep hit levelLength, level up
     if(levelStep >= levelLength) {
         levelUp();
     }
 
 };//update end
 
+//called between level progression
 const levelUp = () => {
   console.log('leveling');
   //increment level variable
@@ -942,24 +1004,26 @@ const levelUp = () => {
   spawnLimit = 5;
 
   //elevate difficulties
+  //increase frequency a new batch is rung up
   if(spawnRange > 100) {
       spawnRange -= 10;
   }
-
+  //increase amount of enemies spawn for each type per spawn
   possibleBatchNum +=1;
-
+  //increase asteroid probability
   if(asterLim < .024) {
     asterLim += .002;
   }
-
+  //increase enemy spawn rate
   if (spawnClipLim > 10) {
     spawnClipLim -= 1;
   }
 
   //play sound of enemies and asteroids clearing
   nova.play();
-}
+}//end of levelup function
 
+//draws all enemy bullet and ship placements. also draws level message on level up. called every frame from flash function
 const draw = () => {
   //clear the screen for next frame
   gameCtx.clearRect(0, 0, gameWidth, gameHeight);
@@ -980,7 +1044,7 @@ const draw = () => {
     for (let i = 0; i < enemies.length; i++) {
       enemies[i].draw();
     };
-
+  //display level message on new level for 75 frames
   if (levelMessage < 75) {
     gameCtx.font = '50px \'Sarpanch\'';
     gameCtx.fillStyle = '#009999'
@@ -991,13 +1055,15 @@ const draw = () => {
 
 }//end of draw function
 
+//called ever frame
 const flash = () => {
-
+  //if game over status is off, function as normal
   if (gameOver == false) {
     update();
     draw();
     updateBoards();
   }
+  //if game over status is on, clear screen and display score and game over. set up listener for enter key to reset game (calls resetCall function)
   else {
     gameCtx.clearRect(0, 0, gameWidth, gameHeight);
     theme.pause();
@@ -1014,10 +1080,11 @@ const flash = () => {
 
 }//end of flash function
 
-//on ready, draws a new gameboard
 $(() => {
 
+  //on ready, draws a new gameboard
   $('#start').on('click', drawBoard);
+  //sets up listener to repeat theme music when it ends
   theme.addEventListener('ended', function() {
       this.currentTime = 0;
       this.play();
