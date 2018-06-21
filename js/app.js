@@ -23,14 +23,15 @@ let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 
 
 let frameCount = 0;
 let level = 1;
-let levelLength = 1200;
-let levelStep = 1350;
+let levelLength = 1400;
+let levelStep = 0;
 let levelMessage = 75;
 let spawnRange = 130;
 let possibleBatchNum = 3;
 let enemyBatch = [];
 let spawnReady = true;
 let spawnClip = 0;
+let spawnClipLim = 15;
 let spawnTypeCount = 0;
 let batchSlot = 0;
 let roundCount = 0;
@@ -150,6 +151,7 @@ const reset = () => {
   possibleBatchNum = 3;
   spawnReady = true;
   spawnClip = 0;
+  spawnClipLim = 15;
   spawnTypeCount = 0;
   batchSlot = 0;
   roundCount = 0;
@@ -579,7 +581,7 @@ const enemySpawn = () => {
    // console.log('there is ' + spawnTypeCount + 'type in enemyBatch');
 }
 
-if (spawnClip >= 15 && enemyBatch.length > 0) {
+if (spawnClip >= spawnClipLim && enemyBatch.length > 0) {
     // console.log('spawning at batchSlot ' + batchSlot);
     if(enemyBatch[batchSlot] == 'b') {
         let enemy = {
@@ -904,7 +906,7 @@ const levelUp = () => {
   console.log('leveling');
   //increment level variable
   level += 1;
-  levelStep = 1000;
+  levelStep = 0;
   //blow up all enemy ships and clear bullets
   for (let i = 0; i < enemies.length; i++) {
     if (enemies[i].type == 'b' ||
@@ -931,7 +933,6 @@ const levelUp = () => {
   levelMessage = 0;
   //reset relevant variables
   frameCount = 0;
-  levelStep = 0;
   enemyBatch = [];
   spawnReady = true;
   spawnClip = 0;
@@ -941,14 +942,18 @@ const levelUp = () => {
   spawnLimit = 5;
 
   //elevate difficulties
-  if(spawnRange > 60) {
+  if(spawnRange > 100) {
       spawnRange -= 10;
   }
 
   possibleBatchNum +=1;
 
-  if(asterLim < .022) {
+  if(asterLim < .024) {
     asterLim += .002;
+  }
+
+  if (spawnClipLim > 10) {
+    spawnClipLim -= 1;
   }
 
   //play sound of enemies and asteroids clearing
@@ -980,11 +985,7 @@ const draw = () => {
     gameCtx.font = '50px \'Sarpanch\'';
     gameCtx.fillStyle = '#009999'
     gameCtx.textAlign = 'center';
-    gameCtx.fillText('Game Over', gameWidth/2, gameHeight/2 - 30);
-    gameCtx.fillText('Score: '+ score, gameWidth/2, gameHeight/2 + 20);
-    gameCtx.font = '25px \'Sarpanch\'';
-    gameCtx.fillText('Hit enter to play again', gameWidth/2, gameHeight/2 + 80);
-
+    gameCtx.fillText('Level: ' + level, gameWidth/2, gameHeight/2);
     levelMessage += 1;
   }
 
