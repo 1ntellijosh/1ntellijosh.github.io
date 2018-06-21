@@ -38,6 +38,7 @@ let rKey;
 let uKey;
 let dKey;
 let sKey;
+let enKey;
 
 let rpmCount = 0;
 let fireRate = 3;
@@ -51,6 +52,8 @@ let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 
 
 let frameCount = 0;
 let level = 1;
+let levelLength = 1200;
+let levelStep = 0;
 let spawnRange = 120;
 let enemyBatch = [];
 let spawnReady = true;
@@ -61,9 +64,8 @@ let roundCount = 0;
 let spawnLimit = 5;
 let asterLim = .010;
 
-let health;
 let score = 0;
-let gameOver = true;
+let gameOver = false;
 
 let ship_ast = new Image();
 ship_ast.src = "sprite sheets/ship_ast sprites.gif";
@@ -74,37 +76,156 @@ eSprite.src = "sprite sheets/shipsheetparts2-highercontrast.PNG";
 /******sprites taken from opengameart.org and are free to use   ****/
 //https://opengameart.org/content/space-ship-building-bits-volume-1
 
-//missileProcessor takes in missile object:
-// let missile = {
-//   inBounds:
-//   x:
-//   y:
-//   ySpd:
-//   color:
-//   height:
-//   width:
-// }
-//adds functions to each missile object received, which updates positions, checks for boundries, redraws them on canvas, and returns updated objects to enemy/ship missile arrays
-const missileProcessor = (missile) => {
-
-  missile.inBounds = function() {
-    return missile.y >= 0 && missile.y <= gameHeight;
-  }
-
-  missile.draw = function() {
-    gameCtx.fillStyle = missile.color;
-    gameCtx.fillRect(missile.x, missile.y, missile.width, missile.height);
-  }
-
-  missile.update = function() {
-    missile.y += missile.ySpd;
-    missile.x += missile.xSpd;
-    if (missile.inPlay) {
-      missile.inPlay = missile.inBounds();
+function mp3(file) {
+    this.mp3 = document.createElement("audio");
+    this.mp3.src = file;
+    this.mp3.setAttribute("preload", "auto");
+    this.mp3.setAttribute("controls", "none");
+    this.mp3.style.display = "none";
+    document.body.appendChild(this.mp3);
+    this.play = function(){
+        this.mp3.play();
     }
-  }
-  return missile;
+    this.stop = function(){
+        this.mp3.pause();
+    }
 }
+
+const pinGame = () => {
+  gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></canvas>").attr('id', 'canvas');
+  gameCtx = gameCanvas.get(0).getContext('2d');
+  gameCanvas.appendTo('#gameDiv');
+}
+
+const drawBoard = function() {
+$('#start').remove();
+$('.buttonWrap').remove();
+$('h2').remove();
+
+$('#left').css('display', 'flex');
+$('#right').css('display', 'flex');
+
+pinGame();
+
+//game frame refresh rate settings
+let fps = 25;
+setInterval(flash, 1000/fps);
+
+theme.play();
+
+scoreBoard = $("#scoreB");
+levelBoard = $('#levelB');
+healthBoard = $('#health');
+
+$(document).on('keydown', keyReader);
+$(document).on('keyup', keyRelease);
+}
+
+const resetCall = () => {
+  if (event.keyCode == 13) {
+    reset();
+  }
+}
+
+const reset = () => {
+  //reset all variables
+  rpmCount = 0;
+  fireRate = 3;
+  clip = 0;
+  mag = 0;
+
+  sMissiles = [];
+  enemies = [];
+
+  frameCount = 0;
+  level = 1;
+  levelStep = 0;
+  spawnRange = 120;
+  enemyBatch = [];
+  spawnReady = true;
+  spawnClip = 0;
+  spawnTypeCount = 0;
+  batchSlot = 0;
+  roundCount = 0;
+  spawnLimit = 5;
+  asterLim = .010;
+
+  ship.health = 3;
+  score = 0;
+  gameOver = false;
+
+  rez.play();
+  theme.play();
+
+  gameCanvas.remove();
+
+  pinGame();
+
+  ship.x = gameWidth/2;
+  ship.y = 625;
+}
+
+const keyReader = (event) => {
+  console.log(event.keyCode);
+  if (event.keyCode == 37) {
+    lKey = true;
+  }
+  if (event.keyCode == 39 && ship.x < 630) {
+    rKey = true;
+  }
+  if (event.keyCode == 32) {
+    sKey = true;
+  }
+  if (event.keyCode == 40) {
+    dKey = true;
+  }
+  if (event.keyCode == 38) {
+    uKey = true;
+  }
+  if (event.keyCode == 13) {
+    enKey = true;
+  }
+}
+const keyRelease = (event) => {
+  if (event.keyCode == 37) {
+    lKey = false;
+  }
+  if (event.keyCode == 39) {
+    rKey = false;
+  }
+  if (event.keyCode == 32) {
+    sKey = false;
+  }
+  if (event.keyCode == 38) {
+    uKey = false;
+  }
+  if (event.keyCode == 40) {
+    dKey = false;
+  }
+  if (event.keyCode == 13) {
+    enKey = false;
+  }
+}
+
+const moveUpdate = () => {
+
+  if (lKey == true && ship.x > 0 && ship.movable == true) {
+    ship.x -= ship.speed;
+  }
+  if (rKey == true && ship.x < 630 && ship.movable == true) {
+    ship.x += ship.speed;
+    }
+  if (uKey == true&& ship.y > 30 && ship.movable == true) {
+    ship.y -= ship.speed;
+    }
+  if (dKey == true && ship.y < 740 && ship.movable == true) {
+    ship.y += ship.speed;
+    }
+  if (enKey == true) {
+    reset();
+  }
+}
+
 
 var ship = {
   x: gameWidth/2,
@@ -124,7 +245,7 @@ var ship = {
       this.movable = false;
       this.x = gameWidth/2;
       this.y = 730;
-      this.health = this.health - 1;
+      this.health -= 1;
       gameCtx.drawImage(ship_ast, 35, 40, 50, 43, this.x, this.y, 50, 43);
     }
     else if (this.respawnTime <= 80) {
@@ -184,7 +305,6 @@ var ship = {
     sMissiles.push(missileProcessor(missile));
   }
 };
-
 
 //enemieProcessor adds curve, appearance, fire rate according to type given
 const Enemy = (enemy) => {
@@ -377,103 +497,6 @@ const Enemy = (enemy) => {
   return enemy;
 };
 
-
-const drawBoard = function() {
-$('#start').remove();
-$('.buttonWrap').remove();
-$('h2').remove();
-
-$('#left').css('display', 'flex');
-$('#right').css('display', 'flex');
-
-gameCanvas = $("<canvas width='" + gameWidth + "' height='" + gameHeight + "'></canvas>").attr('id', 'canvas');
-gameCtx = gameCanvas.get(0).getContext('2d');
-gameCanvas.appendTo('#gameDiv');
-
-
-//game frame refresh rate settings
-let fps = 25;
-setInterval(flash, 1000/fps);
-
-rez.play();
-theme.play();
-
-scoreBoard = $("#scoreB");
-levelBoard = $('#levelB');
-healthBoard = $('#health');
-
-$(document).on('keydown', keyReader);
-$(document).on('keyup', keyRelease);
-}
-
-const keyReader = (event) => {
-  if (event.keyCode == 37) {
-    lKey = true;
-  }
-  if (event.keyCode == 39 && ship.x < 630) {
-    rKey = true;
-  }
-  if (event.keyCode == 32) {
-    sKey = true;
-  }
-  if (event.keyCode == 40) {
-    dKey = true;
-  }
-  if (event.keyCode == 38) {
-    uKey = true;
-  }
-}
-
-
-function mp3(file) {
-    this.mp3 = document.createElement("audio");
-    this.mp3.src = file;
-    this.mp3.setAttribute("preload", "auto");
-    this.mp3.setAttribute("controls", "none");
-    this.mp3.style.display = "none";
-    document.body.appendChild(this.mp3);
-    this.play = function(){
-        this.mp3.play();
-    }
-    this.stop = function(){
-        this.mp3.pause();
-    }
-}
-
-const keyRelease = (event) => {
-  if (event.keyCode == 37) {
-    lKey = false;
-  }
-  if (event.keyCode == 39) {
-    rKey = false;
-  }
-  if (event.keyCode == 32) {
-    sKey = false;
-  }
-  if (event.keyCode == 38) {
-    uKey = false;
-  }
-  if (event.keyCode == 40) {
-    dKey = false;
-  }
-}
-
-const moveUpdate = () => {
-
-  if (lKey == true && ship.x > 0 && ship.movable == true) {
-    ship.x -= ship.speed;
-  }
-  if (rKey == true && ship.x < 630 && ship.movable == true) {
-    ship.x += ship.speed;
-    }
-  if (uKey == true&& ship.y > 30 && ship.movable == true) {
-    ship.y -= ship.speed;
-    }
-  if (dKey == true && ship.y < 740 && ship.movable == true) {
-    ship.y += ship.speed;
-    }
-}
-
 const missileChamber = () => {
 
   if (sKey == true && rpmCount >= fireRate && ship.movable == true) {
@@ -500,6 +523,38 @@ const missileChamber = () => {
     clip = 0;
     mag = 0;
   };
+}
+
+//missileProcessor takes in missile object:
+// let missile = {
+//   inBounds:
+//   x:
+//   y:
+//   ySpd:
+//   color:
+//   height:
+//   width:
+// }
+//adds functions to each missile object received, which updates positions, checks for boundries, redraws them on canvas, and returns updated objects to enemy/ship missile arrays
+const missileProcessor = (missile) => {
+
+  missile.inBounds = function() {
+    return missile.y >= 0 && missile.y <= gameHeight;
+  }
+
+  missile.draw = function() {
+    gameCtx.fillStyle = missile.color;
+    gameCtx.fillRect(missile.x, missile.y, missile.width, missile.height);
+  }
+
+  missile.update = function() {
+    missile.y += missile.ySpd;
+    missile.x += missile.xSpd;
+    if (missile.inPlay) {
+      missile.inPlay = missile.inBounds();
+    }
+  }
+  return missile;
 }
 
 const enemySpawn = () => {
@@ -534,7 +589,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           dStart:97,
           xStart:367,
           height: 41,
-          width: 58,
+          width: 60,
           inPlay: true,
           age: 0,
           health: 3
@@ -552,7 +607,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           dStart:97,
           xStart:367,
           height: 41,
-          width: 58,
+          width: 60,
           inPlay: true,
           age: 0,
           health: 3
@@ -570,7 +625,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           dStart:96,
           xStart:113,
           height: 44,
-          width: 44,
+          width: 45,
           inPlay: true,
           health: 2
         }
@@ -587,7 +642,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           dStart:96,
           xStart:113,
           height: 44,
-          width: 44,
+          width: 45,
           inPlay: true,
           health: 2
         }
@@ -604,7 +659,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           dStart:100,
           xStart:20,
           height: 31,
-          width: 42,
+          width: 45,
           inPlay: true,
           travel: 1,
           health: 2
@@ -622,7 +677,7 @@ if (spawnClip >= 15 && enemyBatch.length > 0) {
           dStart:100,
           xStart:20,
           height: 31,
-          width: 42,
+          width: 45,
           inPlay: true,
           travel: 1,
           health: 2
@@ -804,6 +859,10 @@ const updateBoards = function() {
 
 const update = function() {
 
+    if(ship.health == 0) {
+      gameOver = true;
+    }
+
     frameCount += 1;
     rpmCount += 1;
     clip += 1;
@@ -869,7 +928,8 @@ const flash = () => {
     gameCtx.fillText('Game Over', gameWidth/2, gameHeight/2 - 30);
     gameCtx.fillText('Score: '+ score, gameWidth/2, gameHeight/2 + 20);
     gameCtx.font = '25px \'Sarpanch\'';
-    gameCtx.fillText('Hit spacebar to play again', gameWidth/2, gameHeight/2 + 80);
+    gameCtx.fillText('Hit enter to play again', gameWidth/2, gameHeight/2 + 80);
+    $(document).on('keydown', resetCall);
   }
 
 }//end of flash function
