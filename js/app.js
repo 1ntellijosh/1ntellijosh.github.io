@@ -56,9 +56,9 @@ let death = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.g
 let tap = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Hit_01%20(1).mp3');
 let blowUp = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Explosion_03.mp3');
 let rez = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/multimedia_retro_game_ping.mp3');
-let fgFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Hit_00.mp3');
+let fgFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/leisure_video_game_retro_laser_gun_fire_003.mp3');
 let bcFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Shoot_01.mp3');
-let shoot = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/leisure_video_game_retro_laser_gun_fire_003.mp3');
+let shoot = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Hit_00.mp3');
 let nova = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3');
 // let exLife = new mp3('zapsplat_multimedia_game_one_up_extra_life_005.mp3')
 // “Sound effects obtained from https://www.zapsplat.com“
