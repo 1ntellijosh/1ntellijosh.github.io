@@ -16,7 +16,10 @@ let enKey;
 let rpmCount = 0;
 let fireRate = 3;
 let clip = 0;
+let clipSize = 4;
+let clipReady = 6;
 let mag = 0;
+let pointCount = 0;
 
 //arrays for handling every enemy and bullet on screen, as well as enemy spawn types and asteroid placements
 let sMissiles = [];
@@ -27,7 +30,7 @@ let typeAPlacements = [75,75, 150, 150, 225, 225, 295, 360, 437, 437, 517, 517, 
 //level modifiers changes as levels progress
 let frameCount = 0;
 let level = 1;
-let levelLength = 1200;
+let levelLength = 1350;
 let levelStep = 0;
 let levelMessage = 75;
 let spawnRange = 130;
@@ -59,14 +62,17 @@ let rez = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.git
 let fgFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/leisure_video_game_retro_laser_gun_fire_003.mp3');
 let bcFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Shoot_01.mp3');
 let shoot = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Hit_00.mp3');
+let shoot2 = new mp3('music and sounds/sfx_wpn_machinegun_loop9.wav');
+let shoot3 = new mp3('music and sounds/Sfx RVGSE1 Bleep 1.wav');
+let boost = new mp3('music and sounds/zapsplat_multimedia_game_one_up_extra_life_005.mp3');
 let nova = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3');
-// let exLife = new mp3('zapsplat_multimedia_game_one_up_extra_life_005.mp3')
 // “Sound effects obtained from https://www.zapsplat.com“
 // https://www.zapsplat.com/license-type/standard-license/
 // zapsplat_multimedia_game_lose_negative_004.mp3
 // multimedia_retro_game_ping.mp3
 // leisure_video_game_retro_laser_gun_fire_003.mp3
 // zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3
+// zapsplat_multimedia_game_one_up_extra_life_005.mp3
 
 // international license — Attribution — "You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.""
 // https://www.zapsplat.com/license-type/cc-attribution-4-0-international/
@@ -158,7 +164,10 @@ const reset = () => {
   rpmCount = 0;
   fireRate = 3;
   clip = 0;
+  clipSize = 4;
+  clipReady = 6;
   mag = 0;
+  pointCount = 0;
   //reset onscreen enemies and missiles/lasers
   sMissiles = [];
   enemies = [];
@@ -180,8 +189,9 @@ const reset = () => {
   spawnLimit = 5;
   asterLim = .010;
 
-  //reset ship health and send into respawn animation
+  //reset ship health and gun levels and send into respawn animation
   ship.health = 3;
+  ship.gunLev = 1;
   score = 0;
   gameOver = false;
 
@@ -201,7 +211,7 @@ const reset = () => {
 
 //handler for key strokes set the pressed down keys to true
 const keyReader = (event) => {
-  console.log(event.keyCode);
+  // console.log(event.keyCode);
   if (event.keyCode == 37) {
     lKey = true;
   }
@@ -271,6 +281,7 @@ var ship = {
   health: 3,
   speed: 9,
   inPlay: true,
+  gunLev: 1,
   respawnTime: 100,
   movable: true,
   //ship draw function
@@ -327,19 +338,27 @@ var ship = {
     this.respawnTime += 1;
   },
   //handles ship fire. ship sends 's' type missiles so hit handlers can differenciate which missiles to process hitting what (enemy or friendly)
-  fire: function(xSpd) {
+  fire: function(xSpd, color, w, h) {
     let missile = {
       x: this.x + this.width/2,
       y: this.y,
       ySpd: -22.5,
       xSpd: xSpd,
-      color: '#6495ED',
-      height: 7,
-      width: 3,
+      color: color,
+      height: h,
+      width: w,
       inPlay: true,
       type: 's'
     }
-    shoot.play();
+    if (ship.gunLev == 1) {
+      shoot.play();
+    }
+    else if (ship.gunLev == 2) {
+      shoot2.play();
+    }
+    else {
+      shoot3.play();
+    }
     sMissiles.push(missileProcessor(missile));
   }
 };//end of main ship object
@@ -554,26 +573,44 @@ const Enemy = (enemy) => {
 const missileChamber = () => {
 
   if (sKey == true && rpmCount >= fireRate && ship.movable == true) {
+    let color;
+    let width;
+    let height;
+    if(ship.gunLev == 1) {
+      color = '#6495ED';
+      width = 3;
+      height = 7;
+    }
+    else if (ship.gunLev == 2) {
+        color = '#00ff80';
+        width = 3;
+        height = 6;
+      }
+    else {
+      color = '#ffff00';
+      width = 5.5;
+      height = 3.5;
+    }
     if (lKey == true) {
       let curve = -ship.speed/15;
-      ship.fire(curve);
+      ship.fire(curve, color, width, height);
       rpmCount = 0;
       mag += 1;
     }
     else if (rKey == true) {
       let curve = ship.speed/15;
-      ship.fire(curve);
+      ship.fire(curve, color, width, height);
       rpmCount = 0;
       mag += 1;
     }
     else {
       let curve = 0;
-      ship.fire(curve);
+      ship.fire(curve, color, width, height);
       rpmCount = 0;
       mag += 1;
     }
   }
-  if (mag > 3) {
+  if (mag > clipSize) {
     clip = 0;
     mag = 0;
   };
@@ -851,13 +888,19 @@ const scoreDetector = () => {
                 explode(enemies[x]);
                 enemies[x].inPlay = false;
                 if (enemies[x].type == 'b' || enemies[x].type == 'c') {
-                  score += 30
+                  score += 30;
+                  pointCount += 30;
+                  console.log(pointCount);
                 }
                 else if (enemies[x].type == 'd' || enemies[x].type == 'e') {
-                  score += 20
+                  score += 20;
+                  pointCount += 20;
+                  console.log(pointCount);
                 }
                 else if (enemies[x].type == 'f' || enemies[x].type == 'g') {
-                  score += 25
+                  score += 25;
+                  pointCount += 25;
+                  console.log(pointCount);
                 }
               }
               //docs enemy health if it is not at 1 and tap sound
@@ -865,6 +908,8 @@ const scoreDetector = () => {
                 tap.play();
                 enemies[x].health -= 1;
                 score += 3;
+                pointCount +=3;
+                console.log(pointCount);
               }
             }
           }
@@ -882,6 +927,15 @@ const scoreDetector = () => {
             explode(ship);
             ship.respawnTime = 0;
             ship.inPlay = false;
+            ship.gunLev = 1;
+            clipReady = 6;
+            clipSize = 4;
+            fireRate = 3;
+            pointCount = 0;
+
+
+
+            console.log(pointCount);
           }
     }
   }
@@ -900,9 +954,35 @@ const scoreDetector = () => {
       explode(ship);
       ship.respawnTime = 0;
       ship.inPlay = false;
+      ship.gunLev = 1;
+      clipReady = 6;
+      clipSize = 4;
+      fireRate = 3;
+      pointCount = 0;
+      console.log(pointCount);
     }
   });
 }//end of scoreDetector function
+
+const weaponUp = () => {
+
+    if (pointCount >= 1000 && ship.gunLev < 2) {
+      ship.gunLev = 2;
+      fireRate = 2;
+      clipReady = 7;
+      boost.play();
+      console.log('ship.gunlev is now ' + ship.gunLev);
+    }
+    if (pointCount >= 2000 && ship.gunLev < 3) {
+      ship.gunLev = 3;
+      fireRate = 1;
+      clipReady = 5;
+      clipSize = 2;
+      mag = 0;
+      boost.play();
+      console.log('ship.gunlev is now ' + ship.gunLev);
+    }
+}
 
 //updates level score and health boards. called every flash/frame from update function
 const updateBoards = function() {
@@ -936,8 +1016,12 @@ const update = function() {
     //calls for ship movement per keystrokes
     moveUpdate();
 
-    //counter between ship fires
-    if (clip > 6 && mag <= 4) {
+    if(ship.gunLev != 3) {
+      weaponUp();
+    }
+
+    //counter between ship fires, when clip (adds up every frame) hits the clipready (reload limit) initiates fire
+    if (clip > clipReady && mag <= clipSize) {
       missileChamber();
     };
 
@@ -965,7 +1049,7 @@ const update = function() {
 
 //called between level progression
 const levelUp = () => {
-  console.log('leveling');
+  // console.log('leveling');
   //increment level variable
   level += 1;
   levelStep = 0;
