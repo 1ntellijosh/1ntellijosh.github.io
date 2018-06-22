@@ -1109,7 +1109,7 @@ const levelUp = () => {
     asterLim += .002;
   }
   //increase enemy spawn rate
-  if (spawnClipLim > 7) {
+  if (spawnClipLim > 6) {
     spawnClipLim -= 1;
   }
 
