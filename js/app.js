@@ -1169,7 +1169,7 @@ const flash = () => {
     gameCtx.fillText('Level ' + level, gameWidth/2, gameHeight/2);
     gameCtx.fillText('Score: '+ score, gameWidth/2, gameHeight/2 + 45);
     gameCtx.font = '25px \'Sarpanch\'';
-    gameCtx.fillText('Hit enter to play again', gameWidth/2, gameHeight/2 + 90);
+    gameCtx.fillText('Hit enter to play again', gameWidth/2, gameHeight/2 + 95);
     $(document).on('keydown', resetCall);
   }
 
