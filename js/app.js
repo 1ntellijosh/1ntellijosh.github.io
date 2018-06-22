@@ -50,6 +50,7 @@ let asterLim = .010;
 //main score and game status
 let score = 0;
 let gameOver = false;
+let gameWon = false;
 
 //load sounds
 
@@ -219,7 +220,12 @@ const reset = () => {
   //reset default ship placement
   ship.x = gameWidth/2;
   ship.y = 625;
-}
+
+  //if player won the game, the score and level colors reset
+  $('#scoreB').removeClass();
+  $('#levelB').removeClass();
+
+}// end of reset function
 
 //handler for key strokes set the pressed down keys to true
 const keyReader = (event) => {
@@ -1062,6 +1068,7 @@ const levelUp = () => {
   // console.log('leveling');
   //increment level variable
   level += 1;
+
   levelStep = 0;
   //blow up all enemy ships and clear bullets
   for (let i = 0; i < enemies.length; i++) {
@@ -1139,12 +1146,40 @@ const draw = () => {
       enemies[i].draw();
     };
   //display level message on new level for 75 frames
+  if (level <= 10) {
   if (levelMessage < 75) {
     gameCtx.font = '50px \'Sarpanch\'';
     gameCtx.fillStyle = '#009999'
     gameCtx.textAlign = 'center';
     gameCtx.fillText('Level: ' + level, gameWidth/2, gameHeight/2);
     levelMessage += 1;
+  }
+  }
+  else if (level == 11) {
+    if (levelMessage < 75) {
+      gameCtx.font = '75px \'Sarpanch\'';
+      gameCtx.fillStyle = '#CD5C5C'
+      gameCtx.textAlign = 'center';
+      gameCtx.fillText('YOU WIN!!!', gameWidth/2, gameHeight/2);
+      gameCtx.font = '50px \'Sarpanch\'';
+      gameCtx.textAlign = 'center';
+      gameCtx.fillText('Bonus Level ' + level, gameWidth/2, gameHeight/2 - 50);
+      levelMessage += 1;
+      $('#scoreB').addClass('bonus');
+      $('#levelB').addClass('bonus');
+    }
+  }
+  else {
+    if (levelMessage < 75) {
+      gameCtx.font = '75px \'Sarpanch\'';
+      gameCtx.fillStyle = '#CD5C5C'
+      gameCtx.textAlign = 'center';
+      gameCtx.fillText('Survive', gameWidth/2, gameHeight/2);
+      gameCtx.font = '50px \'Sarpanch\'';
+      gameCtx.textAlign = 'center';
+      gameCtx.fillText('Bonus Level ' + level, gameWidth/2, gameHeight/2 - 50);
+      levelMessage += 1;
+    }
   }
 
 }//end of draw function
