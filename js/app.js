@@ -62,9 +62,9 @@ let rez = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.git
 let fgFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/leisure_video_game_retro_laser_gun_fire_003.mp3');
 let bcFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Shoot_01.mp3');
 let shoot = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Hit_00.mp3');
-let shoot2 = new mp3('music and sounds/sfx_wpn_machinegun_loop9.wav');
-let shoot3 = new mp3('music and sounds/Sfx RVGSE1 Bleep 1.wav');
-let boost = new mp3('music and sounds/zapsplat_multimedia_game_one_up_extra_life_005.mp3');
+let shoot2 = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/sfx_wpn_machinegun_loop9.wav');
+let shoot3 = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/Sfx%20RVGSE1%20Bleep%201.wav');
+let boost = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/zapsplat_multimedia_game_one_up_extra_life_005.mp3');
 let nova = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3');
 // “Sound effects obtained from https://www.zapsplat.com“
 // https://www.zapsplat.com/license-type/standard-license/
@@ -932,10 +932,6 @@ const scoreDetector = () => {
             clipSize = 4;
             fireRate = 3;
             pointCount = 0;
-
-
-
-            console.log(pointCount);
           }
     }
   }
@@ -964,6 +960,7 @@ const scoreDetector = () => {
   });
 }//end of scoreDetector function
 
+//handler for weapon upgrades. weapons increase as score goes up without dying. this is the pointcount. if the player dies, they pointcount goes to 0. shceck every frame at update function
 const weaponUp = () => {
 
     if (pointCount >= 1000 && ship.gunLev < 2) {
@@ -1016,6 +1013,7 @@ const update = function() {
     //calls for ship movement per keystrokes
     moveUpdate();
 
+    //call the handler for weapon upgrades.
     if(ship.gunLev != 3) {
       weaponUp();
     }
@@ -1139,7 +1137,7 @@ const draw = () => {
 
 }//end of draw function
 
-//called ever frame
+//called every frame
 const flash = () => {
   //if game over status is off, function as normal
   if (gameOver == false) {
