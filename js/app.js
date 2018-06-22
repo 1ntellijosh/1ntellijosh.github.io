@@ -1165,10 +1165,11 @@ const flash = () => {
     gameCtx.font = '50px \'Sarpanch\'';
     gameCtx.fillStyle = '#009999'
     gameCtx.textAlign = 'center';
-    gameCtx.fillText('Game Over', gameWidth/2, gameHeight/2 - 30);
-    gameCtx.fillText('Score: '+ score, gameWidth/2, gameHeight/2 + 20);
+    gameCtx.fillText('Game Over', gameWidth/2, gameHeight/2 - 60);
+    gameCtx.fillText('Level ' + level, gameWidth/2, gameHeight/2);
+    gameCtx.fillText('Score: '+ score, gameWidth/2, gameHeight/2 + 45);
     gameCtx.font = '25px \'Sarpanch\'';
-    gameCtx.fillText('Hit enter to play again', gameWidth/2, gameHeight/2 + 80);
+    gameCtx.fillText('Hit enter to play again', gameWidth/2, gameHeight/2 + 90);
     $(document).on('keydown', resetCall);
   }
 
