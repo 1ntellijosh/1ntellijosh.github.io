@@ -1,4 +1,4 @@
-//Written entirely by Joshua Payne June 2018. Not intended for commercial use.
+//Written by Joshua Payne June 2018. Not intended for commercial use.
 
 //Main game variables
 const gameWidth = 650;
