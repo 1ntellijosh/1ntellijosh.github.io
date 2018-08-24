@@ -173,28 +173,99 @@ a:hover {
   width: 55px;
   margin-right: 25px;
 }
+#demoControlDiv {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+#Projects {
+  min-height: 250px;
+}
+#Contact {
+  min-height: 250px;
+}
 .showProj {
   font-family: 'Hind Vadodara', sans-serif;
   font-size: 1.45em;
-  margin-right: 35px;
+  margin: 0px 17px 5px 17px;
 }
 .targetDiv {
     display: none;
-    min-height: 400px;
+    min-height: 450px;
+    max-height: 450px;
 }
 .projectDiv {
   width: 100%;
-  min-height: 400px;
+  min-height: 450px;
+}
+.projEastWest {
+  width: 85%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+}
+#projLeft {
+  min-height: 450px;
+  width:40%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+}
+#projLeft a {
+  margin-top: 10px;
+  font-size: 1.3em;
+}
+#projLeft img {
+  width: 100%;
+}
+#projRight {
+  width: 60%;
+  min-height: 450px;
+}
+#botDets {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#checkDiv {
+    margin-top: 40px;
+}
+#botDets a {
+  padding: 10px 15px 10px 15px;
+  background: gray;
+  border-radius: 10px;
+  color: rgb(230, 230, 230);
+}
+#rightIn {
+  font-family: 'Hind Vadodara', sans-serif;
+  margin-left: 60px;
+  margin-top: 45px;
+}
+#usedHead {
+  margin-left: 10px;
+}
+#usedList {
+  margin-left: 10px;
 }
 #starfighter {
   background-image: url("portImages/164793409-stars-wallpapers.jpg");
+  color: white;
 }
 #criticr {
   background: black;
+  color: white;
 }
 #repawsitory {
   background-color: white;
 }
 #comicstack {
-  
+  background: white;
+}
+#contactList {
+  display: flex;
+  flex-direction: row;
+}
+#contactList a {
+  max-width: 60px;
 }
