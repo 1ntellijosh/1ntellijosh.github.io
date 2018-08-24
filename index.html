@@ -317,11 +317,12 @@
   </script>
   <script>
     $(document).ready(function() {
-      jQuery(function () {
-          jQuery('.showProj').click(function () {
+      $('.targetDiv').eq(0).css('display', 'block')
+      $(function () {
+          $('.showProj').click(function () {
             var index = $(this).index(),
-              newTarget = jQuery('.targetDiv').eq(index).fadeIn();
-            jQuery('.targetDiv').not(newTarget).fadeOut();
+              newTarget = $('.targetDiv').eq(index).fadeIn();
+            $('.targetDiv').not(newTarget).css('display', 'none');
         });
       });
     });
