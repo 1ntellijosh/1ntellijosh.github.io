@@ -226,7 +226,8 @@ a:hover {
 #botDets {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
+  min-height: 150px;
 }
 #checkDiv {
     margin-top: 40px;
@@ -246,7 +247,8 @@ a:hover {
   margin-left: 10px;
 }
 #usedList {
-  margin-left: 10px;
+  margin-left: -10px;
+  margin-top: 22px;
 }
 #starfighter {
   background-image: url("portImages/164793409-stars-wallpapers.jpg");
