@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css?family=Francois+One|Hind:600|Hind+Vadodara:600|Roboto+Slab|Suez+One|Tauri');
+
+html {
+  background: rgb(248,248, 248);
+  height: 100%;
+}
+body {
+  /* width: 80%;
+  max-width: 1300px; */
+  margin: 0 auto;
+  height: 100%;
+}
+#header {
+  position: fixed;
+  top: 0;
+  min-height: 75px;
+  background: black;
+  z-index: 2;
+  width: 100%;
+  font-family: 'Hind Vadodara', sans-serif;
+}
+#header a {
+  color: rgb(240, 240, 240);
+  font-size: 1.2em;
+}
+#in {
+  width: 30px;
+}
+#headEastWest {
+  width: 70%;
+  height: 75px;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  text-align: right;
+}
+#headLeft {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+#headLeft a {
+  margin-left: 0px;
+  margin-top: 11px;
+}
+#headLeft img {
+  width: 50px;
+}
+#headLeft a {
+  margin-right: 35px;
+}
+#headRight {
+  width: 50%;
+  min-height: 75px;
+  /* position: relative; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#headRight a {
+  margin-left: 40px;
+}
+#linkDiv {
+  /* position: absolute;
+  bottom: 0;
+  right: 0; */
+}
+#picDiv {
+  width: 100%;
+  background-image: url("portImages/maxresdefault.jpg");
+  background-size: cover;
+  min-height: 450px;
+  max-height: 450px;
+}
+#picBotHold {
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+}
+#picBotLeft {
+  color: rgb(253, 253, 253);
+  font-family: 'Hind Vadodara', sans-serif;
+}
+#name {
+  margin-top: 120px;
+  margin-bottom: 0px;
+  font-size: 2.2em;
+}
+#subname {
+  margin-top: 0px;
+  color: rgb(165, 165, 165);
+}
+#bulletTop {
+  margin-left: -15px;
+  color: rgb(215, 215, 215);
+  font-size: 1.2em;
+}
+#bulletTop li {
+  margin-bottom: 15px;
+}
+#picBotLeft {
+  width: 55%;
+}
+#picBotRight {
+  width: 45%;
+  max-height: 450px;
+  min-height: 450px;
+}
+#meHold {
+  position: relative;
+  max-height: 450px;
+  min-height: 450px;
+  width: 260px;
+}
+#me {
+  position: absolute;
+  bottom: 60px;
+  width: 100%;
+  /* border-radius: 50%; */
+  margin-left: 70px;
+}
+.sectionDiv {
+  width: 70%;
+  margin: 0 auto;
+  border-bottom: 2px solid rgb(185, 185, 185)
+}
+.sectionH {
+  margin-top: 50px;
+  font-size: 2em;
+  color: black;
+  font-family: 'Hind Vadodara', sans-serif;
+  margin-bottom: 40px;
+  text-align: center;
+}
+.sectionDiv a {
+  color: black;
+}
+h1 {
+  margin-top: 0;
+  color: rgb(245, 245, 245);
+  font-weight: normal;
+}
+a {
+  color: rgb(245, 245, 245);
+  font-weight: normal;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+#About {
+  padding-bottom: 75px;
+}
+#aboutPar {
+  width: 75%;
+  margin: 0 auto;
+  font-size: 1.2em;
+  font-family: arial;
+  line-height: 30px;
+}
+#logos {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#logos img {
+  margin-left: 0px;
+  margin-top: 11px;
+  width: 55px;
+  margin-right: 25px;
+}
+.showProj {
+  font-family: 'Hind Vadodara', sans-serif;
+  font-size: 1.45em;
+  margin-right: 35px;
+}
+.targetDiv {
+    display: none;
+    min-height: 400px;
+}
+.projectDiv {
+  width: 100%;
+  min-height: 400px;
+}
+#starfighter {
+  background-image: url("portImages/164793409-stars-wallpapers.jpg");
+}
+#criticr {
+  background: black;
+}
+#repawsitory {
+  background-color: white;
+}
+#comicstack {
+  
+}
