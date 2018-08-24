@@ -318,11 +318,15 @@
   <script>
     $(document).ready(function() {
       $('.targetDiv').eq(0).css('display', 'block')
+      $('.showProj').eq(0).css("background", "black").css("color", "white");
       $(function () {
           $('.showProj').click(function () {
             var index = $(this).index(),
               newTarget = $('.targetDiv').eq(index).fadeIn();
             $('.targetDiv').not(newTarget).css('display', 'none');
+              newMenu =
+            $('.showProj').eq(index).css("background", "black").css("color", "white");
+            $('.showProj').not(newMenu).css("background", "none").css("color", "black");
         });
       });
     });

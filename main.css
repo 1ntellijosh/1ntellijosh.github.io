@@ -186,10 +186,17 @@ a:hover {
 #Contact {
   min-height: 250px;
 }
+
 .showProj {
   font-family: 'Hind Vadodara', sans-serif;
   font-size: 1.45em;
-  margin: 0px 17px 5px 17px;
+  margin: 0px 17px 20px 17px;
+  padding: 4px 15px;
+  border-radius: 4px;
+}
+.selected {
+  background: black;
+  color: rgb(245, 245, 245);
 }
 .targetDiv {
     display: none;
@@ -199,6 +206,8 @@ a:hover {
 .projectDiv {
   width: 100%;
   min-height: 450px;
+  border: 5px solid black;
+  border-radius: 8px;
 }
 .projEastWest {
   width: 85%;
