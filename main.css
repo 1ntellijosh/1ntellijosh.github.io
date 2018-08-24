@@ -125,7 +125,8 @@ body {
 .sectionDiv {
   width: 70%;
   margin: 0 auto;
-  border-bottom: 2px solid rgb(185, 185, 185)
+  border-bottom: 2px solid rgb(185, 185, 185);
+  min-width: 1000px;
 }
 .sectionH {
   margin-top: 50px;
@@ -228,6 +229,8 @@ a:hover {
   flex-direction: row;
   justify-content: space-around;
   min-height: 150px;
+  width: 90%;
+  margin: 0 auto;
 }
 #checkDiv {
     margin-top: 40px;
