@@ -319,8 +319,8 @@
       jQuery(function () {
           jQuery('.showProj').click(function () {
             var index = $(this).index(),
-              newTarget = jQuery('.targetDiv').eq(index).slideDown();
-            jQuery('.targetDiv').not(newTarget).slideUp();
+              newTarget = jQuery('.targetDiv').eq(index).fadeIn();
+            jQuery('.targetDiv').not(newTarget).fadeOut();
         });
       });
     });
