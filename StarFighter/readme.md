@@ -19,11 +19,11 @@ JQuery
 
 ### Future Goals:
 
-_Scripted Levels  
+Scripted Levels  
 More Enemies  
 Spread Weapon Upgrades  
 Volume Control  
-Boss Fights  _
+Boss Fights  
 
 ### Check out StarFighter:
 [https://1ntellijosh.github.io/StarFighter/starfighter.html]
