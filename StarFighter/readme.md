@@ -12,10 +12,10 @@
 
 ### Built With:
 
-_HTML  
+HTML  
 JavaScript  
 CSS  
-JQuery  _
+JQuery  
 
 ### Future Goals:
 
