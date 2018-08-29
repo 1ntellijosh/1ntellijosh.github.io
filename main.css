@@ -199,9 +199,9 @@ a:hover {
   color: rgb(245, 245, 245);
 }
 .targetDiv {
-    display: none;
-    min-height: 450px;
-    max-height: 450px;
+  display: none;
+  min-height: 450px;
+  max-height: 450px;
 }
 .projectDiv {
   width: 100%;
@@ -237,19 +237,43 @@ a:hover {
 #botDets {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   min-height: 150px;
-  width: 90%;
+  width: 95%;
   margin: 0 auto;
 }
-#checkDiv {
-    margin-top: 40px;
+#usedDiv {
+  display: flex;
+  flex-direction: row;
+  width: 50%;
 }
-#botDets a {
+#usedList li {
+  list-style-type: none;
+}
+#checkDiv {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  font-family: 'Hind Vadodara', sans-serif;
+}
+#critCheck {
+  margin-top: 30px;
   padding: 10px 15px 10px 15px;
   background: gray;
   border-radius: 10px;
   color: rgb(230, 230, 230);
+}
+#git {
+  background: none;
+}
+.white {
+  color: white;
+}
+#checkDiv img {
+  width:60px;
+  background: none;
 }
 #rightIn {
   font-family: 'Hind Vadodara', sans-serif;
