@@ -1,2 +1,7 @@
 # 1ntellijosh.github.io
-Portfolio
+Joshua Payne's Portfolio site
+
+Made with:  
+HTML  
+CSS  
+JQuery
