@@ -320,7 +320,7 @@
             Click here to view
           </a>
         </div>
-        <form id="emailForm" action="https://formspree.io/joshuad.payne@yahoo.com"
+        <form id="emailForm"
           method="POST" class="pure-form pure-form-stacked">
           <h3>Message Me:</h3>
           <input id="yourName" type="text" name="name" placeholder="Your name">
@@ -399,4 +399,8 @@
     });
   </script>
 
+  <script>
+    var emailForm =  document.getElementById('emailForm');
+    contactform.setAttribute('action', '//formspree.io/' + 'joshuad.payne' + '@' + 'yahoo' + '.' + 'com');
+  </script>
 </html>
