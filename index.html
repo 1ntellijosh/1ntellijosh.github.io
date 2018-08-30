@@ -14,6 +14,8 @@
 
     <!-- My CSS Sheet -->
     <link rel="stylesheet" type="text/css" href="main.css" />
+    <!-- pure form cdn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
   </head>
   <body>
     <div id="header">
@@ -107,7 +109,7 @@
               <div id="rightIn">
                 <h2>StarFighter</h2>
                 <p>
-                  A 2d Space Shooter I made using JavaScript, JQuery HTML and CSS. I learned a great deal about how to use the canvas element on a web page with this. Arrow keys to move, and spacebar to shoot. To win you must get through level 10, but the game will continue to go and get harder with more and more enemies. 
+                  A 2d Space Shooter I made using JavaScript, JQuery HTML and CSS. I learned a great deal about how to use the canvas element on a web page with this. Arrow keys to move, and spacebar to shoot. To win you must get through level 10, but the game will continue to go and get harder with more and more enemies.
                 </p>
                 <div id="botDets">
                 <div id="usedDiv">
@@ -296,14 +298,20 @@
     <div class="sectionDiv" id="Contact">
       <h1 class="sectionH">Contact</h1>
       <div id="logos">
-        <div id="logosImgDiv">
-          <a href="mailto:joshuad.payne@yahoo.com" ><img src="portImages/email.png" /></a>
-          <a href="https://www.linkedin.com/in/joshua-d-payne
-"target="_blank"><img src="portImages/linked.png" /></a>
-          <a href="https://drive.google.com/file/d/1k4kOvsoHIHEfkyWnKQUkJ43arfc94Bj7/view" target="_blank"><img src="portImages/resume.png" /></a>
-          <a href="https://github.com/1ntellijosh" target="_blank"><img src="portImages/GitHubbl.png" /></a>
+        <div id="logosImgDiv" class="logoSwitch">
+          <a class="hovCon" href="mailto:joshuad.payne@yahoo.com" ><img src="portImages/email.png" /></a>
+          <a class="hovCon" href="https://www.linkedin.com/in/joshua-d-payne"target="_blank"><img src="portImages/linked.png" /></a>
+          <a class="hovCon" href="https://drive.google.com/file/d/1k4kOvsoHIHEfkyWnKQUkJ43arfc94Bj7/view" target="_blank"><img src="portImages/resume.png" /></a>
+          <a class="hovCon" href="https://github.com/1ntellijosh" target="_blank"><img src="portImages/GitHubbl.png" /></a>
+        </div>
+        <div class="descDrop">
+          <h4 class="dropDiv">Email</h4>
+          <h4 class="dropDiv">LinkedIn</h4>
+          <h4 class="dropDiv">Resume</h4>
+          <h4 class="dropDiv">GitHub</h4>
         </div>
       </div>
+      
     </div>
   </body>
   <script>
@@ -341,6 +349,17 @@
             $('.showProj').not(newMenu).css("background", "none").css("color", "black");
         });
       });
+
+      $('.hovCon').hover(function () {
+        var index = $(this).index(),
+          newTarget = $('.dropDiv').eq(index).fadeIn();
+        $('.dropDiv').not(newTarget).css('display', 'none');
+    });
+
+    $('.hovCon').mouseleave(function () {
+        $('.dropDiv').fadeOut();
+    });
+
     });
   </script>
 

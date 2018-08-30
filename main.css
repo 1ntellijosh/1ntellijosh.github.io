@@ -182,6 +182,7 @@ a:hover {
 }
 #Projects {
   min-height: 250px;
+  padding-bottom: 50px;
 }
 #Contact {
   min-height: 250px;
@@ -304,4 +305,40 @@ a:hover {
 }
 #contactList a {
   max-width: 60px;
+}
+#logosImgDiv a {
+  margin: 0px 25px;
+}
+.dropDiv {
+  display: none;
+  font-family: 'Hind Vadodara', sans-serif;
+}
+#Email {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 40px;
+}
+#contacts {
+  display: flex;
+  flex-direction: row;
+}
+#emailForm {
+  padding-left: 20px;
+  border-left: 2px solid rgb(185, 185, 185);
+}
+#emailForm input {
+  margin-bottom: 15px;
+  width:100%;
+}
+#emailForm textarea {
+  margin-bottom: 15px;
+}
+#emailForm input[type=submit] {
+  padding: 5px;
+  width:25%;
+}
+#myEmail {
+  margin-top: 0px;
 }
