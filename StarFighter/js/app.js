@@ -131,7 +131,7 @@ const pinGame = () => {
   gameCanvas.appendTo('#gameDiv');
 }//end of pinGame function
 
-//draws the board set up and sets up game.
+//draws the board set up and sets up game after clicking start.
 const drawBoard = function() {
 
 //remove nongame divs from start screen
@@ -146,14 +146,14 @@ $('#right').css('display', 'flex');
 //attach game screen to "main" div
 pinGame();
 
-//game frame refresh rate settings. also calls the game to run flash method, which handles all functions updating and drawin each screen
+//game frame refresh rate settings. also calls the game to run flash method, which handles all functions updating and drawin each frame
 let fps = 25;
 setInterval(flash, 1000/fps);
 
 //play main theme on start
 theme.play();
 
-//grabs score level and helth elements to populate them
+//grabs score level and health elements to populate them
 scoreBoard = $("#scoreB");
 levelBoard = $('#levelB');
 healthBoard = $('#health');
@@ -171,7 +171,7 @@ const resetCall = () => {
   }
 }//end of resetCall function
 
-//resets all game
+//resets all game variables when reset command made
 const reset = () => {
   //reset gun variables -- might be irrelevant if ship fire powerup is not yet implemented
   rpmCount = 0;
