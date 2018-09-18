@@ -58,7 +58,7 @@ let gameWon = false;
 let theme = new Audio('music and sounds/Superboy.mp3');
 //royalty free music purchased and licensed from dl-sounds.com to joshua payne 11:10pm 6/19/18
 
-let death = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/StarFighter/music%20and%20sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
+let death = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
 let tap = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Hit_01%20(1).mp3');
 let blowUp = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Explosion_03.mp3');
 let rez = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/multimedia_retro_game_ping.mp3');
