@@ -17,6 +17,10 @@ JavaScript
 CSS  
 JQuery  
 
+### Check out StarFighter:
+
+[https://1ntellijosh.github.io/]
+
 ### Challenges
 
 The first great challenge was simply learning how to create the game engine. I had never worked with the HTML canvas element and its draw/ctx functions before. Once I got the concepts down, I could draw objects on the canvas. The next step was applying the setInterval method to the canvas draw methods, and you could create frames and therefore, animation. Finally, you map keyboard inputs to the direction the object (your ship) should go on the map, and the basic game engine was set. I was really able to run away with whatever I wanted to do from there.
@@ -30,9 +34,6 @@ More Enemies
 Spread Weapon Upgrades  
 Volume Control  
 Boss Fights  
-
-### Check out StarFighter:
-[https://1ntellijosh.github.io/StarFighter/starfighter.html]
 
 ### Credits:
 
