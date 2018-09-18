@@ -60,7 +60,7 @@ let theme = new Audio('music and sounds/Superboy.mp3');
 
 let death = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/zapsplat_multimedia_game_lose_negative_004.mp3');
 let tap = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Hit_01%20(1).mp3');
-let blowUp = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Explosion_03.mp3');
+let blowUp = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Hit_01%20(1).mp3');
 let rez = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/multimedia_retro_game_ping.mp3');
 let fgFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/leisure_video_game_retro_laser_gun_fire_003.mp3');
 let bcFire = new mp3('https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/little_robot_sound_factory_Shoot_01.mp3');
