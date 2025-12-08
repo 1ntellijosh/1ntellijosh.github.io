@@ -3,31 +3,25 @@ import EntityFactory from '../Factories/EntityFactory.js';
 import { GameConsts } from '../GameConsts.js';
 import { EntityTypeEnums } from '../Enums/EntityTypeEnums.js';
 import { ImageAssetsDict } from '../Dicts/ImageAssetsDict.js';
-import SoundManager from '../SoundManager.js';
 
 /**
  * Ship sprite class extending AbstractSprite
  * 
  * @param {Object} gameContext - Reference to the game instance for accessing game state
+ * @param {Object} config - Configuration object from EntityConfigDict
  */
 class ShipSprite extends AbstractSprite {
-  constructor(gameContext) {
-    super(gameContext, GameConsts.GAME_WIDTH/2, 625, 48, 40, EntityTypeEnums.SHIP);
+  constructor(gameContext, config) {
+    super(gameContext, config.x, config.y, config.width, config.height, EntityTypeEnums.SHIP);
     this.asset = new Image();
     this.asset.src = ImageAssetsDict.ship_ast.path;
-    this.health = 3;
-    this.speed = 9;
+    this.health = config.health;
+    this.speed = config.speed;
     this.inPlay = true;
-    this.gunLev = 1;
-    this.respawnTime = 100;
+    this.gunLev = config.gunLev;
+    this.respawnTime = config.respawnTime;
     this.movable = true;
-    const soundMgr = new SoundManager();
-    this.sounds = {
-      shoot: soundMgr.get('shoot'),
-      shoot2: soundMgr.get('shoot2'),
-      shoot3: soundMgr.get('shoot3'),
-      rez: soundMgr.get('rez')
-    }
+    this.sounds = config.sounds;
     // Missile data
     this.missileColor;
     this.missileWidth;

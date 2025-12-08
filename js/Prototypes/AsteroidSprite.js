@@ -7,19 +7,20 @@ import { ImageAssetsDict } from '../Dicts/ImageAssetsDict.js';
  * Ship sprite class extending AbstractSprite
  * 
  * @param {Object} gameContext - Reference to the game instance for accessing game state
+ * @param {Object} config - Configuration object from EntityConfigDict (merged with payload)
  */
 class AsteroidSprite extends AbstractSprite {
-  constructor(gameContext, payload) {
-    super(gameContext, payload.x, 0, 57, 55, EntityTypeEnums.ASTEROID);
+  constructor(gameContext, config) {
+    super(gameContext, config.x, config.y, config.width, config.height, EntityTypeEnums.ASTEROID);
     this.asset = new Image()
     this.asset.src = ImageAssetsDict.ship_ast.path
-    this.ySpd = 1.5
-    this.xSpd = 0
-    this.dStart = 240
-    this.arcTime = 5
+    this.ySpd = config.ySpd
+    this.xSpd = config.xSpd
+    this.dStart = config.dStart
+    this.arcTime = config.arcTime
     this.inPlay = true
-    this.health = 25
-    this.scoreValue = 0
+    this.health = config.health
+    this.scoreValue = config.scoreValue
   }
 
   /**

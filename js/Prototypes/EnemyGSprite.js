@@ -1,30 +1,24 @@
 import BaseEnemySprite from './BaseEnemySprite.js';
 import { EntityTypeEnums } from '../Enums/EntityTypeEnums.js';
-import SoundManager from '../SoundManager.js';
 
 /**
  * Ship sprite class for EnemyGSprite
  * Small enemy ship shooting right angle to left
  * 
  * @param {Object} gameContext - Reference to the game instance for accessing game state
+ * @param {Object} config - Configuration object from EntityConfigDict
  */
 class EnemyGSprite extends BaseEnemySprite {
-  constructor(gameContext) {
-    const soundMgr = new SoundManager();
-
-    super(gameContext, 520, 0, 45, 31, EntityTypeEnums.ENEMY_G, {
-      ySpd: 3,
-      xSpd: 0,
-      arcTime: 5,
-      dStart: 100,
-      xStart: 20,
-      health: 2,
-      scoreValue: 25,
-      travel: 1,
-      sounds: {
-        fgFire: soundMgr.get('fgFire')
-      }
-    });
+  constructor(gameContext, config) {
+    super(
+      gameContext, 
+      config.x, 
+      config.y, 
+      config.width, 
+      config.height, 
+      EntityTypeEnums.ENEMY_G, 
+      config
+    );
   }
 
   /**
@@ -41,19 +35,19 @@ class EnemyGSprite extends BaseEnemySprite {
     }
 
     // If the enemy is not in play, return
-    if (!this.inPlay) return this;
+    if (!this.inPlay) return this
 
-    this.x += this.xSpd;
-    this.y += this.ySpd;
-    this.travel = this.travel + 1;
+    this.x += this.xSpd
+    this.y += this.ySpd
+    this.travel = this.travel + 1
 
-    this.handleEnemyLaserFiring(sMissiles);
+    this.handleEnemyLaserFiring(sMissiles)
 
-    this.age +=1;
-    this.xSpd = 0;
-    this.arcTime++;
+    this.age +=1
+    this.xSpd = 0
+    this.arcTime++
 
-    return this;
+    return this
   }
 
   /**

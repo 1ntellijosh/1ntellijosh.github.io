@@ -1,30 +1,24 @@
 import BaseEnemySprite from './BaseEnemySprite.js';
 import { EntityTypeEnums } from '../Enums/EntityTypeEnums.js';
-import SoundManager from '../SoundManager.js';
 
 /**
  * Ship sprite class for EnemyBSprite
  * Large enemy firing ship that swings left
  * 
  * @param {Object} gameContext - Reference to the game instance (canvas context)
+ * @param {Object} config - Configuration object from EntityConfigDict
  */
 class EnemyBSprite extends BaseEnemySprite {
-  constructor(gameContext) {
-    const soundMgr = new SoundManager();
-    
-    super(gameContext, 615, 0, 60, 41, EntityTypeEnums.ENEMY_B, {
-      ySpd: 1.7,
-      xSpd: 0,
-      arcTime: 5,
-      dStart: 97,
-      xStart: 367,
-      health: 3,
-      scoreValue: 30,
-      age: 0,
-      sounds: {
-        bcFire: soundMgr.get('bcFire')
-      }
-    });
+  constructor(gameContext, config) {
+    super(
+      gameContext, 
+      config.x, 
+      config.y, 
+      config.width, 
+      config.height, 
+      EntityTypeEnums.ENEMY_B, 
+      config
+    );
   }
 
   /**
