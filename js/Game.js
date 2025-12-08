@@ -101,6 +101,7 @@ class Game {
     $('#start').remove();
     $('.buttonWrap').remove();
     $('h2').remove();
+    $('#main').css('padding-top', '75px');
 
     return this
   }
