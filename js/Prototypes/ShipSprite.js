@@ -71,7 +71,6 @@ class ShipSprite extends AbstractSprite {
    * @returns {ShipSprite}
    */
   respawn() {
-
     if (this.respawnTime == 0) {
       this.movable = false;
       this.x = GameConsts.GAME_WIDTH/2;

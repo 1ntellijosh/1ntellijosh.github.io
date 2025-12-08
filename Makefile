@@ -1,3 +1,5 @@
+# Makefile for StarFighter
+
 .PHONY: commit push sq
 
 com:

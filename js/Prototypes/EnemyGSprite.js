@@ -29,12 +29,39 @@ class EnemyGSprite extends BaseEnemySprite {
 
   /**
    * @see BaseEnemySprite.update
+   *
+   * @param {Array} sMissiles - The array of missiles
+   *
+   * @returns {EnemyGSprite} - The updated enemy sprite
    */
   update(sMissiles) {
+    // Check if the enemy is still in play
+    this.inPlay = this.inBounds()
+
+    // If the enemy is not in play, return
+    if (!this.inPlay) return this;
+
     this.x += this.xSpd;
     this.y += this.ySpd;
-
     this.travel = this.travel + 1;
+
+    this.handleEnemyLaserFiring(sMissiles);
+
+    this.age +=1;
+    this.xSpd = 0;
+    this.arcTime++;
+
+    return this;
+  }
+
+  /**
+   * Handles the enemy laser firing (randomized firing logic)
+   *
+   * @param {Array} sMissiles - The array of missiles
+   *
+   * @returns {EnemyGSprite} - The updated enemy sprite
+   */
+  handleEnemyLaserFiring(sMissiles) {
     if (this.travel > 90) {
       this.xSpd = 0;
       this.ySpd = 3.8;
@@ -55,21 +82,12 @@ class EnemyGSprite extends BaseEnemySprite {
     if (this.travel == 15 && Math.random() < .5) {
       sMissiles.push(this.fire(-.35, 3.6, '#99ff33', 6, 4));
       this.sounds.fgFire.play();
-    }
-    if (this.travel == 120 && Math.random() < .5) {
+    } else if (this.travel == 120 && Math.random() < .5) {
       sMissiles.push(this.fire(0, 3.1, '#99ff33', 6, 4));
       this.sounds.fgFire.play();
     }
 
-    this.age +=1;
-
-    this.xSpd = 0;
-
-    this.arcTime++;
-
-    if (this.inPlay) {
-      this.inPlay = this.inBounds();
-    }
+    return this;
   }
 }
 

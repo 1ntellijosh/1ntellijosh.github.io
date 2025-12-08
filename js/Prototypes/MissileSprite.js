@@ -18,12 +18,12 @@ import { GameConsts } from '../GameConsts.js';
 class MissileSprite extends AbstractSprite {
   constructor(gameContext, payload) {
     super(
-        gameContext, 
-        payload.x, 
-        payload.y, 
-        payload.width, 
-        payload.height, 
-        payload.type
+      gameContext, 
+      payload.x, 
+      payload.y, 
+      payload.width, 
+      payload.height, 
+      payload.type
     );
     this.xSpd = payload.xSpd;
     this.ySpd = payload.ySpd;
@@ -45,9 +45,9 @@ class MissileSprite extends AbstractSprite {
   update() {
     this.y += this.ySpd;
     this.x += this.xSpd;
-    if (this.inPlay) {
-      this.inPlay = this.inBounds();
-    }
+    this.inPlay = this.inBounds();
+
+    return this;
   }
 
   /**
