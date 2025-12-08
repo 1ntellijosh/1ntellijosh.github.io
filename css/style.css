@@ -37,6 +37,7 @@ button {
 }
 .buttonWrap {
   margin-top: 0px;
+  margin-bottom: 95px;
 }
 #left {
   /* border: .5px solid #009999; */
@@ -98,7 +99,8 @@ h5 {
   margin: 0px;
 }
 #main {
-    width:70%;
+    width: 1200px;
+    min-width: 1200px;
     background: black;
     background-image: url("../images/164792151-stargate-wallpapers.png");
     /***  http://www.4usky.com/download/164792151.html -allowed for non commercial use by trenton hall ***/
