@@ -5,6 +5,7 @@ import { GameConsts } from '../GameConsts.js';
  * Missile sprite class extending AbstractSprite
  * 
  * @param {Object} gameContext - Reference to the game instance
+ * @param {EntityTypeEnums} type - The type of missile
  * @param {Object} payload - The payload for the missile
  *  @prop {number} x - The x position of the missile
  *  @prop {number} y - The y position of the missile
@@ -16,14 +17,14 @@ import { GameConsts } from '../GameConsts.js';
  *  @prop {string} type - The type of missile ('s' for ship, 'e' for enemy)
  */
 class MissileSprite extends AbstractSprite {
-  constructor(gameContext, payload) {
+  constructor(gameContext, type, payload) {
     super(
       gameContext, 
       payload.x, 
       payload.y, 
       payload.width, 
       payload.height, 
-      payload.type
+      type
     );
     this.xSpd = payload.xSpd;
     this.ySpd = payload.ySpd;

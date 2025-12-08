@@ -32,7 +32,9 @@ class EnemyFSprite extends BaseEnemySprite {
    */
   update(sMissiles) {
     // Check if the enemy is still in play
-    this.inPlay = this.inBounds()
+    if (this.inPlay) {
+      this.inPlay = this.inBounds()
+    }
 
     // If the enemy is not in play, return
     if (!this.inPlay) return this;

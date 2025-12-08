@@ -42,7 +42,6 @@ class EnemyBSprite extends BaseEnemySprite {
       }
     }
     else if(this.age % 15 == 0) {
-      // console.log('maybe...');
       if(Math.random() < .15) {
         sMissiles.push(this.fire(0, 6, '#ff6600', 6, 4));
         this.sounds.bcFire.play();

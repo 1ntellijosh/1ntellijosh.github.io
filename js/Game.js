@@ -357,13 +357,13 @@ class Game {
    *
    * @returns {Game}
    */
-  updateActiveEnemyAndShipFireSprites = function() {
-    for (let i = 0; i < this.sMissiles.length; i++) {
-      this.sMissiles[i].update(this.sMissiles);
-    };
+  updateActiveEnemyAndShipMissileSprites = function() {
     this.sMissiles = this.sMissiles.filter(function(missile) {
       return missile.inPlay;
     });
+    for (let i = 0; i < this.sMissiles.length; i++) {
+      this.sMissiles[i].update(this.sMissiles);
+    };
 
     return this
   }
@@ -374,13 +374,13 @@ class Game {
    * @returns {Game}
    */
   updateEnemyMovementAndFire = function() {
+    this.enemies = this.enemies.filter(function(enemy) {
+      return enemy.inPlay;
+    })
+
     for (let i = 0; i < this.enemies.length; i++) {
         this.enemies[i].update(this.sMissiles);
     }
-
-    this.enemies = this.enemies.filter(function(enemy) {
-      return enemy.inPlay;
-    });
 
     return this
   }
@@ -424,7 +424,9 @@ class Game {
         continue
       }
 
-      this.checkForMissileHitsOnEnemies(this.sMissiles[i]);
+      if (this.sMissiles[i].type === EntityTypeEnums.MISSILE) {
+        this.checkForMissileHitsOnEnemies(this.sMissiles[i]);
+      }
     }
 
     return this
@@ -438,10 +440,10 @@ class Game {
    * @returns {Game}
    */
   checkForLaserHitOnShip = function(laser) {
-    if (!this.hits(laser, this.ship) || !this.ship.inPlay) return this
+    if (!this.ship.inPlay || !this.hits(laser, this.ship)) return this
 
     laser.inPlay = false;
-    this.onShipHit('checkForLaserHitOnShip');
+    this.onShipHit();
 
     return this
   }
@@ -456,7 +458,7 @@ class Game {
     for (let x = 0; x < this.enemies.length; x++) {
       // If the enemy is an explosion, skip it
       if(this.enemies[x].type === EntityTypeEnums.EXPLOSION) continue
-      
+
       if (this.hits(missile, this.enemies[x])) {
         this.onEnemyHit(this.enemies[x], missile);
       }
@@ -480,7 +482,7 @@ class Game {
         this.explodeEntity(enemy);
         enemy.inPlay = false;
       }
-      this.onShipHit('checkForShipHitOnEnemies');
+      this.onShipHit();
     }
 
     return this
@@ -666,7 +668,7 @@ class Game {
     return this
       .checkForWeaponUpgrade()
       .handleShipMissileFire()
-      .updateActiveEnemyAndShipFireSprites()
+      .updateActiveEnemyAndShipMissileSprites()
       .updateEnemyMovementAndFire()
       .spawnNewEnemies()
       .spawnNewAsteroids()

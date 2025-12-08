@@ -38,7 +38,7 @@ class EnemyESprite extends BaseEnemySprite {
     this.arcTime++;
 
     if (this.inPlay) {
-        this.inPlay = this.inBounds();
+      this.inPlay = this.inBounds();
     }
   }
 }

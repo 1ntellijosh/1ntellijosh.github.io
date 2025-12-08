@@ -45,7 +45,7 @@ class EntityFactory {
         return new ExplosionSprite(gameContext, payload);
       case EntityTypeEnums.LASER:
       case EntityTypeEnums.MISSILE:
-        return new MissileSprite(gameContext, payload);
+        return new MissileSprite(gameContext, type, payload);
       default:
         throw new Error(`Invalid enemy type: ${type}`);
     }
