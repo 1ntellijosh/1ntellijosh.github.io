@@ -1,12 +1,19 @@
 /**
  * Image assets dictionary - all image assets defined in one place
  * 
- * @returns {Object} - The ImageAssetsDict object.
- * 
  * @since abstract--JP
  */
 
-export const ImageAssetsDict = Object.freeze({
+export interface ImageAsset {
+  path: string;
+  type: 'gif' | 'png' | 'jpg' | 'jpeg' | 'webp';
+}
+
+export interface ImageAssetItem {
+  readonly [key: string]: ImageAsset;
+}
+
+export const ImageAssetsDict: ImageAssetItem = Object.freeze({
   ship_ast: {
     path: 'sprite sheets/ship_ast sprites.gif',
     type: 'gif',
@@ -15,4 +22,4 @@ export const ImageAssetsDict = Object.freeze({
     path: 'sprite sheets/shipsheetparts2-highercontrast.PNG',
     type: 'png',
   },
-})
+} as const);

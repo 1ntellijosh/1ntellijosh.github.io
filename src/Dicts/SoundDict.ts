@@ -33,7 +33,17 @@
 
 const baseUrl = 'https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/';
 
-const SoundDict = {
+export interface Sound {
+    type: string;
+    path: string;
+    noOverlap: boolean;
+}
+
+export interface SoundItem {
+    readonly [key: string]: Sound;
+}
+
+export const SoundDict: SoundItem = Object.freeze({
     death: {
         type: 'mp3',
         path: baseUrl + 'zapsplat_multimedia_game_lose_negative_004.mp3',
@@ -89,6 +99,4 @@ const SoundDict = {
         path: baseUrl + 'zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3',
         noOverlap: true,
     }
-};
-
-export default SoundDict;
+} as const);

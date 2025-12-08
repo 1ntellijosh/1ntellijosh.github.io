@@ -6,7 +6,11 @@
  * @since abstract--JP
  */
 
-export const EntityTypeEnums = Object.freeze({
+export interface EntityType {
+  readonly [key: string]: string;
+}
+
+export const EntityTypeEnums: EntityType = Object.freeze({
   SHIP: 'ship',
   MISSILE: 's',
   ASTEROID: 'a',
@@ -18,4 +22,4 @@ export const EntityTypeEnums = Object.freeze({
   ENEMY_E: 'e',
   ENEMY_F: 'f',
   ENEMY_G: 'g',
-})
+} as const);

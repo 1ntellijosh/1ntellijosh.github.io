@@ -1,6 +1,6 @@
-import Mp3 from './Mp3.js';
-import SoundDict from './Dicts/SoundDict.js';
-import ThemeDict from './Dicts/ThemeDict.js';
+import Mp3 from '../js/Mp3.js';
+import SoundDict from '../js/Dicts/SoundDict.js';
+import ThemeDict from '../js/Dicts/ThemeDict.js';
 
 // Sound Manager - Centralized sound management pattern
 // This pattern provides a clean way to manage multiple sounds

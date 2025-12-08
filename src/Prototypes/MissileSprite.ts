@@ -1,5 +1,5 @@
-import AbstractSprite from './AbstractSprite.js';
-import { GameConsts } from '../GameConsts.js';
+import AbstractSprite from './AbstractSprite';
+import { GameConsts } from '../../src/GameConsts';
 
 /**
  * Missile sprite class extending AbstractSprite
@@ -16,8 +16,24 @@ import { GameConsts } from '../GameConsts.js';
  *  @prop {number} height - The height of the missile
  *  @prop {string} type - The type of missile ('s' for ship, 'e' for enemy)
  */
-class MissileSprite extends AbstractSprite {
-  constructor(gameContext, type, payload) {
+export default class MissileSprite extends AbstractSprite {
+  xSpd: number;
+  ySpd: number;
+  color: string;
+  inPlay: boolean;
+
+  constructor(
+    gameContext: CanvasRenderingContext2D,
+    type: string,
+    payload: { x: number,
+      y: number,
+      xSpd: number,
+      ySpd: number,
+      color: string,
+      width: number,
+      height: number
+    }
+  ) {
     super(
       gameContext, 
       payload.x, 
@@ -35,7 +51,7 @@ class MissileSprite extends AbstractSprite {
   /**
    * @see AbstractSprite.draw
    */
-  draw() {
+  draw(): void {
     this.gameContext.fillStyle = this.color;
     this.gameContext.fillRect(this.x, this.y, this.width, this.height);
   }
@@ -43,7 +59,7 @@ class MissileSprite extends AbstractSprite {
   /**
    * Updates the missile sprite movement
    */
-  update() {
+  update(): AbstractSprite {
     this.y += this.ySpd;
     this.x += this.xSpd;
     this.inPlay = this.inBounds();
@@ -56,10 +72,7 @@ class MissileSprite extends AbstractSprite {
    *
    * @returns {boolean} True if missile is in bounds
    */
-  inBounds() {
+  inBounds(): boolean {
     return this.y >= 0 && this.y <= GameConsts.GAME_HEIGHT;
   }
 }
-
-export default MissileSprite;
-

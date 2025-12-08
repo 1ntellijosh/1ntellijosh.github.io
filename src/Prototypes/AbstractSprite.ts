@@ -1,3 +1,5 @@
+import { GameConsts } from '../../src/GameConsts';
+
 /**
  * This class is an abstract class for all sprites.
  *
@@ -12,8 +14,15 @@
  * @since abstract--JP
  */
 
-class AbstractSprite {
-  constructor(gameContext, x, y, width, height, type) {
+export default class AbstractSprite {
+  gameContext: CanvasRenderingContext2D;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  type: string;
+
+  constructor(gameContext: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, type: string) {
     this.gameContext = gameContext;
     this.x = x;
     this.y = y;
@@ -25,9 +34,17 @@ class AbstractSprite {
   /**
    * @see AbstractSprite.draw
    */
-  draw() {
+  draw(): void {
     throw new Error('draw method must be implemented');
   }
-}
 
-export default AbstractSprite;
+  /**
+   * Checks if the entity is still within game bounds
+   *
+   * @returns {boolean} True if entity is in bounds
+   */
+  inBounds(): boolean {
+    return this.x >= 0 && this.x <= GameConsts.GAME_WIDTH &&
+      this.y >= 0 && this.y <= GameConsts.GAME_HEIGHT;
+  }
+}

@@ -1,20 +1,21 @@
-import EnemyBSprite from '../Prototypes/EnemyBSprite.js';
-import EnemyCSprite from '../Prototypes/EnemyCSprite.js';
-import EnemyDSprite from '../Prototypes/EnemyDSprite.js';
-import EnemyESprite from '../Prototypes/EnemyESprite.js';
-import EnemyFSprite from '../Prototypes/EnemyFSprite.js';
-import EnemyGSprite from '../Prototypes/EnemyGSprite.js';
-import AsteroidSprite from '../Prototypes/AsteroidSprite.js';
-import ExplosionSprite from '../Prototypes/ExplosionSprite.js';
-import MissileSprite from '../Prototypes/MissileSprite.js';
-import ShipSprite from '../Prototypes/ShipSprite.js';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums.js';
+import AbstractSprite from '../Prototypes/AbstractSprite';
+import EnemyBSprite from '../Prototypes/EnemyBSprite';
+import EnemyCSprite from '../Prototypes/EnemyCSprite';
+import EnemyDSprite from '../Prototypes/EnemyDSprite';
+import EnemyESprite from '../Prototypes/EnemyESprite';
+import EnemyFSprite from '../Prototypes/EnemyFSprite';
+import EnemyGSprite from '../Prototypes/EnemyGSprite';
+import AsteroidSprite from '../Prototypes/AsteroidSprite';
+import ExplosionSprite from '../Prototypes/ExplosionSprite';
+import MissileSprite from '../Prototypes/MissileSprite';
+import ShipSprite from '../Prototypes/ShipSprite';
+import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
 
 /**
  * Factory for creating enemy sprites
  * Uses Factory Pattern to create different enemy types with their specific configurations
  */
-class EntityFactory {
+export default class EntityFactory {
   /**
    * Creates an enemy based on type
    * @param {Object} gameContext - The game context
@@ -23,7 +24,7 @@ class EntityFactory {
    *
    * @returns {EnemySprite}
    */
-  static create(gameContext, type, payload = false) {
+  static create = (gameContext: any, type: string, payload: object = {}): AbstractSprite => {
     switch (type) {
       case EntityTypeEnums.SHIP:
         return new ShipSprite(gameContext);
@@ -51,6 +52,3 @@ class EntityFactory {
     }
   }
 }
-
-export default EntityFactory;
-

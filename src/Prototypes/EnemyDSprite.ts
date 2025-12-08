@@ -1,6 +1,6 @@
-import BaseEnemySprite from './BaseEnemySprite.js';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums.js';
-import SoundManager from '../SoundManager.js';
+import BaseEnemySprite from './BaseEnemySprite';
+import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
+import SoundManager from '../../src/SoundManager';
 
 /**
  * Ship sprite class for EnemyDSprite
@@ -8,8 +8,8 @@ import SoundManager from '../SoundManager.js';
  * 
  * @param {Object} gameContext - Reference to the game instance for accessing game state
  */
-class EnemyDSprite extends BaseEnemySprite {
-  constructor(gameContext) {
+export default class EnemyDSprite extends BaseEnemySprite {
+  constructor(gameContext: CanvasRenderingContext2D) {
     const soundMgr = new SoundManager();
 
     super(gameContext, 250, 0, 45, 44, EntityTypeEnums.ENEMY_D, {
@@ -29,7 +29,7 @@ class EnemyDSprite extends BaseEnemySprite {
   /**
    * @see BaseEnemySprite.update
    */
-  update() {
+  update(): void {
     this.x += this.xSpd;
     this.y += this.ySpd;
 
@@ -42,5 +42,3 @@ class EnemyDSprite extends BaseEnemySprite {
     }
   }
 }
-
-export default EnemyDSprite;

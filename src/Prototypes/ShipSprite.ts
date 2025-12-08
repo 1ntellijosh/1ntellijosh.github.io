@@ -1,17 +1,47 @@
-import AbstractSprite from './AbstractSprite.js';
-import EntityFactory from '../Factories/EntityFactory.js';
-import { GameConsts } from '../GameConsts.js';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums.js';
-import { ImageAssetsDict } from '../Dicts/ImageAssetsDict.js';
-import SoundManager from '../SoundManager.js';
+import AbstractSprite from './AbstractSprite';
+import EntityFactory from '../Factories/EntityFactory';
+import MissileSprite from './MissileSprite';
+import { GameConsts } from '../../src/GameConsts';
+import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
+import { ImageAssetsDict } from '../Dicts/ImageAssetsDict';
+import SoundManager from '../../src/SoundManager';
+
+// Missile Specifications data
+const missileColors = {
+  level1: '#6495ED',
+  level2: '#00ff80',
+  level3: '#ffff00'
+}
+const missileWidths = {
+  level1: 3,
+  level2: 3,
+  level3: 5.5
+}
+const missileHeights = {
+  level1: 7,
+  level2: 6,
+  level3: 3.5
+}
 
 /**
  * Ship sprite class extending AbstractSprite
  * 
  * @param {Object} gameContext - Reference to the game instance for accessing game state
  */
-class ShipSprite extends AbstractSprite {
-  constructor(gameContext) {
+export default class ShipSprite extends AbstractSprite {
+  asset: HTMLImageElement;
+  health: number;
+  speed: number;
+  inPlay: boolean;
+  gunLev: number;
+  respawnTime: number;
+  movable: boolean;
+  sounds: { [key: string]: Mp3 };
+  missileColor: string;
+  missileWidth: number;
+  missileHeight: number;
+
+  constructor(gameContext: CanvasRenderingContext2D) {
     super(gameContext, GameConsts.GAME_WIDTH/2, 625, 48, 40, EntityTypeEnums.SHIP);
     this.asset = new Image();
     this.asset.src = ImageAssetsDict.ship_ast.path;
@@ -27,18 +57,17 @@ class ShipSprite extends AbstractSprite {
       shoot2: soundMgr.get('shoot2'),
       shoot3: soundMgr.get('shoot3'),
       rez: soundMgr.get('rez')
-    }
-    // Missile data
-    this.missileColor;
-    this.missileWidth;
-    this.missileHeight;
+    }  
+    this.missileColor = missileColors.level1;
+    this.missileWidth = missileWidths.level1;
+    this.missileHeight = missileHeights.level1;
     this.determinMissileAspects();
   }
 
   /**
    * @see AbstractSprite.draw
    */
-  draw() {
+  draw(): void {
     this.gameContext.drawImage(this.asset, 35, 40, 50, 43, this.x, this.y, 50, 43);
   }
 
@@ -47,7 +76,7 @@ class ShipSprite extends AbstractSprite {
    *
    * @returns {Game}
    */
-  updateShipMovement = function(keys) {
+  updateShipMovement(keys: { lKey: boolean, rKey: boolean, uKey: boolean, dKey: boolean }): AbstractSprite {
     if (keys.lKey == true && this.x > 0 && this.movable == true) {
       this.x -= this.speed;
     }
@@ -70,7 +99,7 @@ class ShipSprite extends AbstractSprite {
    *
    * @returns {ShipSprite}
    */
-  respawn() {
+  respawn(): void {
     if (this.respawnTime == 0) {
       this.movable = false;
       this.x = GameConsts.GAME_WIDTH/2;
@@ -125,7 +154,7 @@ class ShipSprite extends AbstractSprite {
    *
    * @param {number} newGunLev - The new gun level
    */
-  changeGunLevel = (newGunLev) => {
+  changeGunLevel(newGunLev: number): void {
     this.gunLev = newGunLev;
     this.determinMissileAspects();
   }
@@ -133,7 +162,7 @@ class ShipSprite extends AbstractSprite {
   /**
    * Determines the missile aspects based on the gun level
    */
-  determinMissileAspects = () => {
+  determinMissileAspects(): void {
     switch (this.gunLev) {
       case 1:
         this.missileColor = '#6495ED';
@@ -164,12 +193,12 @@ class ShipSprite extends AbstractSprite {
    * @param {number} h - The height of the missile
    * @returns {MissileSprite} The created missile
    */
-  fire(xSpd, color, w, h) {
+  fire(xSpd: number, color: string, w: number, h: number): MissileSprite {
     const missile = EntityFactory.create(
       this.gameContext,
       EntityTypeEnums.MISSILE,
       this.createMissilePayload(xSpd, color, w, h)
-    );
+    ) as MissileSprite;
     
     // Play appropriate sound
     if (this.gunLev == 1) {
@@ -192,7 +221,12 @@ class ShipSprite extends AbstractSprite {
    * @param {number} h - The height of the missile
    * @returns {Object} The payload for the missile
    */
-  createMissilePayload = (xSpd, color, w, h) => {
+  createMissilePayload(
+    xSpd: number,
+    color: string,
+    w: number,
+    h: number
+  ): { x: number, y: number, xSpd: number, ySpd: number, color: string, width: number, height: number } {
     return {
       x: this.x + this.width/2,
       y: this.y,
@@ -204,5 +238,3 @@ class ShipSprite extends AbstractSprite {
     }
   }
 }
-
-export default ShipSprite;

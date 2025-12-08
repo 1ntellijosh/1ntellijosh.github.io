@@ -1,0 +1,16 @@
+{
+  "name": "starfighter",
+  "version": "1.0.0",
+  "description": "StarFighter game converted to TypeScript",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.29",
+    "typescript": "^5.3.3"
+  }
+}
+

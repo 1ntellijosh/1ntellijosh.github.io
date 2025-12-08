@@ -1,15 +1,29 @@
-import AbstractSprite from './AbstractSprite.js';
-import { GameConsts } from '../GameConsts.js';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums.js';
-import { ImageAssetsDict } from '../Dicts/ImageAssetsDict.js';
+import AbstractSprite from './AbstractSprite';
+import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
+import { ImageAssetsDict } from '../Dicts/ImageAssetsDict';
 
 /**
  * Ship sprite class extending AbstractSprite
  * 
  * @param {Object} gameContext - Reference to the game instance for accessing game state
  */
-class ExplosionSprite extends AbstractSprite {
-  constructor(gameContext, payload) {
+export default class ExplosionSprite extends AbstractSprite {
+  asset: HTMLImageElement;
+  ySpd: number;
+  xSpd: number;
+  travel: number;
+  arcTime: number;
+  inPlay: boolean;
+
+  constructor(
+    gameContext: CanvasRenderingContext2D,
+    payload: {
+      x: number,
+      y: number,
+      width: number,
+      height: number
+    }
+  ) {
     super(gameContext, payload.x, payload.y, payload.width, payload.height, EntityTypeEnums.EXPLOSION);
     this.asset = new Image();
     this.asset.src = ImageAssetsDict.ship_ast.path;
@@ -25,7 +39,7 @@ class ExplosionSprite extends AbstractSprite {
    * 
    * @returns {ExplosionSprite} - The updated explosion sprite
    */
-  draw() {
+  draw(): AbstractSprite {
     this.travel += 1;
     if (this.travel >= 16) {
         this.inPlay = false
@@ -51,19 +65,9 @@ class ExplosionSprite extends AbstractSprite {
   }
 
   /**
-   * Checks if the explosion is still within game bounds
-   *
-   * @returns {boolean} True if explosion is in bounds
-   */
-  inBounds() {
-    return this.x >= 0 && this.x <= GameConsts.GAME_WIDTH &&
-      this.y >= 0 && this.y <= GameConsts.GAME_HEIGHT;
-  }
-
-  /**
    * Updates the explosion sprite movement
    */
-  update() {
+  update(): void {
     this.x += this.xSpd;
     this.y += this.ySpd;
 
@@ -74,5 +78,3 @@ class ExplosionSprite extends AbstractSprite {
     }
   }
 }
-
-export default ExplosionSprite;

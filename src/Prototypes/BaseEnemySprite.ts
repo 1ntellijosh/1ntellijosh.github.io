@@ -1,8 +1,9 @@
-import AbstractSprite from './AbstractSprite.js';
-import EntityFactory from '../Factories/EntityFactory.js';
-import { GameConsts } from '../GameConsts.js';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums.js';
-import { ImageAssetsDict } from '../Dicts/ImageAssetsDict.js';
+import AbstractSprite from './AbstractSprite';
+import EntityFactory from '../Factories/EntityFactory';
+import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
+import { ImageAssetsDict } from '../Dicts/ImageAssetsDict';
+import Mp3 from '../Mp3';
+import MissileSprite from './MissileSprite';
 
 /**
  * Base enemy sprite class - contains common functionality for all enemy types
@@ -26,8 +27,40 @@ import { ImageAssetsDict } from '../Dicts/ImageAssetsDict.js';
  * 
  * @since abstract--JP
  */
-class BaseEnemySprite extends AbstractSprite {
-  constructor(gameContext, x, y, width, height, type, config) {
+export default class BaseEnemySprite extends AbstractSprite {
+  asset: HTMLImageElement;
+  ySpd: number;
+  xSpd: number;
+  arcTime: number;
+  dStart: number;
+  xStart: number;
+  inPlay: boolean;
+  health: number;
+  scoreValue: number;
+  age: number;
+  travel: number;
+  sounds: { [key: string]: Mp3 };
+
+  constructor(
+    gameContext: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    type: string,
+    config: {
+      ySpd: number;
+      xSpd: number;
+      arcTime?: number;
+      dStart: number;
+      xStart: number;
+      health: number;
+      scoreValue: number;
+      age?: number;
+      travel?: number;
+      sounds?: { [key: string]: Mp3 };
+    }
+  ) {
     super(gameContext, x, y, width, height, type);
     
     // Sprite asset
@@ -60,7 +93,7 @@ class BaseEnemySprite extends AbstractSprite {
    * Draws the enemy sprite on the canvas
    * All enemies use the same drawing logic
    */
-  draw() {
+  draw(): void {
     this.gameContext.drawImage(
       this.asset, 
       this.xStart, 
@@ -85,8 +118,8 @@ class BaseEnemySprite extends AbstractSprite {
    * @param {number} w - Width
    * @returns {MissileSprite} The created missile
    */
-  fire(x, y, c, h, w) {
-    return EntityFactory.create(
+  fire(x: number, y: number, c: string, h: number, w: number): MissileSprite {
+    const sprite = EntityFactory.create(
       this.gameContext,
       EntityTypeEnums.LASER,
       {
@@ -98,30 +131,16 @@ class BaseEnemySprite extends AbstractSprite {
         width: w,
         height: h
       }
-    );
-  }
+    ) as MissileSprite;
 
-  /**
-   * Checks if the enemy is still within game bounds
-   * All enemies use the same bounds checking logic
-   * 
-   * @returns {boolean} True if enemy is in bounds
-   */
-  inBounds() {
-    return this.x >= 0 && this.x <= GameConsts.GAME_WIDTH &&
-      this.y >= 0 && this.y <= GameConsts.GAME_HEIGHT;
+    return sprite;
   }
 
   /**
    * Update method - must be overridden by subclasses
    * Each enemy type has unique movement and firing patterns
-   * 
-   * @param {Array} sMissiles - Array of missiles to add fired missiles to
    */
-  update(sMissiles) {
+  update(sMissiles: any[]): void {
     throw new Error('update method must be implemented by subclass');
   }
 }
-
-export default BaseEnemySprite;
-
