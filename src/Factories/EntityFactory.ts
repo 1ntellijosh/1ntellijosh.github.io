@@ -41,12 +41,23 @@ export default class EntityFactory {
       case EntityTypeEnums.ENEMY_G:
         return new EnemyGSprite(gameContext);
       case EntityTypeEnums.ASTEROID:
-        return new AsteroidSprite(gameContext, payload);
+        return new AsteroidSprite(gameContext, payload as { x: number });
       case EntityTypeEnums.EXPLOSION:
-        return new ExplosionSprite(gameContext, payload);
+        return new ExplosionSprite(gameContext, payload as { x: number, y: number, width: number, height: number });
       case EntityTypeEnums.LASER:
       case EntityTypeEnums.MISSILE:
-        return new MissileSprite(gameContext, type, payload);
+        return new MissileSprite(
+          gameContext,
+          type,
+          payload as {
+            x: number,
+            y: number,
+            xSpd: number,
+            ySpd: number,
+            color: string,
+            width: number,
+            height: number
+          });
       default:
         throw new Error(`Invalid enemy type: ${type}`);
     }

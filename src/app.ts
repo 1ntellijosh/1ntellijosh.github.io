@@ -3,6 +3,6 @@
  * 
  * @module app
  */
-import StarFighterEntryPoint from './EntryPoints/StarFighterEntryPoint.js';
+import StarFighterEntryPoint from './EntryPoints/StarFighterEntryPoint';
 
 StarFighterEntryPoint();

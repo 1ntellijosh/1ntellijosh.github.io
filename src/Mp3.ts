@@ -9,8 +9,14 @@
  * @since abstract--JP
  */
 
-class Mp3 {
-  constructor(file, poolSize = 5) {
+export default class Mp3 {
+  file: string;
+  poolSize: number;
+  pool: HTMLAudioElement[];
+  currentIndex: number;
+  mp3: HTMLAudioElement;
+
+  constructor(file: string, poolSize: number = 5) {
     this.file = file;
     this.poolSize = poolSize;
     this.pool = [];
@@ -43,17 +49,17 @@ class Mp3 {
    *
    * @returns {Mp3} - The Mp3 object.
    */
-  play() {
+  play(): Mp3 {
     if (this.poolSize === 1) {
       this.mp3.play().catch(err => {
         console.warn('Audio play failed:', err);
       });
+
       return this;
     }
 
     // Find an available (paused) audio instance, or use the next one
     let audio = null;
-    let attempts = 0;
     
     // First, try to find a paused instance
     for (let i = 0; i < this.poolSize; i++) {
@@ -99,7 +105,7 @@ class Mp3 {
    *
    * @returns {Mp3} - The Mp3 object.
    */
-  stop() {
+  stop(): Mp3 {
     if (this.poolSize === 1) {
       this.mp3.pause()
 
@@ -115,5 +121,3 @@ class Mp3 {
     return this;
   }
 }
-
-export default Mp3;

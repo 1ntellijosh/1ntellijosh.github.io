@@ -1,9 +1,56 @@
-import SoundManager from './SoundManager.js';
-import { GameConsts } from './GameConsts.js';
-import EntityFactory from './Factories/EntityFactory.js';
-import { EntityTypeEnums } from './Enums/EntityTypeEnums.js';
+import SoundManager from './SoundManager';
+import { GameConsts } from './GameConsts';
+import MissileSprite from './Prototypes/MissileSprite';
+import AbstractSprite from './Prototypes/AbstractSprite';
+import BaseEnemySprite from './Prototypes/BaseEnemySprite';
+import AsteroidSprite from './Prototypes/AsteroidSprite';
+import ExplosionSprite from './Prototypes/ExplosionSprite';
+import ShipSprite from './Prototypes/ShipSprite';
+import Mp3 from './Mp3';
+import EntityFactory from './Factories/EntityFactory';
+import { EntityTypeEnums } from './Enums/EntityTypeEnums';
 
-class Game {
+export default class Game {
+  gameCanvas: HTMLCanvasElement | null;
+  gameCtx: CanvasRenderingContext2D | null;
+  keys: { lKey: boolean, rKey: boolean, uKey: boolean, dKey: boolean, sKey: boolean };
+  rpmCount: number;
+  fireRate: number;
+  clip: number;
+  clipSize: number;
+  clipReady: number;
+  mag: number;
+  pointCount: number;
+  sMissiles: MissileSprite[];
+  enemies: (BaseEnemySprite | AsteroidSprite | ExplosionSprite)[];
+  enemyTypes: string[];
+  typeAPlacements: number[];
+  frameCount: number;
+  level: number;
+  levelLength: number;
+  levelStep: number;
+  levelMessage: number;
+  spawnRange: number;
+  possibleBatchNum: number;
+  enemyBatch: string[];
+  spawnReady: boolean;
+  spawnClip: number;
+  spawnClipLim: number;
+  spawnTypeCount: number;
+  batchSlot: number;
+  roundCount: number;
+  spawnLimit: number;
+  asterLim: number;
+  score: number;
+  gameOver: boolean;
+  gameWon: boolean;
+  sounds: { [key: string]: Mp3 };
+  theme: HTMLAudioElement | null;
+  ship: ShipSprite | null;
+  scoreBoard: HTMLElement | null;
+  levelBoard: HTMLElement | null;
+  healthBoard: HTMLElement | null;
+
   constructor() {
     this.gameCanvas = null;
     this.gameCtx = null;
@@ -70,9 +117,9 @@ class Game {
     this.theme = soundMgr.loadTheme('firstTheme');
     // Null values will instantiate in drawBoard function
     this.ship = null
-    this.scoreBoard;
-    this.levelBoard;
-    this.healthBoard;
+    this.scoreBoard = null;
+    this.levelBoard = null;
+    this.healthBoard = null;
   }
 
   /**
@@ -80,7 +127,7 @@ class Game {
    *
    * @returns {Game}
    */
-  drawBoard = function() {
+  drawBoard(): Game {
     this
       .removeNonGameElements()
       .displayGameUiElements()
@@ -97,11 +144,18 @@ class Game {
    *
    * @returns {Game}
    */
-  removeNonGameElements = function() {
-    $('#start').remove();
-    $('.buttonWrap').remove();
-    $('h2').remove();
-    $('#main').css('padding-top', '75px');
+  removeNonGameElements(): Game {
+    const startButton = document.getElementById('start');
+    if (startButton) startButton.remove();
+    
+    const buttonWraps = document.querySelectorAll('.buttonWrap');
+    buttonWraps.forEach(el => el.remove());
+    
+    const h2Elements = document.querySelectorAll('h2');
+    h2Elements.forEach(el => el.remove());
+    
+    const mainElement = document.getElementById('main');
+    if (mainElement) mainElement.style.paddingTop = '75px';
 
     return this
   }
@@ -111,9 +165,12 @@ class Game {
    *
    * @returns {Game}
    */
-  displayGameUiElements = function() {
-    $('#left').css('display', 'flex');
-    $('#right').css('display', 'flex');
+  displayGameUiElements(): Game {
+    const leftElement = document.getElementById('left');
+    if (leftElement) leftElement.style.display = 'flex';
+    
+    const rightElement = document.getElementById('right');
+    if (rightElement) rightElement.style.display = 'flex';
 
     return this
   }
@@ -123,15 +180,15 @@ class Game {
    *
    * @returns {Game}
    */
-  instantiateGameContextAndAssets = function() {
+  instantiateGameContextAndAssets(): Game {
     const gameCtx = this.pinGame();
 
-    this.ship = EntityFactory.create(gameCtx, EntityTypeEnums.SHIP);
+    this.ship = EntityFactory.create(gameCtx, EntityTypeEnums.SHIP) as ShipSprite;
 
     //grabs score level and health elements to populate them
-    this.scoreBoard = $('#scoreB');
-    this.levelBoard = $('#levelB');
-    this.healthBoard = $('#health');
+    this.scoreBoard = document.getElementById('scoreB');
+    this.levelBoard = document.getElementById('levelB');
+    this.healthBoard = document.getElementById('health');
 
     return this
   }
@@ -141,7 +198,7 @@ class Game {
    *
    * @returns {Game}
    */
-  setFrameRateAndFrameOperations = function() {
+  setFrameRateAndFrameOperations(): Game {
     setInterval(this.onNewFrame.bind(this), 1000/GameConsts.FPS);
 
     return this
@@ -153,7 +210,7 @@ class Game {
    *
    * @returns {Game}
    */
-  onNewFrame = function() {
+  onNewFrame(): Game {
     /**
      * If game over status is off, function as normal
      */
@@ -176,8 +233,8 @@ class Game {
    *
    * @returns {Game}
    */
-  playTheme = function() {
-    this.theme.play();
+  playTheme(): Game {
+    this.theme!.play();
 
     return this
   }
@@ -187,9 +244,9 @@ class Game {
    *
    * @returns {Game}
    */
-  setupKeyboardListeners = function() {
-    $(document).on('keydown', this.keyReader.bind(this));
-    $(document).on('keyup', this.keyRelease.bind(this));
+  setupKeyboardListeners(): Game {
+    document.addEventListener('keydown', this.keyReader.bind(this));
+    document.addEventListener('keyup', this.keyRelease.bind(this));
 
     return this
   }
@@ -199,13 +256,13 @@ class Game {
    *
    * @returns {Game}
    */
-  handleShipMissileFire = function() {
+  handleShipMissileFire(): Game {
     if (!this.canProcessMissileFire()) return this
 
     if (this.fireMissilesInputActivated()) {
-      if (this.keys.lKey) return this.fireShipMissile(-this.ship.speed/15).checkAndResetShipClipAndMag()
+      if (this.keys.lKey) return this.fireShipMissile(-this.ship!.speed/15).checkAndResetShipClipAndMag()
 
-      if (this.keys.rKey == true) return this.fireShipMissile(this.ship.speed/15).checkAndResetShipClipAndMag()
+      if (this.keys.rKey == true) return this.fireShipMissile(this.ship!.speed/15).checkAndResetShipClipAndMag()
 
       return this
         .fireShipMissile(0)
@@ -220,7 +277,7 @@ class Game {
    *
    * @returns {boolean} True if missile fire can be processed
    */
-  canProcessMissileFire = function() {
+  canProcessMissileFire(): boolean {
     return this.clip > this.clipReady && this.mag <= this.clipSize
   }
 
@@ -229,8 +286,8 @@ class Game {
    *
    * @returns {boolean} True if missile fire input is activated
    */
-  fireMissilesInputActivated = function() {
-    return this.keys.sKey && this.rpmCount >= this.fireRate && this.ship.movable
+  fireMissilesInputActivated(): boolean {
+    return this.keys.sKey && this.rpmCount >= this.fireRate && this.ship!.movable
   }
 
   /**
@@ -240,15 +297,14 @@ class Game {
    *
    * @returns {Game}
    */
-  fireShipMissile = function(curve) {
-    this.sMissiles.push(
-      this.ship.fire(
-        curve,
-        this.ship.missileColor,
-        this.ship.missileWidth,
-        this.ship.missileHeight
-      )
-    )
+  fireShipMissile(curve: number): Game {
+    const missile = this.ship!.fire(
+      curve,
+      this.ship!.missileColor,
+      this.ship!.missileWidth,
+      this.ship!.missileHeight
+    ) as MissileSprite | null;
+    if (missile) this.sMissiles.push(missile);
     this.rpmCount = 0;
     this.mag += 1;
 
@@ -260,7 +316,7 @@ class Game {
    *
    * @returns {Game}
    */
-  checkAndResetShipClipAndMag = function() {
+  checkAndResetShipClipAndMag(): Game {
     if (this.mag > this.clipSize) {
       this.clip = 0;
       this.mag = 0;
@@ -274,7 +330,7 @@ class Game {
    *
    * @returns {Game}
    */
-  spawnNewEnemies = function() {
+  spawnNewEnemies(): Game {
     //when game frames hit current spawnRange levels begin spawn process
     if (this.frameCount >= this.spawnRange && this.spawnReady == true) {
       //randomly spawn 1 to number-limit of enemyTypes (possibleBatchNum)
@@ -295,7 +351,7 @@ class Game {
      */
     if (this.spawnClip >= this.spawnClipLim && this.enemyBatch.length > 0) {
       this.enemies.push(
-        EntityFactory.create(this.gameCtx, this.enemyBatch[this.batchSlot])
+        EntityFactory.create(this.gameCtx, this.enemyBatch[this.batchSlot]) as BaseEnemySprite
       );
       this.batchSlot += 1;
       this.spawnClip = 0;
@@ -322,12 +378,14 @@ class Game {
    *
    * @returns {Game}
    */
-  spawnNewAsteroids = function() {
+  spawnNewAsteroids(): Game {
     if(Math.random() >= this.asterLim) return this
         
     let dinger = Math.floor(Math.random() * 15);
     let x = this.typeAPlacements[dinger];
-    this.enemies.push(EntityFactory.create(this.gameCtx, EntityTypeEnums.ASTEROID, { x }));
+    this.enemies.push(
+      EntityFactory.create(this.gameCtx, EntityTypeEnums.ASTEROID, { x }) as AsteroidSprite
+    );
 
     return this
   }
@@ -340,7 +398,7 @@ class Game {
    *
    * @returns {Game}
    */
-  explodeEntity = function(object) {
+  explodeEntity(object: BaseEnemySprite | AsteroidSprite | ShipSprite): Game {
     const payload = {
       x: object.x,
       y: object.y,
@@ -348,7 +406,9 @@ class Game {
       height: object.type === EntityTypeEnums.ASTEROID ? 53 : 34,
     }
     
-    this.enemies.push(EntityFactory.create(this.gameCtx, EntityTypeEnums.EXPLOSION, payload));
+    this.enemies.push(
+      EntityFactory.create(this.gameCtx, EntityTypeEnums.EXPLOSION, payload) as ExplosionSprite
+    );
 
     return this
   }
@@ -358,12 +418,12 @@ class Game {
    *
    * @returns {Game}
    */
-  updateActiveEnemyAndShipMissileSprites = function() {
+  updateActiveEnemyAndShipMissileSprites(): Game {
     this.sMissiles = this.sMissiles.filter(function(missile) {
       return missile.inPlay;
     });
     for (let i = 0; i < this.sMissiles.length; i++) {
-      this.sMissiles[i].update(this.sMissiles);
+      this.sMissiles[i].update();
     };
 
     return this
@@ -374,8 +434,8 @@ class Game {
    *
    * @returns {Game}
    */
-  updateEnemyMovementAndFire = function() {
-    this.enemies = this.enemies.filter(function(enemy) {
+  updateEnemyMovementAndFire(): Game {
+    this.enemies = this.enemies.filter((enemy: BaseEnemySprite | AsteroidSprite | ExplosionSprite) => {
       return enemy.inPlay;
     })
 
@@ -394,7 +454,7 @@ class Game {
    *
    * @returns {boolean}
    */
-  hits = function(ob1, ob2) {
+  hits(ob1: AbstractSprite, ob2: AbstractSprite): boolean {
     return ob1.x < ob2.x + ob2.width &&
       ob1.x + ob1.width > ob2.x &&
       ob1.y < ob2.y + ob2.height &&
@@ -406,7 +466,7 @@ class Game {
    *
    * @returns {Game}
    */
-  updateUserScore = function() {
+  updateUserScore(): Game {
     return this
       .checkForLaserAndMissileHits()
       .checkForShipHitOnEnemies()
@@ -417,7 +477,7 @@ class Game {
    *
    * @returns {Game}
    */
-  checkForLaserAndMissileHits = function() {
+  checkForLaserAndMissileHits(): Game {
     for (let i = 0; i < this.sMissiles.length; i++) {
       if (this.sMissiles[i].type === EntityTypeEnums.LASER) {
         this.checkForLaserHitOnShip(this.sMissiles[i])
@@ -440,13 +500,12 @@ class Game {
    *
    * @returns {Game}
    */
-  checkForLaserHitOnShip = function(laser) {
-    if (!this.ship.inPlay || !this.hits(laser, this.ship)) return this
+  checkForLaserHitOnShip(laser: MissileSprite): Game {
+    if (!this.ship!.inPlay || !this.hits(laser, this.ship!)) return this
 
     laser.inPlay = false;
-    this.onShipHit();
 
-    return this
+    return this.onShipHit();
   }
 
   /**
@@ -454,14 +513,14 @@ class Game {
    *
    * @returns {Game}
    */
-  checkForMissileHitsOnEnemies = function(missile) {
+  checkForMissileHitsOnEnemies(missile: MissileSprite): Game {
     // Loop through all enemies
     for (let x = 0; x < this.enemies.length; x++) {
       // If the enemy is an explosion, skip it
       if(this.enemies[x].type === EntityTypeEnums.EXPLOSION) continue
 
       if (this.hits(missile, this.enemies[x])) {
-        this.onEnemyHit(this.enemies[x], missile);
+        this.onEnemyHit(this.enemies[x] as BaseEnemySprite | AsteroidSprite, missile);
       }
     }
 
@@ -473,14 +532,14 @@ class Game {
    *
    * @returns {Game}
    */
-  checkForShipHitOnEnemies = function() {
+  checkForShipHitOnEnemies(): Game {
     for (let i = 0; i < this.enemies.length; i++) {
       const enemy = this.enemies[i];
-      if (!this.ship.inPlay || !this.hits(enemy, this.ship)) continue
+      if (!this.ship!.inPlay || !this.hits(enemy, this.ship!)) continue
 
       if (enemy.type != EntityTypeEnums.ASTEROID) {
         this.sounds.blowUp.play();
-        this.explodeEntity(enemy);
+        this.explodeEntity(enemy as BaseEnemySprite | AsteroidSprite);
         enemy.inPlay = false;
       }
       this.onShipHit();
@@ -497,7 +556,7 @@ class Game {
    *
    * @returns {Game}
    */
-  onEnemyHit = function(enemy, missile) {
+  onEnemyHit(enemy: BaseEnemySprite | AsteroidSprite, missile: MissileSprite): Game {
     this.sounds.tap.play();
     missile.inPlay = false;
 
@@ -506,7 +565,7 @@ class Game {
       return this.handleEnemyHitAndIncScore(enemy);
     }
 
-    return this.handleEnemyExplodeAndIncScore(enemy);
+    return this.handleEnemyExplodeAndIncScore(enemy as BaseEnemySprite | AsteroidSprite);
   }
 
   /**
@@ -517,7 +576,7 @@ class Game {
    *
    * @returns {Game}
    */
-  handleEnemyHitAndIncScore = function(enemy) {
+  handleEnemyHitAndIncScore(enemy: BaseEnemySprite | AsteroidSprite): Game {
     enemy.health -= 1
 
     if (enemy.type !== EntityTypeEnums.ASTEROID) {
@@ -534,9 +593,9 @@ class Game {
    *
    * @returns {Game}
    */
-  handleEnemyExplodeAndIncScore = function(enemy) {
+  handleEnemyExplodeAndIncScore(enemy: BaseEnemySprite | AsteroidSprite): Game {
     this.sounds.blowUp.play()
-    this.explodeEntity(enemy)
+    this.explodeEntity(enemy as BaseEnemySprite | AsteroidSprite)
     enemy.inPlay = false
 
     return this.incrementScoreOnEnemyHit(enemy)
@@ -549,7 +608,7 @@ class Game {
    *
    * @returns {Game}
    */
-  incrementScoreOnEnemyHit = function(enemy) {
+  incrementScoreOnEnemyHit(enemy: BaseEnemySprite | AsteroidSprite): Game {
     this.score += enemy.scoreValue
     this.pointCount += enemy.scoreValue
 
@@ -561,18 +620,20 @@ class Game {
    *
    * @returns {Game}
    */
-  onShipHit = function() {
+  onShipHit(): Game {
     this.sounds.blowUp.play();
     this.sounds.death.play();
-    this.ship.health -= 1;
-    this.explodeEntity(this.ship);
-    this.ship.respawnTime = 0;
-    this.ship.inPlay = false;
-    this.ship.changeGunLevel(1);
+    this.ship!.health -= 1;
+    this.explodeEntity(this.ship! as ShipSprite);
+    this.ship!.respawnTime = 0;
+    this.ship!.inPlay = false;
+    this.ship!.changeGunLevel(1);
     this.clipReady = 6;
     this.clipSize = 4;
     this.fireRate = 3;
     this.pointCount = 0;
+
+    return this
   }
 
   /**
@@ -581,19 +642,19 @@ class Game {
    *
    * @returns {Game}
    */
-  checkForWeaponUpgrade = function() {
-    if (this.ship.gunLev === 3) return this
+  checkForWeaponUpgrade(): Game {
+    if (this.ship!.gunLev === 3) return this
 
-    if (this.pointCount >= 1000 && this.ship.gunLev < 2) {
-      this.ship.changeGunLevel(2);
+    if (this.pointCount >= 1000 && this.ship!.gunLev < 2) {
+      this.ship!.changeGunLevel(2);
       this.fireRate = 2;
       this.clipReady = 7;
       this.sounds.boost.play();
 
       return this
     }
-    if (this.pointCount >= 2000 && this.ship.gunLev < 3) {
-      this.ship.changeGunLevel(3);
+    if (this.pointCount >= 2000 && this.ship!.gunLev < 3) {
+      this.ship!.changeGunLevel(3);
       this.fireRate = 1;
       this.clipReady = 5;
       this.clipSize = 3;
@@ -611,8 +672,8 @@ class Game {
    *
    * @returns {Game}
    */
-  updateBoards = function() {
-    this.levelBoard.text(this.level);
+  updateBoards(): Game {
+    this.levelBoard!.textContent = this.level.toString();
 
     return this
       .updateScoreBoard()
@@ -624,10 +685,11 @@ class Game {
    *
    * @returns {Game}
    */
-  updateScoreBoard = function() {
-    this.scoreBoard.empty();
-    let newScore = $('<p>').text(this.score);
-    this.scoreBoard.append(newScore);
+  updateScoreBoard(): Game {
+    this.scoreBoard!.innerHTML = '';
+    const newScore = document.createElement('p');
+    newScore.textContent = this.score.toString();
+    this.scoreBoard!.appendChild(newScore);
 
     return this
   }
@@ -637,11 +699,12 @@ class Game {
    *
    * @returns {Game}
    */
-  updateHealthBoard = function() {
-    this.healthBoard.empty();
-    for (let i = 0; i < this.ship.health; i++) {
-      let healthDiv = $('<div>').attr('id', 'healthBar');
-      healthDiv.appendTo('#health')
+  updateHealthBoard(): Game {
+    this.healthBoard!.innerHTML = '';
+    for (let i = 0; i < this.ship!.health; i++) {
+      const healthDiv = document.createElement('div');
+      healthDiv.id = 'healthBar';
+      this.healthBoard!.appendChild(healthDiv);
     }
 
     return this
@@ -652,9 +715,9 @@ class Game {
    *
    * @returns {Game}
    */
-  updateDataForNewFrame = function() {
+  updateDataForNewFrame(): Game {
     //handles game over status variable
-    if(this.ship.health == 0) {
+    if(this.ship!.health == 0) {
       this.gameOver = true
 
       return this
@@ -664,7 +727,7 @@ class Game {
     this.updateIncrementedPerFrameData()
 
     // Calls for ship movement per keystrokes
-    this.ship.updateShipMovement(this.keys)
+    this.ship!.updateShipMovement(this.keys)
     
     return this
       .checkForWeaponUpgrade()
@@ -682,7 +745,7 @@ class Game {
    *
    * @returns {Game}
    */
-  updateIncrementedPerFrameData = function() {
+  updateIncrementedPerFrameData(): Game {
     this.frameCount += 1
     this.rpmCount += 1
     this.clip += 1
@@ -697,7 +760,7 @@ class Game {
    *
    * @returns {Game}
    */
-  checkForNextLevel = function() {
+  checkForNextLevel(): Game {
     if(this.levelStep < this.levelLength) return this
 
     return this.onLevelUp();
@@ -708,7 +771,7 @@ class Game {
    *
    * @returns {Game}
    */
-  onLevelUp = function() {
+  onLevelUp(): Game {
     return this
       .blowUpAllEnemiesAndClearBullets()
       .spawnShipIntoNewLevel()
@@ -720,7 +783,7 @@ class Game {
    *
    * @returns {Game}
    */
-  blowUpAllEnemiesAndClearBullets = function() {
+  blowUpAllEnemiesAndClearBullets(): Game {
     // Play sound of enemies and asteroids clearing
     this.sounds.nova.play()
     // Blow up all enemies
@@ -736,12 +799,12 @@ class Game {
    *
    * @returns {Game}
    */
-  blowUpAllEnemies = function() {
+  blowUpAllEnemies(): Game {
     for (let i = 0; i < this.enemies.length; i++) {
       if (this.enemies[i].type === EntityTypeEnums.EXPLOSION) continue
 
       this.enemies[i].inPlay = false
-      this.explodeEntity(this.enemies[i])
+      this.explodeEntity(this.enemies[i] as BaseEnemySprite | AsteroidSprite)
     }
 
     return this
@@ -752,14 +815,14 @@ class Game {
    *
    * @returns {Game}
    */
-  spawnShipIntoNewLevel = function() {
+  spawnShipIntoNewLevel(): Game {
     // Recover one health if ship health is less than 3
-    if (this.ship.health < 3) this.ship.health += 1
+    if (this.ship!.health < 3) this.ship!.health += 1
 
     // Respawn the ship
-    this.ship.respawnTime = 0
-    this.ship.inPlay = false
-    this.ship.respawn()
+    this.ship!.respawnTime = 0
+    this.ship!.inPlay = false
+    this.ship!.respawn()
 
     return this
   }
@@ -769,7 +832,7 @@ class Game {
    *
    * @returns {Game}
    */
-  updateLevelVariablesForNewLevel = function() {
+  updateLevelVariablesForNewLevel(): Game {
     // Increment level variable
     this.level += 1;
     this.levelStep = 0;
@@ -803,7 +866,7 @@ class Game {
    *
    * @returns {Game}
    */
-  drawGameScreen = function() {
+  drawGameScreen(): Game {
     return this
       .clearScreenForNewFrame()
       .drawShip()
@@ -817,8 +880,8 @@ class Game {
    *
    * @returns {Game}
    */
-  clearScreenForNewFrame = function() {
-    this.gameCtx.clearRect(0, 0, GameConsts.GAME_WIDTH, GameConsts.GAME_HEIGHT)
+  clearScreenForNewFrame(): Game {
+    this.gameCtx!.clearRect(0, 0, GameConsts.GAME_WIDTH, GameConsts.GAME_HEIGHT)
 
     return this
   }
@@ -828,10 +891,10 @@ class Game {
    *
    * @returns {Game}
    */
-  drawShip = function() {
-    this.ship.inPlay
-      ? this.ship.draw()
-      : this.ship.respawn();
+  drawShip(): Game {
+    this.ship!.inPlay
+      ? this.ship!.draw()
+      : this.ship!.respawn();
 
     return this
   }
@@ -841,7 +904,7 @@ class Game {
    *
    * @returns {Game}
    */
-  drawShipMissiles = function() {
+  drawShipMissiles(): Game {
     for (let i = 0; i < this.sMissiles.length; i++) {
       this.sMissiles[i].draw();
     }
@@ -854,7 +917,7 @@ class Game {
    *
    * @returns {Game}
    */
-  drawEnemies = function() {
+  drawEnemies(): Game {
     for (let i = 0; i < this.enemies.length; i++) {
       this.enemies[i].draw();
     }
@@ -867,13 +930,13 @@ class Game {
    *
    * @returns {Game}
    */
-  drawLevelMessage = function() {
+  drawLevelMessage(): Game {
     if (this.level <= 10) {
       if (this.levelMessage < 75) {
-        this.gameCtx.font = '50px \'Sarpanch\'';
-        this.gameCtx.fillStyle = '#009999'
-        this.gameCtx.textAlign = 'center';
-        this.gameCtx.fillText('Level: ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2);
+        this.gameCtx!.font = '50px \'Sarpanch\'';
+        this.gameCtx!.fillStyle = '#009999'
+        this.gameCtx!.textAlign = 'center';
+        this.gameCtx!.fillText('Level: ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2);
         this.levelMessage += 1;
       }
 
@@ -881,29 +944,29 @@ class Game {
     }
     if (this.level === 11) {
       if (this.levelMessage < 75) {
-        this.gameCtx.font = '75px \'Sarpanch\'';
-        this.gameCtx.fillStyle = '#CD5C5C'
-        this.gameCtx.textAlign = 'center';
-        this.gameCtx.fillText('YOU WIN!!!', GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2);
-        this.gameCtx.font = '50px \'Sarpanch\'';
-        this.gameCtx.textAlign = 'center';
-        this.gameCtx.fillText('Bonus Level ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 - 50);
+        this.gameCtx!.font = '75px \'Sarpanch\'';
+        this.gameCtx!.fillStyle = '#CD5C5C'
+        this.gameCtx!.textAlign = 'center';
+        this.gameCtx!.fillText('YOU WIN!!!', GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2);
+        this.gameCtx!.font = '50px \'Sarpanch\'';
+        this.gameCtx!.textAlign = 'center';
+        this.gameCtx!.fillText('Bonus Level ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 - 50);
         this.levelMessage += 1;
-        $('#scoreB').addClass('bonus');
-        $('#levelB').addClass('bonus');
+        if (this.scoreBoard) this.scoreBoard.classList.add('bonus');
+        if (this.levelBoard) this.levelBoard.classList.add('bonus');
       }
 
       return this
     }
 
     if (this.levelMessage < 75) {
-      this.gameCtx.font = '75px \'Sarpanch\'';
-      this.gameCtx.fillStyle = '#CD5C5C'
-      this.gameCtx.textAlign = 'center';
-      this.gameCtx.fillText('Survive', GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2);
-      this.gameCtx.font = '50px \'Sarpanch\'';
-      this.gameCtx.textAlign = 'center';
-      this.gameCtx.fillText('Bonus Level ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 - 50);
+      this.gameCtx!.font = '75px \'Sarpanch\'';
+      this.gameCtx!.fillStyle = '#CD5C5C'
+      this.gameCtx!.textAlign = 'center';
+      this.gameCtx!.fillText('Survive', GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2);
+      this.gameCtx!.font = '50px \'Sarpanch\'';
+      this.gameCtx!.textAlign = 'center';
+      this.gameCtx!.fillText('Bonus Level ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 - 50);
       this.levelMessage += 1;
     }
 
@@ -915,19 +978,19 @@ class Game {
    *
    * @returns {Game}
    */
-  onGameOver = function() {
-    this.gameCtx.clearRect(0, 0, GameConsts.GAME_WIDTH, GameConsts.GAME_HEIGHT);
-    this.theme.pause();
-    this.theme.currentTime = 0;
-    this.gameCtx.font = '50px \'Sarpanch\'';
-    this.gameCtx.fillStyle = '#009999'
-    this.gameCtx.textAlign = 'center';
-    this.gameCtx.fillText('Game Over', GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 - 60);
-    this.gameCtx.fillText('Level ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2);
-    this.gameCtx.fillText('Score: '+ this.score, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 + 45);
-    this.gameCtx.font = '25px \'Sarpanch\'';
-    this.gameCtx.fillText('Hit enter to play again', GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 + 95);
-    $(document).on('keydown', this.resetCall.bind(this));
+  onGameOver(): Game {
+    this.gameCtx!.clearRect(0, 0, GameConsts.GAME_WIDTH, GameConsts.GAME_HEIGHT);
+    this.theme!.pause();
+    this.theme!.currentTime = 0;
+    this.gameCtx!.font = '50px \'Sarpanch\'';
+    this.gameCtx!.fillStyle = '#009999'
+    this.gameCtx!.textAlign = 'center';
+    this.gameCtx!.fillText('Game Over', GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 - 60);
+    this.gameCtx!.fillText('Level ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2);
+    this.gameCtx!.fillText('Score: '+ this.score, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 + 45);
+    this.gameCtx!.font = '25px \'Sarpanch\'';
+    this.gameCtx!.fillText('Hit enter to play again', GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 + 95);
+    document.addEventListener('keydown', this.resetCall.bind(this));
 
     return this
   }
@@ -937,12 +1000,15 @@ class Game {
    *
    * @returns {<canvas> gameContext}
    */
-  pinGame = function() {
-    this.gameCanvas = $("<canvas width='" + GameConsts.GAME_WIDTH + "' height='" + GameConsts.GAME_HEIGHT + "'></canvas>").attr('id', 'canvas');
-    this.gameCtx = this.gameCanvas.get(0).getContext('2d');
-    this.gameCanvas.appendTo('#gameDiv');
+  pinGame(): CanvasRenderingContext2D {
+    this.gameCanvas = document.createElement('canvas');
+    this.gameCanvas.width = GameConsts.GAME_WIDTH;
+    this.gameCanvas.height = GameConsts.GAME_HEIGHT;
+    this.gameCanvas.id = 'canvas';
+    this.gameCtx = this.gameCanvas.getContext('2d')!;
+    document.getElementById('gameDiv')!.appendChild(this.gameCanvas);
 
-    return this.gameCtx
+    return this.gameCtx;
   }
 
   /**
@@ -952,9 +1018,9 @@ class Game {
    *
    * @returns {Game}
    */
-  resetCall = function(event) {
-    if (event.keyCode == 13) {
-      return this.resetGame();
+  resetCall = (event: KeyboardEvent): Game => {
+    if (event.key === 'Enter') {
+      return this.resetGame.bind(this)();
     }
 
     return this
@@ -965,7 +1031,7 @@ class Game {
    *
    * @returns {Game}
    */
-  resetGame = function() {
+  resetGame = (): Game => {
     //reset gun variables -- might be irrelevant if ship fire powerup is not yet implemented
     this.rpmCount = 0;
     this.fireRate = 3;
@@ -996,8 +1062,8 @@ class Game {
     this.asterLim = .010;
 
     //reset ship health and gun levels and send into respawn animation
-    this.ship.health = 3;
-    this.ship.changeGunLevel(1);
+    this.ship!.health = 3;
+    this.ship!.changeGunLevel(1);
     this.score = 0;
     this.gameOver = false;
 
@@ -1005,19 +1071,19 @@ class Game {
     this.playTheme();
 
     //clear canvas for a new canvas to be drawn and pinned
-    this.gameCanvas.remove();
+    this.gameCanvas!.remove();
 
     //pin new canvas
     this.pinGame();
 
     //reset default ship placement
-    this.ship.x = GameConsts.GAME_WIDTH/2;
-    this.ship.y = 625;
-    this.ship.draw();
+    this.ship!.x = GameConsts.GAME_WIDTH/2;
+    this.ship!.y = 625;
+    this.ship!.draw();
 
     //if player won the game, the score and level colors reset
-    $('#scoreB').removeClass();
-    $('#levelB').removeClass();
+    if (this.scoreBoard) this.scoreBoard.classList.remove('bonus');
+    if (this.levelBoard) this.levelBoard.classList.remove('bonus');
 
     return this
   }
@@ -1029,21 +1095,21 @@ class Game {
    *
    * @returns {Game}
    */
-  keyReader = function(event) {
-    switch (event.keyCode) {
-      case 37:
+  keyReader = (event: KeyboardEvent): Game => {
+    switch (event.key) {
+      case 'ArrowLeft':
         this.keys.lKey = true;
         break;
-      case 39:
+      case 'ArrowRight':
         this.keys.rKey = true;
         break;
-      case 32:
+      case ' ':
         this.keys.sKey = true;
         break;
-      case 38:
+      case 'ArrowUp':
         this.keys.uKey = true;
         break;
-      case 40:
+      case 'ArrowDown':
         this.keys.dKey = true;
         break;
     }
@@ -1058,21 +1124,21 @@ class Game {
    *
    * @returns {Game}
    */
-  keyRelease = function(event) {
-    switch (event.keyCode) {
-      case 37:
+  keyRelease = (event: KeyboardEvent): Game => {
+    switch (event.key) {
+      case 'ArrowLeft':
         this.keys.lKey = false;
         break;
-      case 39:
+      case 'ArrowRight':
         this.keys.rKey = false;
         break;
-      case 32:
+      case ' ':
         this.keys.sKey = false;
         break;
-      case 38:
+      case 'ArrowUp':
         this.keys.uKey = false;
         break;
-      case 40:
+      case 'ArrowDown':
         this.keys.dKey = false;
         break;
     }
@@ -1085,14 +1151,13 @@ class Game {
    *
    * @returns {Game}
    */
-  setupThemeRepeatListener = function() {
-    this.theme.addEventListener('ended', () => {
-      this.theme.currentTime = 0;
-      this.playTheme();
+  setupThemeRepeatListener = (): Game => {
+    this.theme!.addEventListener('ended', (): Game => {
+      this.theme!.currentTime = 0;
+
+      return this.playTheme.bind(this)();
     }, false);
 
     return this
   }
 }
-
-export default Game;

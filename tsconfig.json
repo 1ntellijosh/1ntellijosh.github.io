@@ -4,7 +4,7 @@
     "module": "ES2020",
     "lib": ["ES2020", "DOM"],
     "moduleResolution": "node",
-    "outDir": "src/js",
+    "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
@@ -22,7 +22,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*", "js"],
-  "exclude": ["node_modules", "src/js"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
 

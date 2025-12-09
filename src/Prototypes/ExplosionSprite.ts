@@ -13,7 +13,6 @@ export default class ExplosionSprite extends AbstractSprite {
   xSpd: number;
   travel: number;
   arcTime: number;
-  inPlay: boolean;
 
   constructor(
     gameContext: CanvasRenderingContext2D,
@@ -31,7 +30,6 @@ export default class ExplosionSprite extends AbstractSprite {
     this.xSpd = 0;
     this.travel = 1;
     this.arcTime = 5;
-    this.inPlay = true;
   }
 
   /**

@@ -21,6 +21,7 @@ export default class AbstractSprite {
   width: number;
   height: number;
   type: string;
+  inPlay: boolean;
 
   constructor(gameContext: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, type: string) {
     this.gameContext = gameContext;
@@ -29,6 +30,7 @@ export default class AbstractSprite {
     this.width = width;
     this.height = height;
     this.type = type;
+    this.inPlay = true;
   }
 
   /**

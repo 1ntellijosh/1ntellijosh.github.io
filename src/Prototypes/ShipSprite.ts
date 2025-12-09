@@ -4,6 +4,7 @@ import MissileSprite from './MissileSprite';
 import { GameConsts } from '../../src/GameConsts';
 import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
 import { ImageAssetsDict } from '../Dicts/ImageAssetsDict';
+import Mp3 from '../Mp3';
 import SoundManager from '../../src/SoundManager';
 
 // Missile Specifications data
@@ -32,7 +33,6 @@ export default class ShipSprite extends AbstractSprite {
   asset: HTMLImageElement;
   health: number;
   speed: number;
-  inPlay: boolean;
   gunLev: number;
   respawnTime: number;
   movable: boolean;
@@ -47,7 +47,6 @@ export default class ShipSprite extends AbstractSprite {
     this.asset.src = ImageAssetsDict.ship_ast.path;
     this.health = 3;
     this.speed = 9;
-    this.inPlay = true;
     this.gunLev = 1;
     this.respawnTime = 100;
     this.movable = true;

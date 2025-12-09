@@ -20,7 +20,6 @@ export default class MissileSprite extends AbstractSprite {
   xSpd: number;
   ySpd: number;
   color: string;
-  inPlay: boolean;
 
   constructor(
     gameContext: CanvasRenderingContext2D,
@@ -45,7 +44,6 @@ export default class MissileSprite extends AbstractSprite {
     this.xSpd = payload.xSpd;
     this.ySpd = payload.ySpd;
     this.color = payload.color;
-    this.inPlay = true;
   }
 
   /**

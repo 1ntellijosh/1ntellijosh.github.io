@@ -43,6 +43,8 @@ export interface SoundItem {
     readonly [key: string]: Sound;
 }
 
+export type SoundDict = SoundItem;
+
 export const SoundDict: SoundItem = Object.freeze({
     death: {
         type: 'mp3',

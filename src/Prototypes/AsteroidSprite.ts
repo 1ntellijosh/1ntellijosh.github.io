@@ -13,7 +13,6 @@ export default class AsteroidSprite extends AbstractSprite {
   xSpd: number;
   dStart: number;
   arcTime: number;
-  inPlay: boolean;
   health: number;
   scoreValue: number;
 
@@ -25,7 +24,6 @@ export default class AsteroidSprite extends AbstractSprite {
     this.xSpd = 0;
     this.dStart = 240;
     this.arcTime = 5;
-    this.inPlay = true;
     this.health = 25;
     this.scoreValue = 0;
   }

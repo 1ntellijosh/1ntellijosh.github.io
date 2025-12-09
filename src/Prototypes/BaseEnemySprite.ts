@@ -34,7 +34,6 @@ export default class BaseEnemySprite extends AbstractSprite {
   arcTime: number;
   dStart: number;
   xStart: number;
-  inPlay: boolean;
   health: number;
   scoreValue: number;
   age: number;
@@ -77,7 +76,6 @@ export default class BaseEnemySprite extends AbstractSprite {
     this.xStart = config.xStart;
     
     // Game state
-    this.inPlay = true;
     this.health = config.health || 1;
     this.scoreValue = config.scoreValue || 10;
     
@@ -140,7 +138,7 @@ export default class BaseEnemySprite extends AbstractSprite {
    * Update method - must be overridden by subclasses
    * Each enemy type has unique movement and firing patterns
    */
-  update(sMissiles: any[]): void {
+  update(_sMissiles: MissileSprite[]): void {
     throw new Error('update method must be implemented by subclass');
   }
 }
