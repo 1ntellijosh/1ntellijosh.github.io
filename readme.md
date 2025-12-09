@@ -13,9 +13,8 @@
 ### Built With:
 
 HTML  
-JavaScript  
-CSS  
-JQuery  
+Typescript
+CSS
 
 ### Check out StarFighter:
 
