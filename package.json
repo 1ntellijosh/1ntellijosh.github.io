@@ -4,13 +4,23 @@
   "description": "StarFighter game converted to TypeScript",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch",
-    "dev": "tsc --watch"
+    "dev": "vite",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.29",
-    "typescript": "^5.3.3"
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "typescript": "^5.3.3",
+    "vite": "^7.2.7"
+  },
+  "dependencies": {
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   }
 }
-

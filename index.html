@@ -2,41 +2,19 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StarFighter</title>
     <link rel="icon"
       type="image/png"
       href="https://i.imgur.com/3pJdlK3.png">
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
     <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
       crossorigin="anonymous">
     </script>
-    <style>
-    @import url('https://fonts.googleapis.com/css?family=Sarpanch');
-    </style>
   </head>
   <body>
-    <h2>StarFighter</h2>
-    <div id="main">
-      <!-- appears when game is started -->
-      <div id="left">
-        <div id="score"><div id="scoreT"><h5>SCORE</h5></div><div id="scoreB"></div></div>
-        <div id="level"><div id="levelT"><h5>LEVEL</h5></div><div id="levelB"></div></div>
-      </div>
-      <!-- dissapears when game is started -->
-      <div class="buttonWrap"><button id="start">Start</button></div>
-      <div id="gameDiv">
-        <!-- this is where the game will populate -->
-      </div>
-      <div id="right">
-        <!-- appears when game is started -->
-        <div id="healthT"><h5>HEALTH</h5><div id="health"></div></div>
-      </div>
-    </div>
-    <p id="sig">
-      Made by Joshua Payne
-    </p>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
-      <script src="dist/app.js" type="module" charset="utf-8"></script>
 </html>

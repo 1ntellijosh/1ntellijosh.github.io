@@ -10,7 +10,13 @@ import Mp3 from './Mp3';
 import EntityFactory from './Factories/EntityFactory';
 import { EntityTypeEnums } from './Enums/EntityTypeEnums';
 
+// TypeScript callback types for React state setters
+type ScoreCallback = (points: number) => void;
+type HealthCallback = (amount: number) => void;
+type SetLevelStateCallback = (level: number) => void;
+
 export default class Game {
+  gameDiv: HTMLElement;
   gameCanvas: HTMLCanvasElement | null;
   gameCtx: CanvasRenderingContext2D | null;
   keys: { lKey: boolean, rKey: boolean, uKey: boolean, dKey: boolean, sKey: boolean };
@@ -47,11 +53,18 @@ export default class Game {
   sounds: { [key: string]: Mp3 };
   theme: HTMLAudioElement | null;
   ship: ShipSprite | null;
-  scoreBoard: HTMLElement | null;
-  levelBoard: HTMLElement | null;
-  healthBoard: HTMLElement | null;
+  // React callback functions
+  setScoreState: ScoreCallback;
+  setLevelState: SetLevelStateCallback;
+  setHealthState: HealthCallback;
 
-  constructor() {
+  constructor(
+    gameDiv: HTMLElement,
+    setScoreState: ScoreCallback,
+    setLevelState: SetLevelStateCallback,
+    setHealthState: HealthCallback,
+  ) {
+    this.gameDiv = gameDiv;
     this.gameCanvas = null;
     this.gameCtx = null;
     // keyboard keys to add listeners to
@@ -115,11 +128,12 @@ export default class Game {
       nova: soundMgr.get('nova')
     }
     this.theme = soundMgr.loadTheme('firstTheme');
-    // Null values will instantiate in drawBoard function
+    // Null values will instantiate in instantiateGameContextAndAssets function
     this.ship = null
-    this.scoreBoard = null;
-    this.levelBoard = null;
-    this.healthBoard = null;
+    // Store React callbacks
+    this.setScoreState = setScoreState;
+    this.setLevelState = setLevelState;
+    this.setHealthState = setHealthState;
   }
 
   /**
@@ -129,48 +143,10 @@ export default class Game {
    */
   drawBoard(): Game {
     this
-      .removeNonGameElements()
-      .displayGameUiElements()
       .instantiateGameContextAndAssets()
       .setFrameRateAndFrameOperations()
       .playTheme()
       .setupKeyboardListeners()
-
-    return this
-  }
-
-  /**
-   * Removes the non-game elements from the screen (when game is started)
-   *
-   * @returns {Game}
-   */
-  removeNonGameElements(): Game {
-    const startButton = document.getElementById('start');
-    if (startButton) startButton.remove();
-    
-    const buttonWraps = document.querySelectorAll('.buttonWrap');
-    buttonWraps.forEach(el => el.remove());
-    
-    const h2Elements = document.querySelectorAll('h2');
-    h2Elements.forEach(el => el.remove());
-    
-    const mainElement = document.getElementById('main');
-    if (mainElement) mainElement.style.paddingTop = '75px';
-
-    return this
-  }
-
-  /**
-   * Displays the game UI elements for level health and score (when game is started)
-   *
-   * @returns {Game}
-   */
-  displayGameUiElements(): Game {
-    const leftElement = document.getElementById('left');
-    if (leftElement) leftElement.style.display = 'flex';
-    
-    const rightElement = document.getElementById('right');
-    if (rightElement) rightElement.style.display = 'flex';
 
     return this
   }
@@ -184,11 +160,6 @@ export default class Game {
     const gameCtx = this.pinGame();
 
     this.ship = EntityFactory.create(gameCtx, EntityTypeEnums.SHIP) as ShipSprite;
-
-    //grabs score level and health elements to populate them
-    this.scoreBoard = document.getElementById('scoreB');
-    this.levelBoard = document.getElementById('levelB');
-    this.healthBoard = document.getElementById('health');
 
     return this
   }
@@ -218,7 +189,6 @@ export default class Game {
       return this
         .updateDataForNewFrame()
         .drawGameScreen()
-        .updateBoards()
     }
 
     /**
@@ -611,6 +581,8 @@ export default class Game {
   incrementScoreOnEnemyHit(enemy: BaseEnemySprite | AsteroidSprite): Game {
     this.score += enemy.scoreValue
     this.pointCount += enemy.scoreValue
+    // Update React state via callback
+    this.setScoreState(this.score);
 
     return this
   }
@@ -624,6 +596,8 @@ export default class Game {
     this.sounds.blowUp.play();
     this.sounds.death.play();
     this.ship!.health -= 1;
+    // Update React state via callback
+    this.setHealthState(this.ship!.health);
     this.explodeEntity(this.ship! as ShipSprite);
     this.ship!.respawnTime = 0;
     this.ship!.inPlay = false;
@@ -662,49 +636,6 @@ export default class Game {
       this.sounds.boost.play();
 
       return this
-    }
-
-    return this
-  }
-
-  /**
-   * Updates level score and health boards. called every frame from update function
-   *
-   * @returns {Game}
-   */
-  updateBoards(): Game {
-    this.levelBoard!.textContent = this.level.toString();
-
-    return this
-      .updateScoreBoard()
-      .updateHealthBoard()
-  }
-
-  /**
-   * Updates the score board
-   *
-   * @returns {Game}
-   */
-  updateScoreBoard(): Game {
-    this.scoreBoard!.innerHTML = '';
-    const newScore = document.createElement('p');
-    newScore.textContent = this.score.toString();
-    this.scoreBoard!.appendChild(newScore);
-
-    return this
-  }
-
-  /**
-   * Updates the health board
-   *
-   * @returns {Game}
-   */
-  updateHealthBoard(): Game {
-    this.healthBoard!.innerHTML = '';
-    for (let i = 0; i < this.ship!.health; i++) {
-      const healthDiv = document.createElement('div');
-      healthDiv.id = 'healthBar';
-      this.healthBoard!.appendChild(healthDiv);
     }
 
     return this
@@ -817,7 +748,11 @@ export default class Game {
    */
   spawnShipIntoNewLevel(): Game {
     // Recover one health if ship health is less than 3
-    if (this.ship!.health < 3) this.ship!.health += 1
+    if (this.ship!.health < 3) {
+      this.ship!.health += 1;
+      // Update React state via callback
+      this.setHealthState(this.ship!.health);
+    }
 
     // Respawn the ship
     this.ship!.respawnTime = 0
@@ -838,6 +773,8 @@ export default class Game {
     this.levelStep = 0;
     // Mark variable to draw level on the sreen
     this.levelMessage = 0;
+    // Update React state via callback
+    this.setLevelState(this.level);
     // Reset relevant variables
     this.frameCount = 0;
     this.enemyBatch = [];
@@ -952,8 +889,6 @@ export default class Game {
         this.gameCtx!.textAlign = 'center';
         this.gameCtx!.fillText('Bonus Level ' + this.level, GameConsts.GAME_WIDTH/2, GameConsts.GAME_HEIGHT/2 - 50);
         this.levelMessage += 1;
-        if (this.scoreBoard) this.scoreBoard.classList.add('bonus');
-        if (this.levelBoard) this.levelBoard.classList.add('bonus');
       }
 
       return this
@@ -1001,12 +936,20 @@ export default class Game {
    * @returns {<canvas> gameContext}
    */
   pinGame(): CanvasRenderingContext2D {
+    // Remove existing canvas if it exists
+    const existingCanvas = document.getElementById('canvas');
+    if (existingCanvas) {
+      existingCanvas.remove();
+    }
+
     this.gameCanvas = document.createElement('canvas');
     this.gameCanvas.width = GameConsts.GAME_WIDTH;
     this.gameCanvas.height = GameConsts.GAME_HEIGHT;
     this.gameCanvas.id = 'canvas';
     this.gameCtx = this.gameCanvas.getContext('2d')!;
-    document.getElementById('gameDiv')!.appendChild(this.gameCanvas);
+    if (this.gameDiv) {
+      this.gameDiv.appendChild(this.gameCanvas);
+    }
 
     return this.gameCtx;
   }
@@ -1047,6 +990,7 @@ export default class Game {
     //reset game variables
     this.frameCount = 0;
     this.level = 1;
+    // Update React state via callback
     this.levelStep = 0;
     this.levelMessage = 75;
     this.spawnRange = 130;
@@ -1066,6 +1010,10 @@ export default class Game {
     this.ship!.changeGunLevel(1);
     this.score = 0;
     this.gameOver = false;
+    // Update React state via callbacks
+    this.setScoreState(0);
+    this.setLevelState(1);
+    this.setHealthState(3);
 
     this.sounds.rez.play();
     this.playTheme();
@@ -1080,10 +1028,6 @@ export default class Game {
     this.ship!.x = GameConsts.GAME_WIDTH/2;
     this.ship!.y = 625;
     this.ship!.draw();
-
-    //if player won the game, the score and level colors reset
-    if (this.scoreBoard) this.scoreBoard.classList.remove('bonus');
-    if (this.levelBoard) this.levelBoard.classList.remove('bonus');
 
     return this
   }

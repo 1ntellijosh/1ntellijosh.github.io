@@ -3,6 +3,8 @@ node_modules/
 .DS_Store
 *.tsbuildinfo
 
-# Compiled JavaScript output
+# Vite build output
 dist/
+dist-ssr/
+*.local
 

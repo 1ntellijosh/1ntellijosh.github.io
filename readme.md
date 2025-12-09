@@ -9,10 +9,31 @@
 
 ### To win you must get through level 10, but the game will continue to go and get harder with more and more enemies. If you get 1000 points without dying, your gun upgrades and will again if you get another 1000. Run out of health, game over. Progress a level and you are granted one health bar.Arrow keys to move, and spacebar to shoot.
 
+## How to Run
+
+### Development Server
+```bash
+npm run dev
+```
+Opens at `http://localhost:5173` (or next available port)
+
+### Production Build
+```bash
+npm run build
+```
+Creates optimized build in `dist/` folder
+
+### Preview Production Build
+```bash
+npm run preview
+```
+Preview the production build locally
+
 
 ### Built With:
 
-HTML  
+Vite
+React
 Typescript
 CSS
 
@@ -24,7 +45,7 @@ CSS
 
 The first great challenge was simply learning how to create the game engine. I had never worked with the HTML canvas element and its draw/ctx functions before. Once I got the concepts down, I could draw objects on the canvas. The next step was applying the setInterval method to the canvas draw methods, and you could create frames and therefore, animation. Finally, you map keyboard inputs to the direction the object (your ship) should go on the map, and the basic game engine was set. I was really able to run away with whatever I wanted to do from there.
 
-The most challenging part of the game had to be the collision detection. This was handled in my hits() method in js/app.js. It was pretty hard to wrap my head around, but after drawing an, x-y graph on a piece of paper, I was able to write a method that would would return true if object 1's canvas range was overlapping with object 2's canvas range, and therefore a collision occurred. This method would would be called between every frame, and it would test every object on the screen with each-other to determine collisions. These collisions included asteroid to ship, ship bullet to asteroid, ship bullet to enemy ship, and enemy bullet to ship. Each collision would be handled differently, but the hits method triggered them all.
+The most challenging part of the game had to be the collision detection. This was handled in my hits() method in Game.ts. It was pretty hard to wrap my head around, but after drawing an, x-y graph on a piece of paper, I was able to write a method that would would return true if object 1's canvas range was overlapping with object 2's canvas range, and therefore a collision occurred. This method would would be called between every frame, and it would test every object on the screen with each-other to determine collisions. These collisions included asteroid to ship, ship bullet to asteroid, ship bullet to enemy ship, and enemy bullet to ship. Each collision would be handled differently, but the hits method triggered them all.
 
 ### Future Goals:
 

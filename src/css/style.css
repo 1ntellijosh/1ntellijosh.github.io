@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css?family=Play|Syncopate|Electrolize|Gugi|Iceberg|Orbitron|Sarpanch');
+/* obtained from google fonts */
+
+html, body{
+  padding: 0;
+  margin: 0;
+}
+html{
+  height: 100%;
+}
+body {
+  margin: 0 auto;
+  background:black;
+  background-size: cover;
+  background-repeat:   repeat;
+  min-height: 100%;
+  color: #009999;
+  text-align: center;
+}
+
+@keyframes backgroundScroll {
+  from {background-position: 0 0;}
+  to {background-position: 0px 180px;}
+}
+
+@-webkit-keyframes backgroundScroll {
+  from {background-position: 0 0;}
+  to {background-position: 0px 180px;}
+}
+
+#canvas {
+  border: 2px solid #009999;
+  border-radius: 20px;
+  background-color: black;
+  background-image:url('/images/spacegalaxy.jpg');
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-size:100%;
+  font-size: 12px;
+  font-family: 'Dancing Script', cursive;
+  -webkit-animation: backgroundScroll 30s linear 1;
+  -webkit-animation-fill-mode: forwards;
+  animation: backgroundScroll 30s linear 1;
+  animation-fill-mode: forwards;
+}
+
+#sig {
+  position: fixed;
+  bottom:5px;
+  font-size: 1em;
+  border: 2px solid #009999;
+  font-family: 'Play';
+}
+
