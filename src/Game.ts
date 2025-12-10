@@ -19,7 +19,7 @@ export default class Game {
   gameDiv: HTMLElement;
   gameCanvas: HTMLCanvasElement | null;
   gameCtx: CanvasRenderingContext2D | null;
-  keys: { lKey: boolean, rKey: boolean, uKey: boolean, dKey: boolean, sKey: boolean };
+  keys: { a: boolean, d: boolean, w: boolean, s: boolean, space: boolean };
   rpmCount: number;
   fireRate: number;
   clip: number;
@@ -60,6 +60,7 @@ export default class Game {
 
   constructor(
     gameDiv: HTMLElement,
+    keys: { w: boolean, a: boolean, s: boolean, d: boolean, space: boolean },
     setScoreState: ScoreCallback,
     setLevelState: SetLevelStateCallback,
     setHealthState: HealthCallback,
@@ -68,13 +69,7 @@ export default class Game {
     this.gameCanvas = null;
     this.gameCtx = null;
     // keyboard keys to add listeners to
-    this.keys = {
-      lKey: false,
-      rKey: false,
-      uKey: false,
-      dKey: false,
-      sKey: false,
-    }
+    this.keys = keys;
     //gun fire rate modifiers
     this.rpmCount = 0;
     this.fireRate = 3;
@@ -146,7 +141,6 @@ export default class Game {
       .instantiateGameContextAndAssets()
       .setFrameRateAndFrameOperations()
       .playTheme()
-      .setupKeyboardListeners()
 
     return this
   }
@@ -210,18 +204,6 @@ export default class Game {
   }
 
   /**
-   * Sets up the keyboard listeners for controls of the game
-   *
-   * @returns {Game}
-   */
-  setupKeyboardListeners(): Game {
-    document.addEventListener('keydown', this.keyReader.bind(this));
-    document.addEventListener('keyup', this.keyRelease.bind(this));
-
-    return this
-  }
-
-  /**
    * Handles the ship missile fire
    *
    * @returns {Game}
@@ -230,9 +212,9 @@ export default class Game {
     if (!this.canProcessMissileFire()) return this
 
     if (this.fireMissilesInputActivated()) {
-      if (this.keys.lKey) return this.fireShipMissile(-this.ship!.speed/15).checkAndResetShipClipAndMag()
+      if (this.keys.a) return this.fireShipMissile(-this.ship!.speed/15).checkAndResetShipClipAndMag()
 
-      if (this.keys.rKey == true) return this.fireShipMissile(this.ship!.speed/15).checkAndResetShipClipAndMag()
+      if (this.keys.d == true) return this.fireShipMissile(this.ship!.speed/15).checkAndResetShipClipAndMag()
 
       return this
         .fireShipMissile(0)
@@ -257,7 +239,7 @@ export default class Game {
    * @returns {boolean} True if missile fire input is activated
    */
   fireMissilesInputActivated(): boolean {
-    return this.keys.sKey && this.rpmCount >= this.fireRate && this.ship!.movable
+    return this.keys.space && this.rpmCount >= this.fireRate && this.ship!.movable
   }
 
   /**
@@ -1028,64 +1010,6 @@ export default class Game {
     this.ship!.x = GameConsts.GAME_WIDTH/2;
     this.ship!.y = 625;
     this.ship!.draw();
-
-    return this
-  }
-
-  /**
-   * Handler for key strokes set the pressed down keys to true
-   *
-   * @param {Event} event - The key event
-   *
-   * @returns {Game}
-   */
-  keyReader = (event: KeyboardEvent): Game => {
-    switch (event.key) {
-      case 'ArrowLeft':
-        this.keys.lKey = true;
-        break;
-      case 'ArrowRight':
-        this.keys.rKey = true;
-        break;
-      case ' ':
-        this.keys.sKey = true;
-        break;
-      case 'ArrowUp':
-        this.keys.uKey = true;
-        break;
-      case 'ArrowDown':
-        this.keys.dKey = true;
-        break;
-    }
-
-    return this
-  }
-
-  /**
-   * Handles the key strokes for released keys to false
-   *
-   * @param {Event} event - The key event
-   *
-   * @returns {Game}
-   */
-  keyRelease = (event: KeyboardEvent): Game => {
-    switch (event.key) {
-      case 'ArrowLeft':
-        this.keys.lKey = false;
-        break;
-      case 'ArrowRight':
-        this.keys.rKey = false;
-        break;
-      case ' ':
-        this.keys.sKey = false;
-        break;
-      case 'ArrowUp':
-        this.keys.uKey = false;
-        break;
-      case 'ArrowDown':
-        this.keys.dKey = false;
-        break;
-    }
 
     return this
   }

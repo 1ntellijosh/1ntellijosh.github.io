@@ -17,7 +17,7 @@ export default class SoundManager {
   constructor() {
     this.sounds = {};
     this.theme = null;
-    this.baseUrl = 'https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/';
+    this.baseUrl = ''; // No longer needed - using local paths
     
     // Load all sounds
     this.loadSounds(SoundDict);
@@ -60,7 +60,13 @@ export default class SoundManager {
    * @returns {Audio} - The Audio object.
    */
   loadAudio(config: Theme): HTMLAudioElement {
-    return new Audio(config.path);
+    // Encode the path to handle spaces and special characters in URLs
+    const pathParts = config.path.split('/');
+    const encodedPath = pathParts.map((segment, index) => {
+      if (segment === '') return '';
+      return encodeURIComponent(segment);
+    }).join('/');
+    return new Audio(encodedPath);
   }
 
   /**

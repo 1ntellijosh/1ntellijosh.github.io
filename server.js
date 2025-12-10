@@ -9,7 +9,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Serve static files from the dist directory
-app.use(express.static(join(__dirname, 'dist')));
+// Set proper headers for audio files and handle spaces in paths
+app.use(express.static(join(__dirname, 'dist'), {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.mp3') || path.endsWith('.wav') || path.endsWith('.ogg')) {
+      res.setHeader('Content-Type', path.endsWith('.mp3') ? 'audio/mpeg' : 
+                    path.endsWith('.wav') ? 'audio/wav' : 'audio/ogg');
+      res.setHeader('Accept-Ranges', 'bytes');
+    }
+  }
+}));
 
 // Handle React Router - serve index.html for all routes
 app.get('*', (req, res) => {

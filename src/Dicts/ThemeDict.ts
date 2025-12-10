@@ -21,7 +21,7 @@ export interface ThemeItem {
 export const ThemeDict: ThemeItem = Object.freeze({
     firstTheme: {
         type: 'audio',
-        path: 'music and sounds/Superboy.mp3'
+        path: '/music and sounds/Superboy.mp3'
         // royalty free music purchased and licensed from dl-sounds.com to joshua payne 11:10pm 6/19/18
     }
 } as const);

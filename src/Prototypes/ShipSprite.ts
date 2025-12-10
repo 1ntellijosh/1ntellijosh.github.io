@@ -75,17 +75,17 @@ export default class ShipSprite extends AbstractSprite {
    *
    * @returns {Game}
    */
-  updateShipMovement(keys: { lKey: boolean, rKey: boolean, uKey: boolean, dKey: boolean }): AbstractSprite {
-    if (keys.lKey == true && this.x > 0 && this.movable == true) {
+  updateShipMovement(keys: { a: boolean, d: boolean, w: boolean, s: boolean }): AbstractSprite {
+    if (keys.a == true && this.x > 0 && this.movable == true) {
       this.x -= this.speed;
     }
-    if (keys.rKey == true && this.x < 630 && this.movable == true) {
+    if (keys.d == true && this.x < 630 && this.movable == true) {
       this.x += this.speed;
     }
-    if (keys.uKey == true && this.y > 30 && this.movable == true) {
+    if (keys.w == true && this.y > 30 && this.movable == true) {
       this.y -= this.speed;
     }
-    if (keys.dKey == true && this.y < 740 && this.movable == true) {
+    if (keys.s == true && this.y < 740 && this.movable == true) {
       this.y += this.speed;
     }
 

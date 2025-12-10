@@ -31,7 +31,8 @@
  * @since abstract--JP
  */
 
-const baseUrl = 'https://raw.githubusercontent.com/1ntellijosh/1ntellijosh.github.io/master/music%20and%20sounds/';
+// Use local paths from public folder (served at root)
+const basePath = '/music and sounds/';
 
 export interface Sound {
     type: string;
@@ -48,57 +49,57 @@ export type SoundDict = SoundItem;
 export const SoundDict: SoundItem = Object.freeze({
     death: {
         type: 'mp3',
-        path: baseUrl + 'zapsplat_multimedia_game_lose_negative_004.mp3',
+        path: basePath + 'zapsplat_multimedia_game_lose_negative_004.mp3',
         noOverlap: true,
     },
     tap: {
         type: 'mp3',
-        path: baseUrl + 'little_robot_sound_factory_Hit_01%20(1).mp3',
+        path: basePath + 'little_robot_sound_factory_Hit_01 (1).mp3',
         noOverlap: false,
     },
     blowUp: {
         type: 'mp3',
-        path: baseUrl + 'little_robot_sound_factory_Explosion_03.mp3',
+        path: basePath + 'little_robot_sound_factory_Explosion_03.mp3',
         noOverlap: false,
     },
     rez: {
         type: 'mp3',
-        path: baseUrl + 'multimedia_retro_game_ping.mp3',
+        path: basePath + 'multimedia_retro_game_ping.mp3',
         noOverlap: true,
     },
     fgFire: {
         type: 'mp3',
-        path: baseUrl + 'leisure_video_game_retro_laser_gun_fire_003.mp3',
+        path: basePath + 'leisure_video_game_retro_laser_gun_fire_003.mp3',
         noOverlap: false,
     },
     bcFire: {   
         type: 'mp3',
-        path: baseUrl + 'little_robot_sound_factory_Shoot_01.mp3',
+        path: basePath + 'little_robot_sound_factory_Shoot_01.mp3',
         noOverlap: false,
     },
     shoot: {
         type: 'mp3',
-        path: baseUrl + 'little_robot_sound_factory_Hit_00.mp3',
+        path: basePath + 'little_robot_sound_factory_Hit_00.mp3',
         noOverlap: false,
     },
     shoot2: {
         type: 'mp3',
-        path: baseUrl + 'sfx_wpn_machinegun_loop9.wav',
+        path: basePath + 'sfx_wpn_machinegun_loop9.wav',
         noOverlap: true,
     },
     shoot3: {
         type: 'mp3',
-        path: baseUrl + 'Sfx%20RVGSE1%20Bleep%201.wav',
+        path: basePath + 'Sfx RVGSE1 Bleep 1.wav',
         noOverlap: true,
     },
     boost: {
         type: 'mp3',
-        path: baseUrl + 'zapsplat_multimedia_game_one_up_extra_life_005.mp3',
+        path: basePath + 'zapsplat_multimedia_game_one_up_extra_life_005.mp3',
         noOverlap: true,
     },
     nova: {
         type: 'mp3',
-        path: baseUrl + 'zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3',
+        path: basePath + 'zapsplat_multimedia_retro_game_explode_disintergrate_17657.mp3',
         noOverlap: true,
     }
 } as const);

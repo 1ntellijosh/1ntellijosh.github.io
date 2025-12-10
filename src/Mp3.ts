@@ -22,18 +22,26 @@ export default class Mp3 {
     this.pool = [];
     this.currentIndex = 0;
     
+    // Encode the file path to handle spaces and special characters in URLs
+    // Split the path and encode each segment (but preserve leading /), then join with /
+    const pathParts = file.split('/');
+    const encodedPath = pathParts.map((segment, index) => {
+      // Don't encode empty segments (like the leading empty string from split)
+      if (segment === '') return '';
+      // Encode each path segment to handle spaces and special characters
+      return encodeURIComponent(segment);
+    }).join('/');
+    
     // Create a pool of audio elements for overlapping playback
     for (let i = 0; i < poolSize; i++) {
       const audio = document.createElement("audio");
-      audio.src = file;
+      audio.src = encodedPath;
       audio.setAttribute("preload", "auto");
       audio.setAttribute("controls", "none");
       audio.style.display = "none";
       
       // Add error handling for loading issues
-      audio.addEventListener('error', (e) => {
-        console.warn(`Audio loading error for ${file}:`, e);
-      });
+      audio.addEventListener('error', (e) => {});
       
       document.body.appendChild(audio);
       this.pool.push(audio);
@@ -51,9 +59,7 @@ export default class Mp3 {
    */
   play(): Mp3 {
     if (this.poolSize === 1) {
-      this.mp3.play().catch(err => {
-        console.warn('Audio play failed:', err);
-      });
+      this.mp3.play().catch(err => {});
 
       return this;
     }
@@ -90,12 +96,7 @@ export default class Mp3 {
     }
     
     // Play the sound
-    audio.play().catch(err => {
-      // Handle autoplay restrictions and loading errors gracefully
-      if (err.name !== 'NotAllowedError') {
-        console.warn('Audio play failed:', err);
-      }
-    });
+    audio.play().catch(err => {});
 
     return this;
   }
