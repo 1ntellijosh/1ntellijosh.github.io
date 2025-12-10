@@ -532,7 +532,7 @@ export default class Game {
     enemy.health -= 1
 
     if (enemy.type !== EntityTypeEnums.ASTEROID) {
-      return this.incrementScoreOnEnemyHit(enemy)
+      return this.incrementScoreOnEnemyHit(1)
     }
 
     return this
@@ -550,19 +550,19 @@ export default class Game {
     this.explodeEntity(enemy as BaseEnemySprite | AsteroidSprite)
     enemy.inPlay = false
 
-    return this.incrementScoreOnEnemyHit(enemy)
+    return this.incrementScoreOnEnemyHit(enemy.scoreValue)
   }
 
   /**
-   * Increments the score on an enemy hit
+   * Increments the score on an enemy hit/explosion
    *
-   * @param {Object} enemy - The enemy sprite
+   * @param {number} scoreValue - The score value to increment
    *
    * @returns {Game}
    */
-  incrementScoreOnEnemyHit(enemy: BaseEnemySprite | AsteroidSprite): Game {
-    this.score += enemy.scoreValue
-    this.pointCount += enemy.scoreValue
+  incrementScoreOnEnemyHit(scoreValue: number): Game {
+    this.score += scoreValue
+    this.pointCount += scoreValue
     // Update React state via callback
     this.setScoreState(this.score);
 

@@ -9,11 +9,18 @@ import SoundManager from '../SoundManager';
 export default function GameScreen() {
   const gameRef = React.useRef<Game | null>(null);
   const gameDivRef = React.useRef<HTMLDivElement>(null);
-  const keysRef = React.useRef<{ w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }>({ w: false, a: false, s: false, d: false, space: false });
   const [health, setHealth] = React.useState<number>(100);
   const [score, setScore] = React.useState<number>(0);
   const [level, setLevel] = React.useState<number>(1);
+  /**
+   * State for the keys
+   * keys is the state of the keys that triggers React rendering of the UI in GameScreen.tsx
+   * keysRef is the ref to the keys that is used to update the state of the keys for the Game class instance
+   * This is a common pattern when mixing React and vanilla JavaScript classes (e.g. Game.ts class instance and
+   * GameScreen.tsx component instance)
+   */
   const [keys, setKeys] = React.useState<{ w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }>({ w: false, a: false, s: false, d: false, space: false });
+  const keysRef = React.useRef<{ w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }>({ w: false, a: false, s: false, d: false, space: false });
 
   const setScoreState = (score: number): void => {
     setScore(score);
@@ -25,6 +32,10 @@ export default function GameScreen() {
 
   const setHealthState = (health: number): void => {
     setHealth(health);
+  };
+
+  const onKeysUpdated = (keys: { w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }): void => {
+    setKeys(keys);
   };
 
   /**
@@ -111,10 +122,6 @@ export default function GameScreen() {
     if (updated) {
       onKeysUpdated(newKeys);
     }
-  };
-
-  const onKeysUpdated = (keys: { w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }): void => {
-    setKeys(keys);
   };
 
   /**

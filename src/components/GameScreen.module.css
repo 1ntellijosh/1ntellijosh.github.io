@@ -29,7 +29,11 @@
     justify-content: center;
     align-items: center;
     width: 300px;
-    height: 100px
+    height: 110px
+}
+
+.directionKeysWrapper > div:first-child {
+  margin-bottom: 10px;
 }
 
 .directionKeyRow {
