@@ -986,10 +986,6 @@ export default class Game {
     this.roundCount = 0;
     this.spawnLimit = 5;
     this.asterLim = .010;
-
-    //reset ship health and gun levels and send into respawn animation
-    this.ship!.health = 3;
-    this.ship!.changeGunLevel(1);
     this.score = 0;
     this.gameOver = false;
     // Update React state via callbacks
@@ -1007,9 +1003,11 @@ export default class Game {
     this.pinGame();
 
     //reset default ship placement
-    this.ship!.x = GameConsts.GAME_WIDTH/2;
-    this.ship!.y = 625;
-    this.ship!.draw();
+    this.ship = null;
+    this.ship = EntityFactory.create(this.gameCtx!, EntityTypeEnums.SHIP) as ShipSprite;
+    this.ship.respawn();
+    // Create new SoundManager singleton instance
+    new SoundManager();
 
     return this
   }

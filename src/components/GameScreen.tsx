@@ -4,6 +4,7 @@ import LeftPanel from './LeftPanel';
 import RightPanel from './RightPanel';
 import ControlPanel from './ControlPanel';
 import Game from '../Game';
+import SoundManager from '../SoundManager';
 
 export default function GameScreen() {
   const gameRef = React.useRef<Game | null>(null);
@@ -25,7 +26,6 @@ export default function GameScreen() {
   const setHealthState = (health: number): void => {
     setHealth(health);
   };
-
 
   /**
    * Handler for key strokes set the pressed down keys to true
@@ -149,6 +149,22 @@ export default function GameScreen() {
       document.removeEventListener('keyup', keyRelease);
       
       if (gameRef.current) {
+        // Cleanup sounds
+        if (gameRef.current.sounds) {
+          Object.values(gameRef.current.sounds).forEach(sound => {
+            if (sound && typeof sound.cleanup === 'function') {
+              sound.cleanup();
+            }
+          });
+        }
+        
+        // Cleanup theme
+        if (gameRef.current.theme) {
+          gameRef.current.theme.pause();
+          gameRef.current.theme.src = '';
+          gameRef.current.theme.load();
+        }
+        
         const canvas = document.getElementById('canvas');
         if (canvas) {
           canvas.remove();
@@ -159,6 +175,9 @@ export default function GameScreen() {
         $(document).off('keyup');
         gameRef.current = null;
       }
+      
+      // Reset SoundManager singleton to cleanup all audio elements
+      SoundManager.resetInstance();
     };
   }, []); // Empty dependency array = runs once on mount
 

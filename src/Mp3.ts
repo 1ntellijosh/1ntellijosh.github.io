@@ -25,7 +25,7 @@ export default class Mp3 {
     // Encode the file path to handle spaces and special characters in URLs
     // Split the path and encode each segment (but preserve leading /), then join with /
     const pathParts = file.split('/');
-    const encodedPath = pathParts.map((segment, index) => {
+    const encodedPath = pathParts.map((segment) => {
       // Don't encode empty segments (like the leading empty string from split)
       if (segment === '') return '';
       // Encode each path segment to handle spaces and special characters
@@ -119,6 +119,32 @@ export default class Mp3 {
       audio.currentTime = 0;
     });
 
+    return this;
+  }
+
+  /**
+   * Cleans up all audio elements from the DOM
+   * Call this when the sound is no longer needed to prevent memory leaks
+   *
+   * @returns {Mp3} - The Mp3 object.
+   */
+  cleanup(): Mp3 {
+    // Stop all audio instances
+    this.stop();
+    
+    // Remove all audio elements from DOM
+    this.pool.forEach(audio => {
+      audio.pause();
+      audio.src = ''; // Clear source to release resources
+      audio.load(); // Reset the element
+      if (audio.parentNode) {
+        audio.parentNode.removeChild(audio);
+      }
+    });
+    
+    // Clear the pool
+    this.pool = [];
+    
     return this;
   }
 }

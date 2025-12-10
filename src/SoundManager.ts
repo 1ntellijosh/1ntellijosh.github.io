@@ -9,18 +9,51 @@ import { ThemeDict, Theme } from './Dicts/ThemeDict';
  * @since abstract--JP
  */
 
+// Singleton instance
+let soundManagerInstance: SoundManager | null = null;
+
 export default class SoundManager {
   sounds: { [key: string]: Mp3 };
   theme: HTMLAudioElement | null;
   baseUrl: string;
 
   constructor() {
+    // Return existing instance if it exists (singleton pattern)
+    if (soundManagerInstance) {
+      return soundManagerInstance;
+    }
+
     this.sounds = {};
     this.theme = null;
     this.baseUrl = ''; // No longer needed - using local paths
     
     // Load all sounds
     this.loadSounds(SoundDict);
+    
+    // Store as singleton instance
+    soundManagerInstance = this;
+  }
+
+  /**
+   * Get the singleton instance (creates if doesn't exist)
+   * 
+   * @returns {SoundManager} - The SoundManager singleton instance
+   */
+  static getInstance(): SoundManager {
+    if (!soundManagerInstance) {
+      soundManagerInstance = new SoundManager();
+    }
+    return soundManagerInstance;
+  }
+
+  /**
+   * Reset the singleton instance (useful for testing or cleanup)
+   */
+  static resetInstance(): void {
+    if (soundManagerInstance) {
+      soundManagerInstance.cleanup();
+      soundManagerInstance = null;
+    }
   }
   
   /**
@@ -129,5 +162,32 @@ export default class SoundManager {
     if (!this.sounds[name]) throw new Error(`Sound ${name} not found`)
     
     return this.sounds[name];
+  }
+
+  /**
+   * Cleans up all sounds and theme, removing audio elements from DOM
+   * Call this when the SoundManager is no longer needed
+   *
+   * @returns {SoundManager} - The SoundManager object.
+   */
+  cleanup(): SoundManager {
+    // Cleanup all sounds
+    Object.values(this.sounds).forEach(sound => {
+      sound.cleanup();
+    });
+    this.sounds = {};
+
+    // Cleanup theme
+    if (this.theme) {
+      this.theme.pause();
+      this.theme.src = '';
+      this.theme.load();
+      if (this.theme.parentNode) {
+        this.theme.parentNode.removeChild(this.theme);
+      }
+      this.theme = null;
+    }
+
+    return this;
   }
 }
