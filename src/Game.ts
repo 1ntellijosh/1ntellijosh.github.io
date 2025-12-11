@@ -14,6 +14,7 @@ import { EntityTypeEnums } from './Enums/EntityTypeEnums';
 type ScoreCallback = (points: number) => void;
 type HealthCallback = (amount: number) => void;
 type SetLevelStateCallback = (level: number) => void;
+type SetGunLevelStateCallback = (gunLevel: number) => void;
 
 export default class Game {
   gameDiv: HTMLElement;
@@ -21,11 +22,6 @@ export default class Game {
   gameCtx: CanvasRenderingContext2D | null;
   keys: { a: boolean, d: boolean, w: boolean, s: boolean, space: boolean };
   rpmCount: number;
-  fireRate: number;
-  clip: number;
-  clipSize: number;
-  clipReady: number;
-  mag: number;
   pointCount: number;
   sMissiles: MissileSprite[];
   enemies: (BaseEnemySprite | AsteroidSprite | ExplosionSprite)[];
@@ -57,6 +53,7 @@ export default class Game {
   setScoreState: ScoreCallback;
   setLevelState: SetLevelStateCallback;
   setHealthState: HealthCallback;
+  setGunLevelState: SetGunLevelStateCallback;
 
   constructor(
     gameDiv: HTMLElement,
@@ -64,6 +61,7 @@ export default class Game {
     setScoreState: ScoreCallback,
     setLevelState: SetLevelStateCallback,
     setHealthState: HealthCallback,
+    setGunLevelState: SetGunLevelStateCallback
   ) {
     this.gameDiv = gameDiv;
     this.gameCanvas = null;
@@ -72,11 +70,6 @@ export default class Game {
     this.keys = keys;
     //gun fire rate modifiers
     this.rpmCount = 0;
-    this.fireRate = 3;
-    this.clip = 0;
-    this.clipSize = 4;
-    this.clipReady = 6;
-    this.mag = 0;
     this.pointCount = 0;
     //arrays for handling every enemy and bullet on screen, as well as enemy spawn types and asteroid placements
     this.sMissiles = [];
@@ -129,6 +122,7 @@ export default class Game {
     this.setScoreState = setScoreState;
     this.setLevelState = setLevelState;
     this.setHealthState = setHealthState;
+    this.setGunLevelState = setGunLevelState;
   }
 
   /**
@@ -164,7 +158,7 @@ export default class Game {
    * @returns {Game}
    */
   setFrameRateAndFrameOperations(): Game {
-    setInterval(this.onNewFrame.bind(this), 1000/GameConsts.FPS);
+    setInterval(this.onNewFrame.bind(this), GameConsts.FRAME_RATE);
 
     return this
   }
@@ -230,7 +224,7 @@ export default class Game {
    * @returns {boolean} True if missile fire can be processed
    */
   canProcessMissileFire(): boolean {
-    return this.clip > this.clipReady && this.mag <= this.clipSize
+    return this.ship!.clip > this.ship!.clipReady && this.ship!.mag <= this.ship!.clipSize
   }
 
   /**
@@ -239,7 +233,7 @@ export default class Game {
    * @returns {boolean} True if missile fire input is activated
    */
   fireMissilesInputActivated(): boolean {
-    return this.keys.space && this.rpmCount >= this.fireRate && this.ship!.movable
+    return this.keys.space && this.rpmCount >= this.ship!.fireRate && this.ship!.movable
   }
 
   /**
@@ -250,15 +244,10 @@ export default class Game {
    * @returns {Game}
    */
   fireShipMissile(curve: number): Game {
-    const missile = this.ship!.fire(
-      curve,
-      this.ship!.missileColor,
-      this.ship!.missileWidth,
-      this.ship!.missileHeight
-    ) as MissileSprite | null;
+    const missile = this.ship!.fire(curve) as MissileSprite | null;
     if (missile) this.sMissiles.push(missile);
     this.rpmCount = 0;
-    this.mag += 1;
+    this.ship!.mag += 1;
 
     return this
   }
@@ -269,9 +258,9 @@ export default class Game {
    * @returns {Game}
    */
   checkAndResetShipClipAndMag(): Game {
-    if (this.mag > this.clipSize) {
-      this.clip = 0;
-      this.mag = 0;
+    if (this.ship!.mag > this.ship!.clipSize) {
+      this.ship!.clip = 0;
+      this.ship!.mag = 0;
     }
 
     return this
@@ -510,7 +499,11 @@ export default class Game {
    */
   onEnemyHit(enemy: BaseEnemySprite | AsteroidSprite, missile: MissileSprite): Game {
     this.sounds.tap.play();
-    missile.inPlay = false;
+    if (missile.health > 1) {
+      missile.health -= 1;
+    } else {
+      missile.inPlay = false;
+    }
 
     // If enemy has over 1 health, subtract 1 and add 3 to score and point count
     if (enemy.health > 1) {
@@ -583,10 +576,10 @@ export default class Game {
     this.explodeEntity(this.ship! as ShipSprite);
     this.ship!.respawnTime = 0;
     this.ship!.inPlay = false;
-    this.ship!.changeGunLevel(1);
-    this.clipReady = 6;
-    this.clipSize = 4;
-    this.fireRate = 3;
+    if (this.ship!.gunLev > 1) {
+      const newGunLevel = this.ship!.gunLev - 1;
+      this.onWeaponLevelChange(newGunLevel);
+    }
     this.pointCount = 0;
 
     return this
@@ -599,28 +592,30 @@ export default class Game {
    * @returns {Game}
    */
   checkForWeaponUpgrade(): Game {
-    if (this.ship!.gunLev === 3) return this
+    if (this.ship!.gunLev === 4) return this
 
-    if (this.pointCount >= 1000 && this.ship!.gunLev < 2) {
-      this.ship!.changeGunLevel(2);
-      this.fireRate = 2;
-      this.clipReady = 7;
-      this.sounds.boost.play();
-
-      return this
+    if (this.pointCount >= GameConsts.GUN_UPRADE_THRESHOLD && this.ship!.gunLev < 2) {
+      return this.onWeaponLevelChange(2);
     }
-    if (this.pointCount >= 2000 && this.ship!.gunLev < 3) {
-      this.ship!.changeGunLevel(3);
-      this.fireRate = 1;
-      this.clipReady = 5;
-      this.clipSize = 3;
-      this.mag = 0;
-      this.sounds.boost.play();
-
-      return this
+    if (this.pointCount >= (GameConsts.GUN_UPRADE_THRESHOLD * 2) && this.ship!.gunLev < 3) {
+      return this.onWeaponLevelChange(3);
+    }
+    if (this.pointCount >= (GameConsts.GUN_UPRADE_THRESHOLD * 3) && this.ship!.gunLev < 4) {
+      return this.onWeaponLevelChange(4);
     }
 
     return this
+  }
+
+  onWeaponLevelChange(newGunLevel: number): Game {
+    // Only play boost sound if the gun level is increasing
+    if (this.ship!.gunLev < newGunLevel) this.sounds.boost.play();
+    
+    this.ship!.changeGunLevel(newGunLevel);
+    this.ship!.mag = 0;
+    this.setGunLevelState(newGunLevel);
+
+    return this;
   }
 
   /**
@@ -661,7 +656,7 @@ export default class Game {
   updateIncrementedPerFrameData(): Game {
     this.frameCount += 1
     this.rpmCount += 1
-    this.clip += 1
+    this.ship!.clip += 1
     this.spawnClip += 1
     this.levelStep += 1
 
@@ -959,11 +954,6 @@ export default class Game {
   resetGame = (): Game => {
     //reset gun variables -- might be irrelevant if ship fire powerup is not yet implemented
     this.rpmCount = 0;
-    this.fireRate = 3;
-    this.clip = 0;
-    this.clipSize = 4;
-    this.clipReady = 6;
-    this.mag = 0;
     this.pointCount = 0;
     //reset onscreen enemies and missiles/lasers
     this.sMissiles = [];
@@ -1006,6 +996,8 @@ export default class Game {
     this.ship = null;
     this.ship = EntityFactory.create(this.gameCtx!, EntityTypeEnums.SHIP) as ShipSprite;
     this.ship.respawn();
+    // Reset gun level to 1 and update React state
+    this.setGunLevelState(1);
     // Create new SoundManager singleton instance
     new SoundManager();
 

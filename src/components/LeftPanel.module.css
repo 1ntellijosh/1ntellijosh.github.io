@@ -13,6 +13,7 @@
     border: .5px solid #009999;
     position: relative;
     height: 105px;
+    overflow: hidden; /* Clip the animation line */
 }
 
 .score,
@@ -28,10 +29,51 @@
     font-size: 30px;
 }
 
+.gunLevelT {
+    border-bottom: 1px solid #009999;
+    font-size: 20px;
+    min-height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .scoreB,
 .levelB {
     display: flex;
     justify-content: center;
     align-items: center;
     padding-top: 19px;
+}
+
+/* Flash animation - vertical line sweeping from left to right */
+@keyframes flashSweep {
+    0% {
+        left: -2px;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.flash {
+    position: relative;
+}
+
+.flash::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -2px;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        #00ffff 20%, 
+        #00ffff 80%, 
+        transparent 100%);
+    box-shadow: 0 0 20px #00ffff, 0 0 20px #00ffff;
+    animation: flashSweep 0.5s ease-out;
+    z-index: 10;
+    pointer-events: none;
 }

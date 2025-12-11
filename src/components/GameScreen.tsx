@@ -12,6 +12,7 @@ export default function GameScreen() {
   const [health, setHealth] = React.useState<number>(100);
   const [score, setScore] = React.useState<number>(0);
   const [level, setLevel] = React.useState<number>(1);
+  const [gunLevel, setGunLevel] = React.useState<number>(1);
   /**
    * State for the keys
    * keys is the state of the keys that triggers React rendering of the UI in GameScreen.tsx
@@ -36,6 +37,10 @@ export default function GameScreen() {
 
   const onKeysUpdated = (keys: { w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }): void => {
     setKeys(keys);
+  };
+
+  const setGunLevelState = (gunLevel: number): void => {
+    setGunLevel(gunLevel);
   };
 
   /**
@@ -143,7 +148,8 @@ export default function GameScreen() {
         keysRef.current,
         setScoreState,
         setLevelState,
-        setHealthState
+        setHealthState,
+        setGunLevelState
       );
       gameRef.current.drawBoard();
       gameRef.current.setupThemeRepeatListener();
@@ -194,6 +200,7 @@ export default function GameScreen() {
         <LeftPanel 
           score={score} 
           level={level}
+          gunLevel={gunLevel}
         />
 
         <div className={styles.gameDiv} ref={gameDivRef}>

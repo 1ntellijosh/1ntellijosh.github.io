@@ -4,25 +4,9 @@ import MissileSprite from './MissileSprite';
 import { GameConsts } from '../../src/GameConsts';
 import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
 import { ImageAssetsDict } from '../Dicts/ImageAssetsDict';
+import { WeaponLevelDict } from '../Dicts/WeaponLevelDict';
 import Mp3 from '../Mp3';
 import SoundManager from '../../src/SoundManager';
-
-// Missile Specifications data
-const missileColors = {
-  level1: '#6495ED',
-  level2: '#00ff80',
-  level3: '#ffff00'
-}
-const missileWidths = {
-  level1: 3,
-  level2: 3,
-  level3: 5.5
-}
-const missileHeights = {
-  level1: 7,
-  level2: 6,
-  level3: 3.5
-}
 
 /**
  * Ship sprite class extending AbstractSprite
@@ -37,9 +21,15 @@ export default class ShipSprite extends AbstractSprite {
   respawnTime: number;
   movable: boolean;
   sounds: { [key: string]: Mp3 };
+  fireRate: number;
+  clip: number;
+  clipSize: number;
+  clipReady: number;
+  mag: number;
   missileColor: string;
   missileWidth: number;
   missileHeight: number;
+  missileHealth: number;
 
   constructor(gameContext: CanvasRenderingContext2D) {
     super(gameContext, GameConsts.GAME_WIDTH/2, 625, 48, 40, EntityTypeEnums.SHIP);
@@ -55,12 +45,22 @@ export default class ShipSprite extends AbstractSprite {
       shoot: soundMgr.get('shoot'),
       shoot2: soundMgr.get('shoot2'),
       shoot3: soundMgr.get('shoot3'),
+      shoot4: soundMgr.get('shoot4'),
       rez: soundMgr.get('rez')
-    }  
-    this.missileColor = missileColors.level1;
-    this.missileWidth = missileWidths.level1;
-    this.missileHeight = missileHeights.level1;
-    this.determinMissileAspects();
+    }
+    this.clip = 0;
+    this.mag = 0;
+    // Initialize with default values (will be set by determineGunLevelAspects)
+    const defaultConfig = WeaponLevelDict.level1;
+    this.fireRate = defaultConfig.fireRate;
+    this.clipSize = defaultConfig.clipSize;
+    this.clipReady = defaultConfig.clipReady;
+    this.missileColor = defaultConfig.missileColor;
+    this.missileWidth = defaultConfig.missileWidth;
+    this.missileHeight = defaultConfig.missileHeight;
+    this.missileHealth = defaultConfig.missileHealth;
+    // Now set the correct values based on gun level
+    this.determineGunLevelAspects();
   }
 
   /**
@@ -151,89 +151,93 @@ export default class ShipSprite extends AbstractSprite {
   /**
    * Changes the gun level of the ship
    *
-   * @param {number} newGunLev - The new gun level
+   * @param {GunLevel} newGunLev - The new gun level (1-4)
    */
   changeGunLevel(newGunLev: number): void {
     this.gunLev = newGunLev;
-    this.determinMissileAspects();
-  }
+    this.determineGunLevelAspects();
+  } 
 
   /**
    * Determines the missile aspects based on the gun level
+   *
+   * @throws {Error} If the gun level is not valid
    */
-  determinMissileAspects(): void {
-    switch (this.gunLev) {
-      case 1:
-        this.missileColor = '#6495ED';
-        this.missileWidth = 3;
-        this.missileHeight = 7;
-        break;
-      case 2:
-        this.missileColor = '#00ff80';
-        this.missileWidth = 3;
-        this.missileHeight = 6;
-        break;
-      case 3:
-        this.missileColor = '#ffff00';
-        this.missileWidth = 5.5;
-        this.missileHeight = 3.5;
-        break;
-      default:
-        throw new Error(`Invalid gun level: ${this.gunLev}`);
-    }
+  determineGunLevelAspects(): void {
+    if (this.gunLev < 1 || this.gunLev > 4) throw new Error(`Invalid gun level: ${this.gunLev}`);
+
+    const gunLevel = ('level' + this.gunLev) as keyof typeof WeaponLevelDict;
+    const config = WeaponLevelDict[gunLevel];
+
+    // Set all values from the config
+    this.missileColor = config.missileColor;
+    this.missileWidth = config.missileWidth;
+    this.missileHeight = config.missileHeight;
+    this.missileHealth = config.missileHealth;
+    this.fireRate = config.fireRate;
+    this.clipSize = config.clipSize;
+    this.clipReady = config.clipReady;
   }
 
   /**
    * Fires a missile from the ship
    *
    * @param {number} xSpd - The x speed of the missile
-   * @param {string} color - The color of the missile
-   * @param {number} w - The width of the missile
-   * @param {number} h - The height of the missile
+   *
    * @returns {MissileSprite} The created missile
    */
-  fire(xSpd: number, color: string, w: number, h: number): MissileSprite {
+  fire(xSpd: number): MissileSprite {
     const missile = EntityFactory.create(
       this.gameContext,
       EntityTypeEnums.MISSILE,
-      this.createMissilePayload(xSpd, color, w, h)
+      this.createMissilePayload(xSpd)
     ) as MissileSprite;
     
     // Play appropriate sound
-    if (this.gunLev == 1) {
-      this.sounds.shoot.play();
-    } else if (this.gunLev == 2) {
-      this.sounds.shoot2.play();
-    } else {
-      this.sounds.shoot3.play();
-    }
+    this.playShootSound();
 
     return missile;
+  }
+
+  /**
+   * Plays the appropriate shoot sound based on the gun level
+   */
+  playShootSound(): void {
+    switch (this.gunLev) {
+      case 1:
+        this.sounds.shoot.play();
+        break;
+      case 2:
+        this.sounds.shoot2.play();
+        break;
+      case 3:
+        this.sounds.shoot3.play();
+        break;
+      case 4:
+        this.sounds.shoot4.play();
+        break;
+    }
   }
 
   /**
    * Creates the payload for the missile
    *
    * @param {number} xSpd - The x speed of the missile
-   * @param {string} color - The color of the missile
-   * @param {number} w - The width of the missile
-   * @param {number} h - The height of the missile
+   *
    * @returns {Object} The payload for the missile
    */
   createMissilePayload(
     xSpd: number,
-    color: string,
-    w: number,
-    h: number
-  ): { x: number, y: number, xSpd: number, ySpd: number, color: string, width: number, height: number } {
+  ): { x: number, y: number, xSpd: number, ySpd: number, color: string, width: number, height: number, health?: number } {
     return {
-      x: this.x + this.width/2,
+      x: this.x + this.width/2 - this.missileWidth/2,
       y: this.y,
       xSpd: xSpd,
       ySpd: -22.5,
-      color,
-      width: w,
-      height: h
+      color: this.missileColor,
+      width: this.missileWidth,
+      height: this.missileHeight,
+      health: this.missileHealth
     }
   }
 }

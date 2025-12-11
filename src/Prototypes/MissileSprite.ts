@@ -20,6 +20,7 @@ export default class MissileSprite extends AbstractSprite {
   xSpd: number;
   ySpd: number;
   color: string;
+  health: number;
 
   constructor(
     gameContext: CanvasRenderingContext2D,
@@ -31,6 +32,7 @@ export default class MissileSprite extends AbstractSprite {
       color: string,
       width: number,
       height: number
+      health?: number
     }
   ) {
     super(
@@ -44,6 +46,7 @@ export default class MissileSprite extends AbstractSprite {
     this.xSpd = payload.xSpd;
     this.ySpd = payload.ySpd;
     this.color = payload.color;
+    this.health = payload.health ?? 1;
   }
 
   /**

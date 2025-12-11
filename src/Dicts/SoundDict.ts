@@ -92,6 +92,11 @@ export const SoundDict: SoundItem = Object.freeze({
         path: basePath + 'Sfx RVGSE1 Bleep 1.wav',
         noOverlap: true,
     },
+    shoot4: {
+        type: 'mp3',
+        path: basePath + 'Sfx RVGSE1 Event 12.wav',
+        noOverlap: false,
+    },
     boost: {
         type: 'mp3',
         path: basePath + 'zapsplat_multimedia_game_one_up_extra_life_005.mp3',
