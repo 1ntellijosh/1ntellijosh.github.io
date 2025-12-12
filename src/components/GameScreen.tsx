@@ -5,6 +5,7 @@ import RightPanel from './RightPanel';
 import ControlPanel from './ControlPanel';
 import Game from '../Game';
 import SoundManager from '../SoundManager';
+import { KeyboardControlEnums as keysEnums } from '../Enums/KeyboardControlEnums';
 
 export default function GameScreen() {
   const gameRef = React.useRef<Game | null>(null);
@@ -20,8 +21,8 @@ export default function GameScreen() {
    * This is a common pattern when mixing React and vanilla JavaScript classes (e.g. Game.ts class instance and
    * GameScreen.tsx component instance)
    */
-  const [keys, setKeys] = React.useState<{ w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }>({ w: false, a: false, s: false, d: false, space: false });
-  const keysRef = React.useRef<{ w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }>({ w: false, a: false, s: false, d: false, space: false });
+  const [keys, setKeys] = React.useState<{ [key in keysEnums]: boolean }>({ [keysEnums.W]: false, [keysEnums.A]: false, [keysEnums.S]: false, [keysEnums.D]: false, [keysEnums.SPACE]: false });
+  const keysRef = React.useRef<{ [key in keysEnums]: boolean }>({ [keysEnums.W]: false, [keysEnums.A]: false, [keysEnums.S]: false, [keysEnums.D]: false, [keysEnums.SPACE]: false });
 
   const setScoreState = (score: number): void => {
     setScore(score);
@@ -44,45 +45,46 @@ export default function GameScreen() {
   };
 
   /**
+   * Sets both the keys state and the keysRef state for pressed and released keys
+   *
+   * @param key - The key to set the state of
+   * @param state - The state to set the key to
+   *
+   * @returns {void}
+   */
+  const setNewKeyState = (key: string, state: boolean): void => {
+    const newKeys = { ...keysRef.current };
+
+    newKeys[key as keyof { w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }] = state;
+    keysRef.current[key as keyof { w: boolean, a: boolean, s: boolean, d: boolean, space: boolean }] = state;
+
+    onKeysUpdated(newKeys);
+  }
+
+  /**
    * Handler for key strokes set the pressed down keys to true
    *
    * @param {Event} event - The key event
    */
   const keyReader = (event: KeyboardEvent): void => {
     const key = event.key.toLowerCase();
-    let updated = false;
-    const newKeys = { ...keysRef.current };
-    
+
     switch (key) {
-      case 'a':
-        if (!newKeys.a) {
-          newKeys.a = true; keysRef.current.a = true; updated = true;
-        }
+      case keysEnums.A:
+        setNewKeyState(keysEnums.A, true);
         break;
-      case 'd':
-        if (!newKeys.d) {
-          newKeys.d = true; keysRef.current.d = true; updated = true;
-        }
+      case keysEnums.D:
+        setNewKeyState(keysEnums.D, true);
         break;
       case ' ':
-        if (!newKeys.space) {
-          newKeys.space = true; keysRef.current.space = true; updated = true;
-        }
+        setNewKeyState(keysEnums.SPACE, true);
         break;
-      case 'w':
-        if (!newKeys.w) {
-          newKeys.w = true; keysRef.current.w = true; updated = true;
-        }
+      case keysEnums.W:
+        setNewKeyState(keysEnums.W, true);
         break;
-      case 's':
-        if (!newKeys.s) {
-          newKeys.s = true; keysRef.current.s = true; updated = true;
-        }
+      case keysEnums.S:
+        setNewKeyState(keysEnums.S, true);
         break;
-    }
-    
-    if (updated) {
-      onKeysUpdated(newKeys);
     }
   };
 
@@ -93,39 +95,23 @@ export default function GameScreen() {
    */
   const keyRelease = (event: KeyboardEvent): void => {
     const key = event.key.toLowerCase();
-    let updated = false;
-    const newKeys = { ...keysRef.current };
     
     switch (key) {
-      case 'a':
-        if (newKeys.a) { 
-          newKeys.a = false; keysRef.current.a = false; updated = true; 
-        }
+      case keysEnums.A:
+        setNewKeyState(keysEnums.A, false);
         break;
-      case 'd':
-        if (newKeys.d) {
-          newKeys.d = false; keysRef.current.d = false; updated = true;
-        }
+      case keysEnums.D:
+        setNewKeyState(keysEnums.D, false);
         break;
       case ' ':
-        if (newKeys.space) {
-          newKeys.space = false; keysRef.current.space = false; updated = true;
-        }
+        setNewKeyState(keysEnums.SPACE, false);
         break;
-      case 'w':
-        if (newKeys.w) {
-          newKeys.w = false; keysRef.current.w = false; updated = true;
-        }
+      case keysEnums.W:
+        setNewKeyState(keysEnums.W, false);
         break;
-      case 's':
-        if (newKeys.s) {
-          newKeys.s = false; keysRef.current.s = false; updated = true;
-        }
+      case keysEnums.S:
+        setNewKeyState(keysEnums.S, false);
         break;
-    }
-    
-    if (updated) {
-      onKeysUpdated(newKeys);
     }
   };
 
@@ -157,7 +143,6 @@ export default function GameScreen() {
    * Clears the game instance
    */
   const clearGameInstance = (): void => {
-    console.log('Clearing game instance');
     // Remove event listeners
     clearKeyboardListeners();
       
@@ -178,6 +163,9 @@ export default function GameScreen() {
     SoundManager.resetInstance();
   }
 
+  /**
+   * Clears the keyboard listeners
+   */
   const clearKeyboardListeners = (): void => {
     document.removeEventListener('keydown', keyReader);
     document.removeEventListener('keyup', keyRelease);

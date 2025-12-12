@@ -9,6 +9,7 @@ import ShipSprite from './Prototypes/ShipSprite';
 import Mp3 from './Mp3';
 import EntityFactory from './Factories/EntityFactory';
 import { EntityTypeEnums } from './Enums/EntityTypeEnums';
+import { KeyboardControlEnums as keysEnums } from './Enums/KeyboardControlEnums';
 
 // TypeScript callback types for React state setters
 type ScoreCallback = (points: number) => void;
@@ -20,7 +21,7 @@ export default class Game {
   gameDiv: HTMLElement;
   gameCanvas: HTMLCanvasElement | null;
   gameCtx: CanvasRenderingContext2D | null;
-  keys: { a: boolean, d: boolean, w: boolean, s: boolean, space: boolean };
+  keys: { [key in keysEnums]: boolean };
   rpmCount: number;
   pointCount: number;
   sMissiles: MissileSprite[];
@@ -57,7 +58,7 @@ export default class Game {
 
   constructor(
     gameDiv: HTMLElement,
-    keys: { w: boolean, a: boolean, s: boolean, d: boolean, space: boolean },
+    keys: { [key in keysEnums]: boolean },
     setScoreState: ScoreCallback,
     setLevelState: SetLevelStateCallback,
     setHealthState: HealthCallback,
@@ -206,9 +207,9 @@ export default class Game {
     if (!this.canProcessMissileFire()) return this
 
     if (this.fireMissilesInputActivated()) {
-      if (this.keys.a) return this.fireShipMissile(-this.ship!.speed/15).checkAndResetShipClipAndMag()
+      if (this.keys[keysEnums.A]) return this.fireShipMissile(-this.ship!.speed/15).checkAndResetShipClipAndMag()
 
-      if (this.keys.d == true) return this.fireShipMissile(this.ship!.speed/15).checkAndResetShipClipAndMag()
+      if (this.keys[keysEnums.D]) return this.fireShipMissile(this.ship!.speed/15).checkAndResetShipClipAndMag()
 
       return this
         .fireShipMissile(0)
@@ -233,7 +234,7 @@ export default class Game {
    * @returns {boolean} True if missile fire input is activated
    */
   fireMissilesInputActivated(): boolean {
-    return this.keys.space && this.rpmCount >= this.ship!.fireRate && this.ship!.movable
+    return this.keys[keysEnums.SPACE] && this.rpmCount >= this.ship!.fireRate && this.ship!.movable
   }
 
   /**
