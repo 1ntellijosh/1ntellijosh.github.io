@@ -5,9 +5,9 @@
 > "Game creation keeps on expanding, just like the Universe. That is why I keep making games." ― Hideo Kojima
 
 
-### A 2d Space Shooter I made using JavaScript, JQuery HTML and CSS. I learned a great deal about how to use the canvas element on a web page with this.
+### A 2d Space Shooter
 
-### To win you must get through level 10, but the game will continue to go and get harder with more and more enemies. If you get 1000 points without dying, your gun upgrades and will again if you get another 1000. Run out of health, game over. Progress a level and you are granted one health bar.Arrow keys to move, and spacebar to shoot.
+### To win you must get through level 10, but the game will continue to go and get harder with more and more enemies. For every 1000 points you earn without dying, your gun upgrades to a new level. Deaths will lower your gun upgrade level by one. Run out of health, game over. Progress a level and you are granted one health bar. Arrow keys to move, and spacebar to shoot.
 
 ## How to Run
 
@@ -44,7 +44,7 @@ CSS
 
 ### Challenges
 
-I had never worked with the HTML canvas element and its draw/ctx functions before. Once I got the concepts down, I could draw objects on the canvas. The next step was applying the setInterval method to the canvas draw methods, and you could create frames and therefore, animation. Finally, you map keyboard inputs to the direction the object (your ship) should go on the map, and the basic game engine was set. I was really able to run away with whatever I wanted to do from there.
+I had never worked with the HTML canvas element and its draw/ctx functions before. Once I got the concepts down, I could draw objects on the canvas. The next step was applying the setInterval method to the canvas draw methods, and you could create frames and animation. Finally, you map keyboard inputs to the direction the object (your ship) should go on the map, and the basic game engine was set. I was really able to run away with whatever I wanted to do from there.
 
 ### Future Goals:
 

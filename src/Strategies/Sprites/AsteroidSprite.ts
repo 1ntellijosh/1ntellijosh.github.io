@@ -1,6 +1,6 @@
 import AbstractSprite from './AbstractSprite';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
-import { ImageAssetsDict } from '../Dicts/ImageAssetsDict';
+import { EntityTypeEnums } from '../../Enums/EntityTypeEnums';
+import { ImageAssetsDict } from '../../Dicts/ImageAssetsDict';
 
 /**
  * Ship sprite class extending AbstractSprite

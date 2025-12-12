@@ -1,8 +1,8 @@
 import AbstractSprite from './AbstractSprite';
-import EntityFactory from '../Factories/EntityFactory';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
-import { ImageAssetsDict } from '../Dicts/ImageAssetsDict';
-import Mp3 from '../Mp3';
+import EntityFactory from '../../Factories/EntityFactory';
+import { EntityTypeEnums } from '../../Enums/EntityTypeEnums';
+import { ImageAssetsDict } from '../../Dicts/ImageAssetsDict';
+import Mp3 from '../../Mp3';
 import MissileSprite from './MissileSprite';
 
 /**

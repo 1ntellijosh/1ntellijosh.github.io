@@ -1,5 +1,5 @@
 import AbstractSprite from './AbstractSprite';
-import { GameConsts } from '../../src/GameConsts';
+import { GameConsts } from '../../GameConsts';
 
 /**
  * Missile sprite class extending AbstractSprite

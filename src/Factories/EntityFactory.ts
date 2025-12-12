@@ -1,14 +1,14 @@
-import AbstractSprite from '../Prototypes/AbstractSprite';
-import EnemyBSprite from '../Prototypes/EnemyBSprite';
-import EnemyCSprite from '../Prototypes/EnemyCSprite';
-import EnemyDSprite from '../Prototypes/EnemyDSprite';
-import EnemyESprite from '../Prototypes/EnemyESprite';
-import EnemyFSprite from '../Prototypes/EnemyFSprite';
-import EnemyGSprite from '../Prototypes/EnemyGSprite';
-import AsteroidSprite from '../Prototypes/AsteroidSprite';
-import ExplosionSprite from '../Prototypes/ExplosionSprite';
-import MissileSprite from '../Prototypes/MissileSprite';
-import ShipSprite from '../Prototypes/ShipSprite';
+import AbstractSprite from '../Strategies/Sprites/AbstractSprite';
+import EnemyBSprite from '../Strategies/Sprites/EnemyBSprite';
+import EnemyCSprite from '../Strategies/Sprites/EnemyCSprite';
+import EnemyDSprite from '../Strategies/Sprites/EnemyDSprite';
+import EnemyESprite from '../Strategies/Sprites/EnemyESprite';
+import EnemyFSprite from '../Strategies/Sprites/EnemyFSprite';
+import EnemyGSprite from '../Strategies/Sprites/EnemyGSprite';
+import AsteroidSprite from '../Strategies/Sprites/AsteroidSprite';
+import ExplosionSprite from '../Strategies/Sprites/ExplosionSprite';
+import MissileSprite from '../Strategies/Sprites/MissileSprite';
+import ShipSprite from '../Strategies/Sprites/ShipSprite';
 import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
 
 /**

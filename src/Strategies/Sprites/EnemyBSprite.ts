@@ -1,18 +1,18 @@
 import BaseEnemySprite from './BaseEnemySprite';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
-import SoundManager from '../../src/SoundManager';
+import { EntityTypeEnums } from '../../Enums/EntityTypeEnums';
+import SoundManager from '../../SoundManager';
 
 /**
- * Ship sprite class for EnemyCSprite
- * Large enemy firing ship swing right
+ * Ship sprite class for EnemyBSprite
+ * Large enemy firing ship that swings left
  * 
- * @param {Object} gameContext - Reference to the game instance for accessing game state
+ * @param {Object} gameContext - Reference to the game instance (canvas context)
  */
-export default class EnemyCSprite extends BaseEnemySprite {
+export default class EnemyBSprite extends BaseEnemySprite {
   constructor(gameContext: CanvasRenderingContext2D) {
     const soundMgr = new SoundManager();
-
-    super(gameContext, 35, 0, 60, 41, EntityTypeEnums.ENEMY_C, {
+    
+    super(gameContext, 615, 0, 60, 41, EntityTypeEnums.ENEMY_B, {
       ySpd: 1.7,
       xSpd: 0,
       arcTime: 5,
@@ -34,7 +34,7 @@ export default class EnemyCSprite extends BaseEnemySprite {
     this.x += this.xSpd;
     this.y += this.ySpd;
 
-    this.xSpd = -7 * Math.cos(this.arcTime * Math.PI / 200) + 9;
+    this.xSpd = 7 * Math.cos(this.arcTime * Math.PI / 200) - 9;
     if (this.age > 75 && this.age % 20 == 0) {
       if(Math.random() < .20) {
         sMissiles.push(this.fire(0, 6, '#ff6600', 6, 4));

@@ -1,11 +1,11 @@
 import SoundManager from './SoundManager';
 import { GameConsts } from './GameConsts';
-import MissileSprite from './Prototypes/MissileSprite';
-import AbstractSprite from './Prototypes/AbstractSprite';
-import BaseEnemySprite from './Prototypes/BaseEnemySprite';
-import AsteroidSprite from './Prototypes/AsteroidSprite';
-import ExplosionSprite from './Prototypes/ExplosionSprite';
-import ShipSprite from './Prototypes/ShipSprite';
+import MissileSprite from './Strategies/Sprites/MissileSprite';
+import AbstractSprite from './Strategies/Sprites/AbstractSprite';
+import BaseEnemySprite from './Strategies/Sprites/BaseEnemySprite';
+import AsteroidSprite from './Strategies/Sprites/AsteroidSprite';
+import ExplosionSprite from './Strategies/Sprites/ExplosionSprite';
+import ShipSprite from './Strategies/Sprites/ShipSprite';
 import Mp3 from './Mp3';
 import EntityFactory from './Factories/EntityFactory';
 import { EntityTypeEnums } from './Enums/EntityTypeEnums';

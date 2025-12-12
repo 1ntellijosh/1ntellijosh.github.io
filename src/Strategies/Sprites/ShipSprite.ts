@@ -1,13 +1,13 @@
 import AbstractSprite from './AbstractSprite';
-import EntityFactory from '../Factories/EntityFactory';
+import EntityFactory from '../../Factories/EntityFactory';
 import MissileSprite from './MissileSprite';
-import { GameConsts } from '../../src/GameConsts';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
-import { ImageAssetsDict } from '../Dicts/ImageAssetsDict';
-import { WeaponLevelDict } from '../Dicts/WeaponLevelDict';
-import Mp3 from '../Mp3';
-import SoundManager from '../../src/SoundManager';
-import { KeyboardControlEnums as keysEnums } from '../Enums/KeyboardControlEnums';
+import { GameConsts } from '../../GameConsts';
+import { EntityTypeEnums } from '../../Enums/EntityTypeEnums';
+import { ImageAssetsDict } from '../../Dicts/ImageAssetsDict';
+import { WeaponLevelDict } from '../../Dicts/WeaponLevelDict';
+import Mp3 from '../../Mp3';
+import SoundManager from '../../SoundManager';
+import { KeyboardControlEnums as keysEnums } from '../../Enums/KeyboardControlEnums';
 
 /**
  * Ship sprite class extending AbstractSprite

@@ -1,18 +1,18 @@
 import BaseEnemySprite from './BaseEnemySprite';
-import { EntityTypeEnums } from '../Enums/EntityTypeEnums';
-import SoundManager from '../../src/SoundManager';
+import { EntityTypeEnums } from '../../Enums/EntityTypeEnums';
+import SoundManager from '../../SoundManager';
 
 /**
- * Ship sprite class for EnemyDSprite
- * Small enemy ship swing right
+ * Ship sprite class for EnemyESprite
+ * Small enemy ship swing left
  * 
  * @param {Object} gameContext - Reference to the game instance for accessing game state
  */
-export default class EnemyDSprite extends BaseEnemySprite {
+export default class EnemyESprite extends BaseEnemySprite {
   constructor(gameContext: CanvasRenderingContext2D) {
     const soundMgr = new SoundManager();
 
-    super(gameContext, 250, 0, 45, 44, EntityTypeEnums.ENEMY_D, {
+    super(gameContext, 350, 0, 45, 44, EntityTypeEnums.ENEMY_E, {
       ySpd: 7,
       xSpd: 0,
       arcTime: 5,
@@ -33,7 +33,7 @@ export default class EnemyDSprite extends BaseEnemySprite {
     this.x += this.xSpd;
     this.y += this.ySpd;
 
-    this.xSpd = 8 * Math.cos(this.arcTime * Math.PI / 180) - 1.45;
+    this.xSpd = -8 * Math.cos(this.arcTime * Math.PI / 180) + 1.45;
 
     this.arcTime++;
 

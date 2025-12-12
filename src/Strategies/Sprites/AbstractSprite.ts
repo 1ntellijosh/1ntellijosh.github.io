@@ -1,4 +1,4 @@
-import { GameConsts } from '../../src/GameConsts';
+import { GameConsts } from '../../GameConsts';
 
 /**
  * This class is an abstract class for all sprites.
