@@ -137,60 +137,100 @@ export default function GameScreen() {
     document.addEventListener('keyup', keyRelease);
   };
 
+  /**
+   * Initializes the game instance
+   */
+  const initializeGameInstance = (): void => {
+    gameRef.current = new Game(
+      gameDivRef.current as HTMLElement,
+      keysRef.current,
+      setScoreState,
+      setLevelState,
+      setHealthState,
+      setGunLevelState
+    );
+    gameRef.current.drawBoard();
+    gameRef.current.setupThemeRepeatListener();
+  }
+
+  /**
+   * Clears the game instance
+   */
+  const clearGameInstance = (): void => {
+    console.log('Clearing game instance');
+    // Remove event listeners
+    clearKeyboardListeners();
+      
+    if (gameRef.current) {
+      // Cleanup sounds
+      clearGameSoundsFromDOM();
+      
+      // Cleanup theme
+      clearGameThemeFromDOM();
+      
+      // Cleanup game canvas
+      clearGameCanvasFromDOM();
+
+      gameRef.current = null;
+    }
+    
+    // Reset SoundManager singleton to cleanup all audio elements
+    SoundManager.resetInstance();
+  }
+
+  const clearKeyboardListeners = (): void => {
+    document.removeEventListener('keydown', keyReader);
+    document.removeEventListener('keyup', keyRelease);
+  }
+
+  /**
+   * Clears the game sounds from the DOM
+   */
+  const clearGameSoundsFromDOM = (): void => {
+    if (!gameRef.current || !gameRef.current.sounds) return;
+    
+    Object.values(gameRef.current.sounds).forEach(sound => {
+      if (sound && typeof sound.cleanup === 'function') {
+        sound.cleanup();
+      }
+    });
+  }
+
+  /**
+   * Clears the game theme from the DOM
+   */
+  const clearGameThemeFromDOM = (): void => {
+    if (!gameRef.current || !gameRef.current.theme) return;
+    
+    if (gameRef.current.theme) {
+      gameRef.current.theme.pause();
+      gameRef.current.theme.src = '';
+      gameRef.current.theme.load();
+    }
+  }
+
+  /**
+   * Clears the game canvas from the DOM
+   */
+  const clearGameCanvasFromDOM = (): void => {
+    const canvas = document.getElementById('canvas');
+    if (canvas) {
+      canvas.remove();
+    }
+  }
+
   // Component mount lifecycle - runs when Game.tsx is rendered
   React.useEffect(() => {
     // Initialize the game when component mounts
     // Wait for refs to be attached to DOM elements
     if (!gameRef.current && gameDivRef.current) {
       setupKeyboardListeners();
-      gameRef.current = new Game(
-        gameDivRef.current as HTMLElement,
-        keysRef.current,
-        setScoreState,
-        setLevelState,
-        setHealthState,
-        setGunLevelState
-      );
-      gameRef.current.drawBoard();
-      gameRef.current.setupThemeRepeatListener();
+      initializeGameInstance();
     }
 
     // Cleanup function - runs when component unmounts
     return () => {
-      // Remove event listeners
-      document.removeEventListener('keydown', keyReader);
-      document.removeEventListener('keyup', keyRelease);
-      
-      if (gameRef.current) {
-        // Cleanup sounds
-        if (gameRef.current.sounds) {
-          Object.values(gameRef.current.sounds).forEach(sound => {
-            if (sound && typeof sound.cleanup === 'function') {
-              sound.cleanup();
-            }
-          });
-        }
-        
-        // Cleanup theme
-        if (gameRef.current.theme) {
-          gameRef.current.theme.pause();
-          gameRef.current.theme.src = '';
-          gameRef.current.theme.load();
-        }
-        
-        const canvas = document.getElementById('canvas');
-        if (canvas) {
-          canvas.remove();
-        }
-        // Remove jQuery event listeners
-        $('#start').off('click');
-        $(document).off('keydown');
-        $(document).off('keyup');
-        gameRef.current = null;
-      }
-      
-      // Reset SoundManager singleton to cleanup all audio elements
-      SoundManager.resetInstance();
+      clearGameInstance();
     };
   }, []); // Empty dependency array = runs once on mount
 
