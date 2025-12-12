@@ -271,19 +271,10 @@ export default class Game {
    *
    * @returns {Game}
    */
-  spawnNewEnemies(): Game {
+  handleEnemySpawnOps(): Game {
     //when game frames hit current spawnRange levels begin spawn process
     if (this.frameCount >= this.spawnRange && this.spawnReady == true) {
-      //randomly spawn 1 to number-limit of enemyTypes (possibleBatchNum)
-      let thisBatch = Math.floor(Math.random() * this.possibleBatchNum) + 1;
-      //find which enemy type and make an array of types
-      for (let i = 0; i < thisBatch; i++) {
-        //find enemy type and put them in spawnBatch array for this enemy spawn
-        this.enemyBatch.push(this.enemyTypes[Math.floor(Math.random() * 6)]);
-      }
-      this.spawnReady = false;
-      this.spawnTypeCount = this.enemyBatch.length;
-      this.batchSlot = 0;
+      this.spawnNewEnemiesBatch();
     }
     /**
      * When each spawn is activated between the spawnClipLimit (adjusted per level) a new baddy through the spawn array
@@ -291,11 +282,7 @@ export default class Game {
      * onscreen enemies array
      */
     if (this.spawnClip >= this.spawnClipLim && this.enemyBatch.length > 0) {
-      this.enemies.push(
-        EntityFactory.create(this.gameCtx, this.enemyBatch[this.batchSlot]) as BaseEnemySprite
-      );
-      this.batchSlot += 1;
-      this.spawnClip = 0;
+      this.spawnNewEnemy();
     }
     //reset the round through the batch array - to be done the spawnLimit of times, increaed per level
     if (this.batchSlot >= this.spawnTypeCount && this.spawnReady == false) {
@@ -304,11 +291,57 @@ export default class Game {
     }
     //handles and reset the spawnlimit variables and spawn window
     if (this.roundCount >= this.spawnLimit && this.spawnReady == false) {
-      this.enemyBatch = [];
-      this.spawnReady = true;
-      this.frameCount = 0;
-      this.roundCount = 0;
+      this.clearEnemyBatchAndCounts();
     }
+
+    return this
+  }
+
+  /**
+   * Spawns a new batch of enemies
+   *
+   * @returns {Game}
+   */
+  spawnNewEnemiesBatch(): Game {
+    //randomly spawn 1 to number-limit of enemyTypes (possibleBatchNum)
+    let thisBatch = Math.floor(Math.random() * this.possibleBatchNum) + 1;
+    //find which enemy type and make an array of types
+    for (let i = 0; i < thisBatch; i++) {
+      //find enemy type and put them in spawnBatch array for this enemy spawn
+      this.enemyBatch.push(this.enemyTypes[Math.floor(Math.random() * 6)]);
+    }
+    this.spawnReady = false;
+    this.spawnTypeCount = this.enemyBatch.length;
+    this.batchSlot = 0;
+
+    return this
+  }
+
+  /**
+   * Clears the enemy batch and resets the counts
+   *
+   * @returns {Game}
+   */
+  clearEnemyBatchAndCounts(): Game {
+    this.enemyBatch = [];
+    this.spawnReady = true;
+    this.frameCount = 0;
+    this.roundCount = 0;
+
+    return this
+  }
+
+  /**
+   * Spawns a new enemy
+   *
+   * @returns {Game}
+   */
+  spawnNewEnemy(): Game {
+    this.enemies.push(
+      EntityFactory.create(this.gameCtx, this.enemyBatch[this.batchSlot]) as BaseEnemySprite
+    );
+    this.batchSlot += 1;
+    this.spawnClip = 0;
 
     return this
   }
@@ -642,7 +675,7 @@ export default class Game {
       .handleShipMissileFire()
       .updateActiveEnemyAndShipMissileSprites()
       .updateEnemyMovementAndFire()
-      .spawnNewEnemies()
+      .handleEnemySpawnOps()
       .spawnNewAsteroids()
       .updateUserScore()
       .checkForNextLevel()
