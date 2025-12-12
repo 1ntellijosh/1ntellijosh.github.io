@@ -33,6 +33,7 @@ Preview the production build locally
 ### Built With:
 
 Vite
+NodeJs
 React
 Typescript
 CSS
@@ -43,17 +44,19 @@ CSS
 
 ### Challenges
 
-The first great challenge was simply learning how to create the game engine. I had never worked with the HTML canvas element and its draw/ctx functions before. Once I got the concepts down, I could draw objects on the canvas. The next step was applying the setInterval method to the canvas draw methods, and you could create frames and therefore, animation. Finally, you map keyboard inputs to the direction the object (your ship) should go on the map, and the basic game engine was set. I was really able to run away with whatever I wanted to do from there.
-
-The most challenging part of the game had to be the collision detection. This was handled in my hits() method in Game.ts. It was pretty hard to wrap my head around, but after drawing an, x-y graph on a piece of paper, I was able to write a method that would would return true if object 1's canvas range was overlapping with object 2's canvas range, and therefore a collision occurred. This method would would be called between every frame, and it would test every object on the screen with each-other to determine collisions. These collisions included asteroid to ship, ship bullet to asteroid, ship bullet to enemy ship, and enemy bullet to ship. Each collision would be handled differently, but the hits method triggered them all.
+I had never worked with the HTML canvas element and its draw/ctx functions before. Once I got the concepts down, I could draw objects on the canvas. The next step was applying the setInterval method to the canvas draw methods, and you could create frames and therefore, animation. Finally, you map keyboard inputs to the direction the object (your ship) should go on the map, and the basic game engine was set. I was really able to run away with whatever I wanted to do from there.
 
 ### Future Goals:
 
-Scripted Levels  
+Database for game data (currently served from dicts and enums), high scores, etc
+High score page
+Dockerize the app
+Setup Ansible scripts to deploy to DigitalOcean or AWS from Github actions
+SCSS variables
+Scripted Levels and boss fights
 More Enemies  
 Spread Weapon Upgrades  
-Volume Control  
-Boss Fights  
+Volume Control
 
 ### Credits:
 
