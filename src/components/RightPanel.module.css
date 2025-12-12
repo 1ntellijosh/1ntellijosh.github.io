@@ -11,7 +11,7 @@ h5 {
 }
 
 .health {
-    min-height: 450px;
+    min-height: 462px;
     min-width: 100px;
     display: flex;
     flex-direction: column-reverse;
@@ -20,13 +20,40 @@ h5 {
 }
 
 .healthBar {
-    border: .5px solid #009999;
+    border: 2px solid #009999;
     background-color: #990066;
-    min-height: 150px;
     max-width: 90px;
     min-width: 90px;
     width: 98;
     margin: 0 auto;
+    height: 150px;
+    /* Animation properties for smooth expand/collapse */
+    transition: max-height 0.5s ease-in-out, 
+                opacity 0.5s ease-in-out,
+                min-height 0.5s ease-in-out,
+                border-width 0.3s ease-in-out,
+                margin 0.3s ease-in-out;
+    overflow: hidden;
+    /* Start in hidden state by default */
+    max-height: 0;
+    min-height: 0;
+    opacity: 0;
+    border-width: 0;
+}
+
+.healthBarVisible {
+    max-height: 150px;
+    min-height: 150px;
+    opacity: 1;
+    border-width: 2px;
+}
+
+.healthBarHidden {
+    max-height: 0;
+    min-height: 0;
+    opacity: 0;
+    border-width: 0;
+    margin: 0;
 }
 
 .healthT {

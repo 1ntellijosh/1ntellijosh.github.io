@@ -16,6 +16,7 @@ type ScoreCallback = (points: number) => void;
 type HealthCallback = (amount: number) => void;
 type SetLevelStateCallback = (level: number) => void;
 type SetGunLevelStateCallback = (gunLevel: number) => void;
+type SetGunLevelBarsStateCallback = (gunLevelBars: number) => void;
 
 export default class Game {
   gameDiv: HTMLElement;
@@ -55,6 +56,7 @@ export default class Game {
   setLevelState: SetLevelStateCallback;
   setHealthState: HealthCallback;
   setGunLevelState: SetGunLevelStateCallback;
+  setGunLevelBarsState: SetGunLevelBarsStateCallback;
 
   constructor(
     gameDiv: HTMLElement,
@@ -62,7 +64,8 @@ export default class Game {
     setScoreState: ScoreCallback,
     setLevelState: SetLevelStateCallback,
     setHealthState: HealthCallback,
-    setGunLevelState: SetGunLevelStateCallback
+    setGunLevelState: SetGunLevelStateCallback,
+    setGunLevelBarsState: SetGunLevelBarsStateCallback
   ) {
     this.gameDiv = gameDiv;
     this.gameCanvas = null;
@@ -124,6 +127,7 @@ export default class Game {
     this.setLevelState = setLevelState;
     this.setHealthState = setHealthState;
     this.setGunLevelState = setGunLevelState;
+    this.setGunLevelBarsState = setGunLevelBarsState;
   }
 
   /**
@@ -165,6 +169,17 @@ export default class Game {
   }
 
   /**
+   * Plays the theme music
+   *
+   * @returns {Game}
+   */
+  playTheme(): Game {
+    this.theme!.play();
+
+    return this
+  }
+
+  /**
    * Called every frame, updates the game data and draws the game screen with ship and enemies, and updates the score
    * and health boards
    *
@@ -188,12 +203,47 @@ export default class Game {
   }
 
   /**
-   * Plays the theme music
+   * Calls every frame. Triggers all handlers each frame called from frame method
    *
    * @returns {Game}
    */
-  playTheme(): Game {
-    this.theme!.play();
+  updateDataForNewFrame(): Game {
+    //handles game over status variable
+    if(this.ship!.health == 0) {
+      this.gameOver = true
+
+      return this
+    }
+    
+    // Increments all relevant frame to frame variables
+    this.updateIncrementedPerFrameData()
+
+    // Calls for ship movement per keystrokes
+    this.ship!.updateShipMovement(this.keys)
+    
+    return this
+      .checkForWeaponUpgrade()
+      .checkGunLevelBars()
+      .handleShipMissileFire()
+      .updateActiveEnemyAndShipMissileSprites()
+      .updateEnemyMovementAndFire()
+      .handleEnemySpawnOps()
+      .spawnNewAsteroids()
+      .updateUserScore()
+      .checkForNextLevel()
+  }
+
+  /**
+   * Updates the data for a new frame
+   *
+   * @returns {Game}
+   */
+  updateIncrementedPerFrameData(): Game {
+    this.frameCount += 1
+    this.rpmCount += 1
+    this.ship!.clip += 1
+    this.spawnClip += 1
+    this.levelStep += 1
 
     return this
   }
@@ -613,6 +663,8 @@ export default class Game {
     if (this.ship!.gunLev > 1) {
       const newGunLevel = this.ship!.gunLev - 1;
       this.onWeaponLevelChange(newGunLevel);
+    } else {
+      this.changeGunLevelBars(0);
     }
     this.pointCount = 0;
 
@@ -641,6 +693,42 @@ export default class Game {
     return this
   }
 
+  /**
+   * Handles the gun level bars update in the React UI
+   *
+   * @returns {Game}
+   */
+  checkGunLevelBars(): Game {
+    const remainder = this.pointCount % GameConsts.GUN_UPRADE_THRESHOLD;
+    const currGunLevelBars = Math.floor(remainder / 100);
+    if (currGunLevelBars > 10) this.changeGunLevelBars(10);
+    else if (currGunLevelBars === 0) return this.changeGunLevelBars(0);
+    else if (currGunLevelBars > this.ship!.gunLevelBars) return this.changeGunLevelBars(currGunLevelBars);
+
+    return this;
+  }
+
+  /**
+   * Changes the gun level bars
+   *
+   * @param {number} gunLevelBars - The new gun level bars
+   *
+   * @returns {Game}
+   */
+  changeGunLevelBars(gunLevelBars: number): Game {
+    this.ship!.gunLevelBars = gunLevelBars;
+    this.setGunLevelBarsState(gunLevelBars);
+
+    return this;
+  }
+
+  /**
+   * Handles the weapon level change
+   *
+   * @param {number} newGunLevel - The new gun level
+   *
+   * @returns {Game}
+   */
   onWeaponLevelChange(newGunLevel: number): Game {
     // Only play boost sound if the gun level is increasing
     if (this.ship!.gunLev < newGunLevel) this.sounds.boost.play();
@@ -648,53 +736,9 @@ export default class Game {
     this.ship!.changeGunLevel(newGunLevel);
     this.ship!.mag = 0;
     this.setGunLevelState(newGunLevel);
+    this.changeGunLevelBars(0);
 
     return this;
-  }
-
-  /**
-   * Calls every frame. Triggers all handlers each frame called from frame method
-   *
-   * @returns {Game}
-   */
-  updateDataForNewFrame(): Game {
-    //handles game over status variable
-    if(this.ship!.health == 0) {
-      this.gameOver = true
-
-      return this
-    }
-    
-    // Increments all relevant frame to frame variables
-    this.updateIncrementedPerFrameData()
-
-    // Calls for ship movement per keystrokes
-    this.ship!.updateShipMovement(this.keys)
-    
-    return this
-      .checkForWeaponUpgrade()
-      .handleShipMissileFire()
-      .updateActiveEnemyAndShipMissileSprites()
-      .updateEnemyMovementAndFire()
-      .handleEnemySpawnOps()
-      .spawnNewAsteroids()
-      .updateUserScore()
-      .checkForNextLevel()
-  }
-
-  /**
-   * Updates the data for a new frame
-   *
-   * @returns {Game}
-   */
-  updateIncrementedPerFrameData(): Game {
-    this.frameCount += 1
-    this.rpmCount += 1
-    this.ship!.clip += 1
-    this.spawnClip += 1
-    this.levelStep += 1
-
-    return this
   }
 
   /**
@@ -1032,6 +1076,7 @@ export default class Game {
     this.ship.respawn();
     // Reset gun level to 1 and update React state
     this.setGunLevelState(1);
+    this.changeGunLevelBars(0);
     // Create new SoundManager singleton instance
     new SoundManager();
 

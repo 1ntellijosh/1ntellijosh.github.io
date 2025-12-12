@@ -19,6 +19,7 @@ export default class ShipSprite extends AbstractSprite {
   health: number;
   speed: number;
   gunLev: number;
+  gunLevelBars: number;
   respawnTime: number;
   movable: boolean;
   sounds: { [key: string]: Mp3 };
@@ -39,6 +40,7 @@ export default class ShipSprite extends AbstractSprite {
     this.health = 3;
     this.speed = 9;
     this.gunLev = 1;
+    this.gunLevelBars = 0;
     this.respawnTime = 100;
     this.movable = true;
     const soundMgr = new SoundManager();
@@ -155,9 +157,10 @@ export default class ShipSprite extends AbstractSprite {
    * @param {GunLevel} newGunLev - The new gun level (1-4)
    */
   changeGunLevel(newGunLev: number): void {
+    this.gunLevelBars = 0;
     this.gunLev = newGunLev;
     this.determineGunLevelAspects();
-  } 
+  }
 
   /**
    * Determines the missile aspects based on the gun level

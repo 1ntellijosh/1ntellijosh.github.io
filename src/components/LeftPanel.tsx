@@ -6,9 +6,10 @@ export interface LeftPanelProps {
   score: number;
   level: number;
   gunLevel: number;
+  gunLevelBars: number[];
 }
 
-export default function LeftPanel({ score, level, gunLevel }: LeftPanelProps) {
+export default function LeftPanel({ score, level, gunLevel, gunLevelBars }: LeftPanelProps) {
   const [levelFlash, setLevelFlash] = React.useState(false);
   const [gunLevelFlash, setGunLevelFlash] = React.useState(false);
 
@@ -40,10 +41,18 @@ export default function LeftPanel({ score, level, gunLevel }: LeftPanelProps) {
           {level}
         </div>
       </div > 
-      <div className={`${styles.level} ${gunLevelFlash ? styles.flash : ''}`}>
+      <div className={`${styles.gunLevel} ${gunLevelFlash ? styles.flash : ''}`}>
         <div className={styles.gunLevelT}><h5>GUN LEVEL</h5></div>
-        <div className={styles.levelB}>
-          {gunLevel}
+        <div className={styles.gunLevelB}>
+          <div className={styles.gunLevelBLeft}>
+            {gunLevel}
+          </div>
+          <div className={styles.gunLevelBRight}>
+            {gunLevelBars.map((bar, index) => (
+              <div key={index} className={styles.gunLevelBRightItem}>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
