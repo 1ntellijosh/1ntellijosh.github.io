@@ -41,7 +41,7 @@ export default class Mp3 {
       audio.style.display = "none";
       
       // Add error handling for loading issues
-      audio.addEventListener('error', (e) => {});
+      audio.addEventListener('error', () => {});
       
       document.body.appendChild(audio);
       this.pool.push(audio);
@@ -59,7 +59,7 @@ export default class Mp3 {
    */
   play(): Mp3 {
     if (this.poolSize === 1) {
-      this.mp3.play().catch(err => {});
+      this.mp3.play().catch(() => {});
 
       return this;
     }
@@ -96,7 +96,7 @@ export default class Mp3 {
     }
     
     // Play the sound
-    audio.play().catch(err => {});
+    audio.play().catch(() => {});
 
     return this;
   }

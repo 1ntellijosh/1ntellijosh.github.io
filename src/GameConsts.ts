@@ -6,17 +6,7 @@
  * @since abstract--JP
  */
 
-export interface GameConsts {
-  GAME_WIDTH: number;
-  GAME_HEIGHT: number;
-  FRAME_RATE: number;
-  GUN_UPRADE_THRESHOLD: number;
-  GUN_UPRADE_THRESHOLD_2: number;
-  GUN_UPRADE_THRESHOLD_3: number;
-  GUN_UPRADE_THRESHOLD_4: number;
-}
-
-export const GameConsts: GameConsts = Object.freeze({
+export const GameConsts = Object.freeze({
   GAME_WIDTH: 650,
   GAME_HEIGHT: 770,
   FRAME_RATE: 40,

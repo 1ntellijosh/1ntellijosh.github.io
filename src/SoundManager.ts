@@ -13,9 +13,9 @@ import { ThemeDict, Theme } from './Dicts/ThemeDict';
 let soundManagerInstance: SoundManager | null = null;
 
 export default class SoundManager {
-  sounds: { [key: string]: Mp3 };
-  theme: HTMLAudioElement | null;
-  baseUrl: string;
+  sounds: { [key: string]: Mp3 } = {};
+  theme: HTMLAudioElement | null = null;
+  baseUrl: string = '';
 
   constructor() {
     // Return existing instance if it exists (singleton pattern)

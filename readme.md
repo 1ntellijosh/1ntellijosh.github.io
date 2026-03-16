@@ -36,11 +36,10 @@ Preview the production build locally
 
 ### Built With:
 
-Vite
-NodeJs
-React
-Typescript
-CSS
+- Vite
+- NodeJs
+- React
+- Typescript
 
 ### Challenges
 
