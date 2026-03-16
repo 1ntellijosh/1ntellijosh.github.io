@@ -2,6 +2,10 @@
 
 ## Created By: Joshua Payne
 
+### Check out StarFighter:
+
+[https://1ntellijosh.github.io/]
+
 > "Game creation keeps on expanding, just like the Universe. That is why I keep making games." ― Hideo Kojima
 
 
@@ -12,7 +16,7 @@
 ## How to Run
 
 ### Development Server
-```bash
+```bash`
 npm run dev
 ```
 Opens at `http://localhost:5173` (or next available port)
@@ -37,10 +41,6 @@ NodeJs
 React
 Typescript
 CSS
-
-### Check out StarFighter:
-
-[https://1ntellijosh.github.io/]
 
 ### Challenges
 
